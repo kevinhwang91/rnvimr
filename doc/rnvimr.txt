@@ -1,0 +1,202 @@
+*rnvimr.txt*
+
+Version: 0.1.0
+Author : kevinhwang <https://github.com/kevinhwang91>
+License: BSD3
+
+================================================================================
+
+CONTENTS                                                *rnvimr-contents*
+Introduction                                            |rnvimr-introduction|
+Requirements                                            |rnvimr-requirement|
+Features                                                |rnvimr-features|
+Usage                                                   |rnvimr-usage|
+Variables                                               |rnvimr-variables|
+Examples                                                |rnvimr-config-examples|
+Commands                                                |rnvimr-commands|
+
+================================================================================
+
+INTRODUCTION                                            *rnvimr-introduction*
+
+*rnvimr* is a plugin to feel free to use *ranger* inside *neovim* by floating
+window. Comparing other plugins about *ranger* just running *ranger* as a file
+picker, this plugin uses hacking tech to do whatever you want to *ranger* .
+
+*rnvimr* requires floating window feature, so *vim* is not supported.
+
+================================================================================
+
+REQUIREMENTS                                            *rnvimr-requirements*
+
+1. *ranger* (https://github.com/ranger/ranger)
+2. *pynvim* (https://github.com/neovim/pynvim)
+3. *ueberzug* (https://github.com/seebye/ueberzug) (optional)
+
+================================================================================
+
+FEATURES                                                *rnvimr-features*
+
+- File picker
+- Calibrate preview images for ueberzug
+- Attach file automatically when reopen ranger
+- Communicate with ranger via rpc
+- Adjust floating window after resize window of neovim
+- Customize preset multiple layouts for floating window
+
+================================================================================
+
+USAGE                                                   *rnvimr-usage*
+
+Open a new floating window and run a ranger process by using |:RnvimrToggle|.
+
+You can run |:RnvimrResize| to resize floating window.
+
+Running |:RnvimrSync| will synchronize all ranger's configuration and plugins
+with rnvimr.
+
+================================================================================
+
+VARIABLES                                               *rnvimr-variables*
+                                                        *g:rnvimr_layout*
+g:rnvimr_layout
+    Default: {dict}
+>
+            { 'relative': 'editor',
+            \ 'width': float2nr(round(0.5 * &columns)),
+            \ 'height': float2nr(round(0.5 * &lines)),
+            \ 'col': float2nr(round(0.25 * &columns)),
+            \ 'row': float2nr(round(0.25 * &lines)),
+            \ 'style': 'minimal' }
+<
+    The dict is a parameter of *nvim_open_win* api named {config}.
+
+                                                        *g:rnvimr_presets*
+g:rnvimr_presets
+    Default: {list}
+>
+            [ {'width': 0.250, 'height': 0.250},
+            \ {'width': 0.333, 'height': 0.333},
+            \ {},
+            \ {'width': 0.666, 'height': 0.666},
+            \ {'width': 0.750, 'height': 0.750},
+            \ {'width': 0.900, 'height': 0.900} ]
+<
+    The element of list is {dict}, represents the layout of floating window.
+
+    If the type of values of 'width', 'height', 'col', 'row' are {number}, the
+    values are the final result of the layout, such as `{'width': 10}`, the
+    width of floating window is 10.
+
+    If the type of values of 'width', 'height', 'col', 'row' are {float}, its
+    value must be {0.0-1.0}. It represents the proportion of the columns or
+    lines of neovim.
+    The values of 'width' and 'col' are the proportion of &columns.
+    The values of 'height' and 'row' are the proportion of &lines.
+
+    If 'col' is missing but dict contains 'width' k&v, 'col' will calculatedby
+    format `float2nr(round((&columns - width) / 2))`, 'row' is similar to 'col'.
+
+    If the other k&v are missing, it will extend from the |g:rnvimr_layout|.
+
+    If the element is a empty dict '{}', it represents the initial element of
+    |g:rnvimr_presets| while running |:RnvimrToggle|.
+
+                                                        *g:rnvimr_split_action*
+g:rnvimr_split_action
+    Default: {dict}
+>
+           { '<C-t>': 'tab split', '<C-x>': 'split', '<C-v>': 'vsplit' }
+<
+    Split action for selected file in ranger. Disable it by using empty dict.
+    The keymap should follow ranger's format.
+
+                                                        *g:rnvimr_ex_enable*
+g:rnvimr_ex_enable
+    Default: 0
+
+    Enable ranger to be a default file explorer in neovim.
+
+                                                        *g:rnvimr_pick_enable*
+g:rnvimr_pick_enable
+    Default: 0
+
+    Enable ranger to be hidden after picking a file.
+
+                                                        *g:rnvimr_ranger_cmd*
+g:rnvimr_ranger_cmd
+    Default: 'ranger'
+
+    Use this command to run a process inside the floating window.
+    It can mix some command of ranger, such as 'ranger --cmd=xxx'.
+
+                                                        *g:rnvimr_sync_path*
+g:rnvimr_sync_path
+    Default: ranger default path of configuration, depend on *$HOME* and
+    *$XDG_CONFIG_HOME* environment.
+
+    No need to set this variable while using default configuration and path.
+    If you want to extend plugin of rnvimr, you will set this variable to
+    isolate the configuration of ranger and rnvimr.
+
+================================================================================
+
+EXAMPLES                                                *rnvimr-config-examples*
+
+This plugin doesn't supply any default mappings.
+
+For example:
+>
+        " Toggle the ranger floating window
+        nnoremap <silent> <M-o> :RnvimrToggle<CR>
+        tnoremap <silent> <M-o> <C-\><C-n>:RnvimrToggle<CR>
+
+        " Resize floating window by all preset layouts
+        tnoremap <silent> <M-i> <C-\><C-n>:RnvimrResize<CR>
+
+        " Resize floating window by special preset layouts
+        tnoremap <silent> <M-l> <C-\><C-n>:RnvimrResize 1,8,9,13,11,5<CR>
+
+        " '{}' represents initial element of preset layouts
+        let g:rnvimr_presets = [
+                \ {'width': 0.250, 'height': 0.250},
+                \ {'width': 0.333, 'height': 0.333},
+                \ {},
+                \ {'width': 0.666, 'height': 0.666},
+                \ {'width': 0.750, 'height': 0.750},
+                \ {'width': 0.900, 'height': 0.900},
+                \ {'width': 0.500, 'height': 0.500, 'col': 0, 'row': 0},
+                \ {'width': 0.500, 'height': 0.500, 'col': 0, 'row': 0.5},
+                \ {'width': 0.500, 'height': 0.500, 'col': 0.5, 'row': 0},
+                \ {'width': 0.500, 'height': 0.500, 'col': 0.5, 'row': 0.5},
+                \ {'width': 0.500, 'height': 1.000, 'col': 0, 'row': 0},
+                \ {'width': 0.500, 'height': 1.000, 'col': 0.5, 'row': 0},
+                \ {'width': 1.000, 'height': 0.500, 'col': 0, 'row': 0},
+                \ {'width': 1.000, 'height': 0.500, 'col': 0, 'row': 0.5}]
+<
+
+================================================================================
+
+COMMANDS                                                *rnvimr-commands*
+
+                                                        *:RnvimrToggle*
+:RnvimrToggle
+    Toggle the ranger floating window. Reopen ranger and attach file
+    automatically after executing ranger's command |quit|.
+    If run |quit| inside ranger, ranger is hidden by closing floating window
+    instead of exiting process. You can run |quit!| or |quitall| command to exit
+    ranger process.
+
+                                                        *:RnvimrResize*
+:RnvimrResize {args}
+    Resize floating window by preset layouts. If {args} is empty, it will
+    circularly iterate the total |g:rnvimr_presets|. If {args} is single index
+    or multiple indexes separate by {,} such as {4,2,1,3}, it will circularly
+    iterate special elements of |g:rnvimr_presets| in order via index.
+
+                                                        *:RnvimrSync*
+:RnvimrSync
+    Synchronize all configuration and plugins of ranger with rnvimr.
+
+================================================================================
+vim:tw=80:ft=help
