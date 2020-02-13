@@ -6,6 +6,10 @@ picker, this plugin uses hacking tech to do whatever you want to ranger.
 
 *rnvimr require floating window feature, so vim is not supported.*
 
+<p align="center">
+  <img width="1080px" src="https://user-images.githubusercontent.com/17562139/74416173-b0aa8600-4e7f-11ea-83b5-31c07c384af1.gif">
+</p>
+
 ## Requirements
 
 1. [ranger](https://github.com/ranger/ranger)
@@ -17,7 +21,7 @@ picker, this plugin uses hacking tech to do whatever you want to ranger.
 ## Features
 
 * File picker
-* Replace builtin Netrw
+* Replace builtin Netrw as a file explorer
 * Calibrate preview images for ueberzug
 * Attach file automatically when reopen ranger
 * Communicate with ranger via rpc
