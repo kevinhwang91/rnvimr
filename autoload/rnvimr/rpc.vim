@@ -11,6 +11,10 @@ function rnvimr#rpc#enable_attach_file() abort
     let s:attach_file_enable = 1
 endfunction
 
+function rnvimr#rpc#disable_attach_file() abort
+    let s:attach_file_enable = 0
+endfunction
+
 function rnvimr#rpc#select_file(file) abort
     call s:valid_setup()
     if filereadable(a:file) || isdirectory(a:file)

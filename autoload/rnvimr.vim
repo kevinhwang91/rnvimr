@@ -78,8 +78,10 @@ function rnvimr#open(path) abort
     if exists('s:buf_handle')
         if filereadable(a:path)
             call rnvimr#rpc#select_file(a:path)
+            call rnvimr#rpc#disable_attach_file()
         elseif isdirectory(a:path)
             call rnvimr#rpc#enter_dir(a:path)
+            call rnvimr#rpc#disable_attach_file()
         endif
         call rnvimr#toggle()
     else

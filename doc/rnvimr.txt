@@ -38,6 +38,7 @@ REQUIREMENTS                                            *rnvimr-requirements*
 FEATURES                                                *rnvimr-features*
 
 - File picker
+- Replace builtin Netrw to be a file explorer
 - Calibrate preview images for ueberzug
 - Attach file automatically when reopen ranger
 - Communicate with ranger via rpc
@@ -48,9 +49,10 @@ FEATURES                                                *rnvimr-features*
 
 USAGE                                                   *rnvimr-usage*
 
-Open a new floating window and run a ranger process by using |:RnvimrToggle|.
+Using |:RnvimrToggle| to create a ranger process at first time.
+|:RnvimrToggle| will show or hide the floating window.
 
-You can run |:RnvimrResize| to resize floating window.
+Using |:RnvimrResize| to resize the floating window.
 
 Running |:RnvimrSync| will synchronize all ranger's configuration and plugins
 with rnvimr.
@@ -91,10 +93,10 @@ g:rnvimr_presets
     If the type of values of 'width', 'height', 'col', 'row' are {float}, its
     value must be {0.0-1.0}. It represents the proportion of the columns or
     lines of neovim.
-    The values of 'width' and 'col' are the proportion of &columns.
-    The values of 'height' and 'row' are the proportion of &lines.
+    The values of 'width' and 'col' are the proportion of |&columns|.
+    The values of 'height' and 'row' are the proportion of |&lines|.
 
-    If 'col' is missing but dict contains 'width' k&v, 'col' will calculatedby
+    If 'col' is missing but dict contains 'width' k&v, 'col' will calculated by
     format `float2nr(round((&columns - width) / 2))`, 'row' is similar to 'col'.
 
     If the other k&v are missing, it will extend from the |g:rnvimr_layout|.
@@ -128,7 +130,7 @@ g:rnvimr_ranger_cmd
     Default: 'ranger'
 
     Use this command to run a process inside the floating window.
-    It can mix some command of ranger, such as 'ranger --cmd=xxx'.
+    It can mix some command of ranger, such as 'ranger --cmd="xxx"'.
 
                                                         *g:rnvimr_sync_path*
 g:rnvimr_sync_path
