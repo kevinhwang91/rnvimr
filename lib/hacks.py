@@ -6,7 +6,6 @@ import inspect
 import textwrap
 import ranger
 
-from ranger.ext.img_display import UeberzugImageDisplayer
 from .client import client
 
 
@@ -99,6 +98,14 @@ class Hacks():
         """
         Ueberzug can't capture the calibration of floating window of neovim, fix it.
         """
+
+        try:
+            # ueberzug is supported by ranger since [b58954d4258bc204c38f635e5209e6c1e2bce743]
+            # https://github.com/ranger/ranger/commit/b58954d4258bc204c38f635e5209e6c1e2bce743
+            # pylint: disable=import-outside-toplevel
+            from ranger.ext.img_display import UeberzugImageDisplayer
+        except ImportError:
+            return
 
         if not isinstance(self.fm.image_displayer, UeberzugImageDisplayer):
             return
