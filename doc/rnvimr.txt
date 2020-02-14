@@ -12,8 +12,8 @@ Requirements                                            |rnvimr-requirement|
 Features                                                |rnvimr-features|
 Usage                                                   |rnvimr-usage|
 Variables                                               |rnvimr-variables|
-Examples                                                |rnvimr-config-examples|
 Commands                                                |rnvimr-commands|
+Examples                                                |rnvimr-config-examples|
 
 ================================================================================
 
@@ -21,7 +21,8 @@ INTRODUCTION                                            *rnvimr-introduction*
 
 *rnvimr* is a plugin to feel free to use *ranger* inside *neovim* by floating
 window. Comparing other plugins about *ranger* just running *ranger* as a file
-picker, this plugin uses hacking tech to do whatever you want to *ranger* .
+picker, this plugin uses hacking tech to do whatever you want to *ranger* ,
+such as running rpc inside ranger to communicate with neovim.
 
 *rnvimr* requires floating window feature, so *vim* is not supported.
 
@@ -37,13 +38,12 @@ REQUIREMENTS                                            *rnvimr-requirements*
 
 FEATURES                                                *rnvimr-features*
 
-- File picker
 - Replace builtin Netrw to be a file explorer
 - Calibrate preview images for ueberzug
-- Attach file automatically when reopen ranger
-- Communicate with ranger via rpc
-- Adjust floating window after resize window of neovim
-- Customize preset multiple layouts for floating window
+- Attach file automatically when toggling ranger again
+- Run rpc inside ranger to communicate with neovim
+- Adjust floating window after resizing window of neovim
+- Customize multiple preset layouts for floating window
 
 ================================================================================
 
@@ -143,42 +143,6 @@ g:rnvimr_sync_path
 
 ================================================================================
 
-EXAMPLES                                                *rnvimr-config-examples*
-
-This plugin doesn't supply any default mappings.
-
-For example:
->
-        " Toggle the ranger floating window
-        nnoremap <silent> <M-o> :RnvimrToggle<CR>
-        tnoremap <silent> <M-o> <C-\><C-n>:RnvimrToggle<CR>
-
-        " Resize floating window by all preset layouts
-        tnoremap <silent> <M-i> <C-\><C-n>:RnvimrResize<CR>
-
-        " Resize floating window by special preset layouts
-        tnoremap <silent> <M-l> <C-\><C-n>:RnvimrResize 1,8,9,13,11,5<CR>
-
-        " '{}' represents initial element of preset layouts
-        let g:rnvimr_presets = [
-                \ {'width': 0.250, 'height': 0.250},
-                \ {'width': 0.333, 'height': 0.333},
-                \ {},
-                \ {'width': 0.666, 'height': 0.666},
-                \ {'width': 0.750, 'height': 0.750},
-                \ {'width': 0.900, 'height': 0.900},
-                \ {'width': 0.500, 'height': 0.500, 'col': 0, 'row': 0},
-                \ {'width': 0.500, 'height': 0.500, 'col': 0, 'row': 0.5},
-                \ {'width': 0.500, 'height': 0.500, 'col': 0.5, 'row': 0},
-                \ {'width': 0.500, 'height': 0.500, 'col': 0.5, 'row': 0.5},
-                \ {'width': 0.500, 'height': 1.000, 'col': 0, 'row': 0},
-                \ {'width': 0.500, 'height': 1.000, 'col': 0.5, 'row': 0},
-                \ {'width': 1.000, 'height': 0.500, 'col': 0, 'row': 0},
-                \ {'width': 1.000, 'height': 0.500, 'col': 0, 'row': 0.5}]
-<
-
-================================================================================
-
 COMMANDS                                                *rnvimr-commands*
 
                                                         *:RnvimrToggle*
@@ -200,5 +164,63 @@ COMMANDS                                                *rnvimr-commands*
 :RnvimrSync
     Synchronize all configuration and plugins of ranger with rnvimr.
 
+================================================================================
+
+EXAMPLES                                                *rnvimr-config-examples*
+
+Minimal configuration:
+>
+    Plug 'kevinhwang91/rnvimr', {'do': 'make install'}
+
+    tnoremap <silent> <M-i> <C-\><C-n>:RnvimrResize<CR>
+    nnoremap <silent> <M-o> :RnvimrToggle<CR>
+<
+
+Advanced configuration:
+>
+    " Synchronize all ranger's configuration and plugins with rnvimr
+    Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
+
+    " make ranger to replace netrw to be a file explorer
+    let g:rnvimr_ex_enable = 1
+
+    nnoremap <silent> <M-o> :RnvimrToggle<CR>
+    tnoremap <silent> <M-o> <C-\><C-n>:RnvimrToggle<CR>
+
+    " Resize floating window by all preset layouts
+    tnoremap <silent> <M-i> <C-\><C-n>:RnvimrResize<CR>
+
+    " Resize floating window by special preset layouts
+    tnoremap <silent> <M-l> <C-\><C-n>:RnvimrResize 1,8,9,13,11,5<CR>
+
+    " Resize floating window by single preset layouts
+    tnoremap <silent> <M-y> <C-\><C-n>:RnvimrResize 6<CR>
+
+    " Customize initial layout
+    let g:rnvimr_layout = { 'relative': 'editor',
+                \ 'width': float2nr(round(0.5 * &columns)),
+                \ 'height': float2nr(round(0.5 * &lines)),
+                \ 'col': float2nr(round(0.25 * &columns)),
+                \ 'row': float2nr(round(0.25 * &lines)),
+                \ 'style': 'minimal' }
+
+    " Customize multiple preset layouts
+    " '{}' represents initial layout
+    let g:rnvimr_presets = [
+                \ {'width': 0.250, 'height': 0.250},
+                \ {'width': 0.333, 'height': 0.333},
+                \ {},
+                \ {'width': 0.666, 'height': 0.666},
+                \ {'width': 0.750, 'height': 0.750},
+                \ {'width': 0.900, 'height': 0.900},
+                \ {'width': 0.500, 'height': 0.500, 'col': 0, 'row': 0},
+                \ {'width': 0.500, 'height': 0.500, 'col': 0, 'row': 0.5},
+                \ {'width': 0.500, 'height': 0.500, 'col': 0.5, 'row': 0},
+                \ {'width': 0.500, 'height': 0.500, 'col': 0.5, 'row': 0.5},
+                \ {'width': 0.500, 'height': 1.000, 'col': 0, 'row': 0},
+                \ {'width': 0.500, 'height': 1.000, 'col': 0.5, 'row': 0},
+                \ {'width': 1.000, 'height': 0.500, 'col': 0, 'row': 0},
+                \ {'width': 1.000, 'height': 0.500, 'col': 0, 'row': 0.5}]
+<
 ================================================================================
 vim:tw=80:ft=help
