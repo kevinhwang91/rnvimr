@@ -27,10 +27,12 @@ class SplitAndEdit(Command):
         cmd.append('if bufname("%") != ""')
         cmd.append(action)
         cmd.append('endif')
-        cmd.append('edit {}'.format(self.fm.thisfile))
+        cmd.append('silent! edit {}'.format(self.fm.thisfile))
 
         if not pick_enable:
             cmd.append('noautocmd call nvim_set_current_win(cur_win)')
             cmd.append('noautocmd startinsert')
+        else:
+            client.call('rnvimr#rpc#enable_attach_file', async_=True)
 
         client.command('|'.join(cmd), async_=True)

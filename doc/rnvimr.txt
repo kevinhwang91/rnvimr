@@ -50,12 +50,18 @@ FEATURES                                                *rnvimr-features*
 USAGE                                                   *rnvimr-usage*
 
 Using |:RnvimrToggle| to create a ranger process at first time.
-|:RnvimrToggle| will show or hide the floating window.
+In other cases, |:RnvimrToggle| will show or hide the floating window.
 
 Using |:RnvimrResize| to resize the floating window.
 
 Running |:RnvimrSync| will synchronize all ranger's configuration and plugins
-with rnvimr.
+with rnvimr this time.
+
+`Enter` to open a file in ranger. And support `CTRL-T`/`CTRL-X`/`CTRL-V` key
+bindings to open in a new tab, a new split, or in a new vertical split.
+
+Pressing `q` in ranger just hide floating window.
+Ranger will attach file of current buffer in next toggle event.
 
 ================================================================================
 
@@ -124,6 +130,7 @@ g:rnvimr_pick_enable
     Default: 0
 
     Enable ranger to be hidden after picking a file.
+    It will automatically attach file in next |:RnvimrToggle|.
 
                                                         *g:rnvimr_ranger_cmd*
 g:rnvimr_ranger_cmd
@@ -148,7 +155,7 @@ COMMANDS                                                *rnvimr-commands*
                                                         *:RnvimrToggle*
 :RnvimrToggle
     Toggle the ranger floating window. Reopen ranger and attach file
-    automatically after executing ranger's command |quit|.
+    automatically after executing ranger's command |quit| with only 1 tab.
     If run |quit| inside ranger, ranger is hidden by closing floating window
     instead of exiting process. You can run |quit!| or |quitall| command to exit
     ranger process.
@@ -174,6 +181,7 @@ Minimal configuration:
 
     tnoremap <silent> <M-i> <C-\><C-n>:RnvimrResize<CR>
     nnoremap <silent> <M-o> :RnvimrToggle<CR>
+    tnoremap <silent> <M-o> <C-\><C-n>:RnvimrToggle<CR>
 <
 
 Advanced configuration:

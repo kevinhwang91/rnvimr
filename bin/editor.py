@@ -25,11 +25,13 @@ def edit_file():
     cmd = ['close'] if pick_enable else ['noautocmd wincmd p']
 
     for file in sys.argv[2:]:
-        cmd.append('edit ' + file)
+        cmd.append('silent! edit {}'.format(file))
 
     if not pick_enable:
         cmd.append('noautocmd wincmd p')
         cmd.append('noautocmd startinsert')
+    else:
+        client.call('rnvimr#rpc#enable_attach_file', async_=True)
 
     client.command('|'.join(cmd), async_=True)
 

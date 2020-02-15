@@ -1,13 +1,13 @@
 # rnvimr
 
 Rnvimr is a plugin to feel free to use ranger inside neovim by floating
-window. 
+window.
 
 Comparing other plugins about ranger just running ranger as a file
 picker, this plugin uses hacking tech to do whatever you want to ranger, such as running rpc inside ranger to communicate with neovim.
 
 
-**rnvimr require floating window feature, so vim is not supported.**
+**rnvimr require RPC, it's not a good time to support vim now.**
 
 <p align="center">
   <img width="1080px" src="https://user-images.githubusercontent.com/17562139/74416173-b0aa8600-4e7f-11ea-83b5-31c07c384af1.gif">
@@ -42,14 +42,21 @@ Put below code in your configuration of neovim.
 Plug 'kevinhwang91/rnvimr', {'do': 'make install'}
 ```
 
+> If your want to synchronize all ranger's configuration and plugins with rnvimr, please using `make sync` instead of `make install`.
+
 ## Usage
 
 Using `:RnvimrToggle` to create a ranger process at first time.
-`:RnvimrToggle` will show or hide the floating window.
+
+In other cases, `:RnvimrToggle` will show or hide the floating window.
 
 Using `:RnvimrResize` to resize the floating window.
 
-Running `:RnvimrSync` will synchronize all ranger's configuration and plugins with rnvimr.
+Running `:RnvimrSync` will synchronize all ranger's configuration and plugins with rnvimr this time.
+
+`Enter` to open a file in ranger. And support `CTRL-T`/`CTRL-X`/`CTRL-V` key bindings to open in a new tab, a new split, or in a new vertical split.
+
+Pressing `q` in ranger just hide floating window. Ranger will attach file of current buffer in next toggle event.
 
 ### Example configuration
 
