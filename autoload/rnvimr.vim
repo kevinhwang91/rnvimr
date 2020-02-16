@@ -36,8 +36,11 @@ function s:create_ranger(cmd) abort
     let old_editor = $OLDEDITOR
     let $OLDEDITOR = $EDITOR
     let $EDITOR = s:editor
+    let $OLDVISUAL = $VISUAL
+    let $VISUAL = s:editor
     call termopen(a:cmd)
     let $EDITOR = $OLDEDITOR
+    let $VISUAL = $OLDVISUAL
     if empty(old_editor)
         unlet $OLDEDITOR
     else
