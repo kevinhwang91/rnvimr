@@ -1,68 +1,65 @@
 # rnvimr
 
-Rnvimr is a plugin to feel free to use ranger inside neovim by floating
-window.
+Rnvimr is a NeoVim plugin that allows you to use Ranger in a floating window.
 
-Comparing other plugins about ranger just running ranger as a file
-picker, this plugin uses hacking tech to do whatever you want to ranger, such as running rpc inside ranger to communicate with neovim.
+Compared with other Ranger just running Ranger as a file picker, this plugin uses hacking tech to do whatever you want to Ranger, such as running rpc inside Ranger to communicate with neovim.
 
+Different than other Ranger vim-plugins, rnvimr gives you full control over Ranger. It uses [RPC](https://neovim.io/doc/user/api.html#RPC) to communicate with Ranger.
 
-**rnvimr require RPC, it's not a good time to support vim now.**
+**Since rnvimr requires RPC, this plugin does not support vim for now**
 
 <p align="center">
   <img width="1080px" src="https://user-images.githubusercontent.com/17562139/74416173-b0aa8600-4e7f-11ea-83b5-31c07c384af1.gif">
 </p>
 
-> Using [vimade](https://github.com/TaDaa/vimade) to fade interactive windows.
+> [vimade](https://github.com/TaDaa/vimade) was used to fade interactive windows.
 
 ## Requirements
 
-1. [ranger](https://github.com/ranger/ranger)
+1. [Ranger](https://github.com/Ranger/Ranger)
 2. [pynvim](https://github.com/neovim/pynvim)
 3. [neovim](https://github.com/neovim/neovim)
-4. [ueberzug](https://github.com/seebye/ueberzug) (optional, update ranger since [b58954](https://github.com/ranger/ranger/commit/b58954d4258bc204c38f635e5209e6c1e2bce743))
+4. [ueberzug](https://github.com/seebye/ueberzug) (optional, requires at least [b58954](https://github.com/Ranger/Ranger/commit/b58954d4258bc204c38f635e5209e6c1e2bce743))
 
 
 ## Features
 
-* Replace builtin Netrw to be a file explorer
-* Calibrate preview images for ueberzug
-* Attach file automatically when toggling ranger again
-* Run rpc inside ranger to communicate with neovim
-* Adjust floating window after resizing window of neovim
-* Customize multiple preset layouts for floating window
+* Replaces the built-in Netrw as a default file explorer
+* Calibrated preview images for ueberzug
+* Attach file automatically when toggling Ranger
+* Runs [RPC](https://neovim.io/doc/user/api.html#RPC) inside Ranger to communicate with NeoVim
+* Automatically adjusts floating window after resizing NeoVim
+* Fully customizable layouts for floating window
 
 ## Installation
 
-Use your plugin manager like [Vim-plug](https://github.com/junegunn/vim-plug)
-
-Put below code in your configuration of neovim.
-
+Install rnvimr with your favorite plugin manager! Example for [Vim-plug](https://github.com/junegunn/vim-plug):
 ```vim
-Plug 'kevinhwang91/rnvimr', {'do': 'make install'}
+Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
 ```
 
-> If your want to synchronize all ranger's configuration and plugins with rnvimr, please using `make sync` instead of `make install`.
+> If you want rnvimr to use the default (vanilla) Ranger configuration, please using `make install` instead of `make sync`.
 
 ## Usage
 
-Using `:RnvimrToggle` to create a ranger process at first time.
+Use `:RnvimrToggle` to create a Ranger process, and if one exists, `:RnvimrToggle` simply shows or hides the floating window.
 
-In other cases, `:RnvimrToggle` will show or hide the floating window.
+Use `:RnvimrResize` to cycle the preset layouts.
 
-Using `:RnvimrResize` to resize the floating window.
+`:RnvimrSync` will synchronize your personal Ranger configuration and plugins with rnvimr this time.
 
-Running `:RnvimrSync` will synchronize all ranger's configuration and plugins with rnvimr this time.
+**Note:** if your Ranger config changes, you will have to run `:RnvimrSync` in order to use your updated Ranger configuration with rnvimr
 
-`Enter` to open a file in ranger. And support `CTRL-T`/`CTRL-X`/`CTRL-V` key bindings to open in a new tab, a new split, or in a new vertical split.
+`Enter` to open a file in Ranger. Rnvimr also supports `CTRL-T`/`CTRL-X`/`CTRL-V` key bindings that allow you to open up file in a new tab, a new horizontal split, or in a new vertical split.
 
-Pressing `q` in ranger just hide floating window. Ranger will attach file of current buffer in next toggle event.
+Pressing `q` in Ranger simply hides the floating window. Ranger will attach the file of the current buffer in the next toggle event.
 
 ### Example configuration
 
 #### Minimal configuration
 ```vim
-Plug 'kevinhwang91/rnvimr', {'do': 'make install'}
+" Synchronize all Ranger's configuration and plugins with rnvimr
+Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
 
 tnoremap <silent> <M-i> <C-\><C-n>:RnvimrResize<CR>
 nnoremap <silent> <M-o> :RnvimrToggle<CR>
@@ -71,10 +68,10 @@ tnoremap <silent> <M-o> <C-\><C-n>:RnvimrToggle<CR>
 
 #### Advanced configuration
 ```vim
-" Synchronize all ranger's configuration and plugins with rnvimr
+" Synchronize all Ranger's configuration and plugins with rnvimr
 Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
 
-" make ranger to replace netrw to be a file explorer
+" Make Ranger replace netrw and be the file explorer
 let g:rnvimr_ex_enable = 1
 
 nnoremap <silent> <M-o> :RnvimrToggle<CR>
@@ -89,7 +86,7 @@ tnoremap <silent> <M-l> <C-\><C-n>:RnvimrResize 1,8,9,13,11,5<CR>
 " Resize floating window by single preset layouts
 tnoremap <silent> <M-y> <C-\><C-n>:RnvimrResize 6<CR>
 
-" Customize initial layout
+" Customize the initial layout
 let g:rnvimr_layout = { 'relative': 'editor',
             \ 'width': float2nr(round(0.5 * &columns)),
             \ 'height': float2nr(round(0.5 * &lines)),
@@ -98,7 +95,7 @@ let g:rnvimr_layout = { 'relative': 'editor',
             \ 'style': 'minimal' }
 
 " Customize multiple preset layouts
-" '{}' represents initial layout
+" '{}' represents the initial layout
 let g:rnvimr_presets = [
             \ {'width': 0.250, 'height': 0.250},
             \ {'width': 0.333, 'height': 0.333},
@@ -116,10 +113,10 @@ let g:rnvimr_presets = [
             \ {'width': 1.000, 'height': 0.500, 'col': 0, 'row': 0.5}]
 ```
 
-Get more information about rnvimr, please execute `:help rnvimr` inside neovim,
-because I don't want to maintain two documents with same contents :).
+For more information, please refer to `:help rnvimr`, 
+because I don't want to maintain two documents with the same contents :).
 
 ## License
 
-The project is licensed under a BSD-3-clause license. See the [LICENSE](./LICENSE) file.
+The project is licensed under a BSD-3-clause license. See [LICENSE](./LICENSE) file for details.
 
