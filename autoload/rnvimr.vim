@@ -33,18 +33,13 @@ function s:create_ranger(cmd) abort
     " TODO
     " {opts.env} didn't work, I had post the issue
     " https://github.com/neovim/neovim/issues/11829
-    let old_editor = $OLDEDITOR
-    let $OLDEDITOR = $EDITOR
-    let $EDITOR = s:editor
-    let $OLDVISUAL = $VISUAL
+    let visual = $VISUAL
     let $VISUAL = s:editor
     call termopen(a:cmd)
-    let $EDITOR = $OLDEDITOR
-    let $VISUAL = $OLDVISUAL
-    if empty(old_editor)
-        unlet $OLDEDITOR
+    if empty(visual)
+        unlet $VISUAL
     else
-        let $OLDEDITOR = old_editor
+        let $VISUAL = visual
     endif
 
     setfiletype rnvimr

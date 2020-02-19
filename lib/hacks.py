@@ -84,10 +84,12 @@ class Hacks():
         if not bulkrename_cls:
             return
 
-        old_editor = os.getenv('OLDEDITOR') if not None else 'nvim'
+        editor = os.getenv('EDITOR')
+        if not editor:
+            editor = 'nvim'
         code = textwrap.dedent(inspect.getsource(bulkrename_cls.execute))
         code = code.replace('def execute', 'def bulkrename_execute')
-        code = code.replace("app='editor'", "app='{}'".format(old_editor))
+        code = code.replace("app='editor'", "app='{}'".format(editor))
 
         bulkrename_module = inspect.getmodule(bulkrename_cls)
         exec(code, bulkrename_module.__dict__)  # pylint: disable=exec-used
