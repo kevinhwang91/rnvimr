@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # pylint: disable=missing-module-docstring
 import sys
 import os
