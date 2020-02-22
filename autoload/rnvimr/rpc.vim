@@ -35,6 +35,10 @@ function rnvimr#rpc#set_host_chan_id(id) abort
     let s:host_chan_id = a:id
 endfunction
 
+function rnvimr#rpc#reset_host_chan_id() abort
+    let s:host_chan_id = -1
+endfunction
+
 function rnvimr#rpc#request_attach_file(file) abort
     if s:attach_file_enable == 1
         call rnvimr#rpc#select_file(a:file)

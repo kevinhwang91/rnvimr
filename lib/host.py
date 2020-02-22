@@ -29,7 +29,7 @@ class Host():
 
             # call neovim only once as a host in order to get channel id.
             self.chan_id = host.request('nvim_get_api_info')[0]
-            host.call('rnvimr#rpc#set_host_chan_id', self.chan_id)
+            host.call('rnvimr#after_init', self.chan_id)
 
             t_run_loop = threading.Thread(
                 daemon=True, target=host.run_loop,

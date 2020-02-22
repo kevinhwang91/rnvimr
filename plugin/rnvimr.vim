@@ -1,5 +1,5 @@
 if exists('g:loaded_rnvimr')
-  finish
+    finish
 endif
 
 let g:loaded_rnvimr = 1

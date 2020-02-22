@@ -1,3 +1,4 @@
+let s:initilized = v:false
 let s:rnvimr_path = expand('<sfile>:h:h')
 let s:editor = s:rnvimr_path . '/bin/editor.py'
 let s:confdir = s:rnvimr_path . '/ranger'
@@ -46,6 +47,15 @@ function s:create_ranger(cmd) abort
     startinsert
 endfunction
 
+function s:reset() abort
+    if s:initilized
+        unlet s:buf_handle
+        let s:initilized = v:false
+        call rnvimr#rpc#reset_host_chan_id()
+        bdelete!
+    endif
+endfunction
+
 function rnvimr#resize(...) abort
     if !nvim_win_is_valid(s:win_handle) || nvim_get_current_win() != s:win_handle
         return
@@ -56,7 +66,7 @@ function rnvimr#resize(...) abort
 endfunction
 
 function rnvimr#toggle() abort
-    if exists('s:buf_handle')
+    if s:initilized && exists('s:buf_handle')
         if exists('s:win_handle') && nvim_win_is_valid(s:win_handle)
             if nvim_get_current_win() == s:win_handle
                 call nvim_win_close(s:win_handle, 0)
@@ -73,7 +83,7 @@ function rnvimr#toggle() abort
 endfunction
 
 function rnvimr#open(path) abort
-    if exists('s:buf_handle')
+    if s:initilized && exists('s:buf_handle')
         if filereadable(a:path)
             call rnvimr#rpc#select_file(a:path)
             call rnvimr#rpc#disable_attach_file()
@@ -101,16 +111,17 @@ function rnvimr#init(...) abort
     let select_file = shellescape(select_file)
     let ranger_cmd = get(g:, 'rnvimr_ranger_cmd', s:default_ranger_cmd)
     let cmd = ranger_cmd . ' --confdir=' . confdir . ' --selectfile=' . select_file
-
     call s:create_ranger(cmd)
-
     augroup RnvimrTerm
         autocmd!
         autocmd VimResized <buffer> call s:redraw_win()
-        autocmd TermClose <buffer> unlet s:buf_handle |
-                    \ call rnvimr#rpc#set_host_chan_id(-1) |
-                    \ bdelete!
+        autocmd TermClose <buffer> call s:reset()
     augroup END
+endfunction
+
+function rnvimr#after_init(rpc_host_id) abort
+    call rnvimr#rpc#set_host_chan_id(a:rpc_host_id)
+    let s:initilized = v:true
 endfunction
 
 function rnvimr#sync_ranger() abort
