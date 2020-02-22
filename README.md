@@ -2,8 +2,6 @@
 
 Rnvimr is a NeoVim plugin that allows you to use Ranger in a floating window.
 
-Compared with other Ranger just running Ranger as a file picker, this plugin uses hacking tech to do whatever you want to Ranger, such as running rpc inside Ranger to communicate with neovim.
-
 Different than other Ranger vim-plugins, rnvimr gives you full control over Ranger. It uses [RPC](https://neovim.io/doc/user/api.html#RPC) to communicate with Ranger.
 
 **Since rnvimr requires RPC, this plugin does not support vim for now**
@@ -16,10 +14,11 @@ Different than other Ranger vim-plugins, rnvimr gives you full control over Rang
 
 ## Requirements
 
-1. [Ranger](https://github.com/Ranger/Ranger)
+1. [ranger](https://github.com/ranger/ranger)
 2. [pynvim](https://github.com/neovim/pynvim)
 3. [neovim](https://github.com/neovim/neovim)
-4. [ueberzug](https://github.com/seebye/ueberzug) (optional, requires at least [b58954](https://github.com/Ranger/Ranger/commit/b58954d4258bc204c38f635e5209e6c1e2bce743))
+4. python3
+5. [ueberzug](https://github.com/seebye/ueberzug) (optional, requires at least [b58954](https://github.com/ranger/ranger/commit/b58954d4258bc204c38f635e5209e6c1e2bce743))
 
 
 ## Features
@@ -83,7 +82,7 @@ tnoremap <silent> <M-i> <C-\><C-n>:RnvimrResize<CR>
 " Resize floating window by special preset layouts
 tnoremap <silent> <M-l> <C-\><C-n>:RnvimrResize 1,8,9,13,11,5<CR>
 
-" Resize floating window by single preset layouts
+" Resize floating window by single preset layout
 tnoremap <silent> <M-y> <C-\><C-n>:RnvimrResize 6<CR>
 
 " Customize the initial layout
@@ -113,7 +112,7 @@ let g:rnvimr_presets = [
             \ {'width': 1.000, 'height': 0.500, 'col': 0, 'row': 0.5}]
 ```
 
-For more information, please refer to `:help rnvimr`, 
+For more information, please refer to `:help rnvimr`,
 because I don't want to maintain two documents with the same contents :).
 
 ## License

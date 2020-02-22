@@ -19,12 +19,12 @@ Examples                                                |rnvimr-config-examples|
 
 INTRODUCTION                                            *rnvimr-introduction*
 
-*rnvimr* is a plugin to feel free to use *ranger* inside *neovim* by floating
-window. Comparing other plugins about *ranger* just running *ranger* as a file
-picker, this plugin uses hacking tech to do whatever you want to *ranger* ,
-such as running rpc inside ranger to communicate with neovim.
+*Rnvimr* is a NeoVim plugin that allows you to use Ranger in a floating window.
 
-*rnvimr* requires floating window feature, so *vim* is not supported.
+Different than other Ranger vim-plugins, rnvimr gives you full control over
+Ranger. It uses RPC to communicate with Ranger.
+
+Since rnvimr requires RPC, this plugin does not support vim for now.
 
 ================================================================================
 
@@ -32,7 +32,8 @@ REQUIREMENTS                                            *rnvimr-requirements*
 
 1. *ranger* (https://github.com/ranger/ranger)
 2. *pynvim* (https://github.com/neovim/pynvim)
-3. *ueberzug* (https://github.com/seebye/ueberzug) (optional)
+3. python3
+4. *ueberzug* (https://github.com/seebye/ueberzug) (optional)
 
 ================================================================================
 
@@ -40,28 +41,28 @@ FEATURES                                                *rnvimr-features*
 
 - Replace builtin Netrw to be a file explorer
 - Calibrate preview images for ueberzug
-- Attach file automatically when toggling ranger again
-- Run rpc inside ranger to communicate with neovim
-- Adjust floating window after resizing window of neovim
-- Customize multiple preset layouts for floating window
+- Attach file automatically when toggling Ranger.
+- Run RPC inside ranger to communicate with NeoVim
+- Adjust floating window after resizing window of NeoVim
+- Fully customizable layouts for floating window
 
 ================================================================================
 
 USAGE                                                   *rnvimr-usage*
 
-Using |:RnvimrToggle| to create a ranger process at first time.
-In other cases, |:RnvimrToggle| will show or hide the floating window.
+Use |:RnvimrToggle| to create a ranger process, and if one exists,
+|:RnvimrToggle| simply shows or hides the floating window.
 
-Using |:RnvimrResize| to resize the floating window.
+Use |:RnvimrResize| to cycle the preset layouts.
 
-Running |:RnvimrSync| will synchronize all ranger's configuration and plugins
+|:RnvimrSync| will synchronize your personal Ranger configuration and plugins
 with rnvimr this time.
 
-`Enter` to open a file in ranger. And support `CTRL-T`/`CTRL-X`/`CTRL-V` key
-bindings to open in a new tab, a new split, or in a new vertical split.
+`Enter` to open a file in Ranger. Rnvimr also supports `CTRL-T/CTRL-X/CTRL-V`
+key bindings to open in a new tab, a new split, or in a new vertical split.
 
-Pressing `q` in ranger just hide floating window.
-Ranger will attach file of current buffer in next toggle event.
+Pressing `q` in Ranger just hide floating window. Ranger will attach file of
+the current buffer in the next toggle event.
 
 ================================================================================
 
@@ -98,7 +99,7 @@ g:rnvimr_presets
 
     If the type of values of 'width', 'height', 'col', 'row' are {float}, its
     value must be {0.0-1.0}. It represents the proportion of the columns or
-    lines of neovim.
+    lines of NeoVim.
     The values of 'width' and 'col' are the proportion of |&columns|.
     The values of 'height' and 'row' are the proportion of |&lines|.
 
@@ -123,7 +124,7 @@ g:rnvimr_split_action
 g:rnvimr_ex_enable
     Default: 0
 
-    Enable ranger to be a default file explorer in neovim.
+    Enable ranger to replace builtin Netrw to be a file explorer
 
                                                         *g:rnvimr_pick_enable*
 g:rnvimr_pick_enable
@@ -201,7 +202,7 @@ Advanced configuration:
     " Resize floating window by special preset layouts
     tnoremap <silent> <M-l> <C-\><C-n>:RnvimrResize 1,8,9,13,11,5<CR>
 
-    " Resize floating window by single preset layouts
+    " Resize floating window by single preset layout
     tnoremap <silent> <M-y> <C-\><C-n>:RnvimrResize 6<CR>
 
     " Customize initial layout
