@@ -18,7 +18,7 @@ Different than other Ranger vim-plugins, rnvimr gives you full control over Rang
 2. [pynvim](https://github.com/neovim/pynvim)
 3. [neovim](https://github.com/neovim/neovim)
 4. python3
-5. [ueberzug](https://github.com/seebye/ueberzug) (optional, requires at least [b58954](https://github.com/ranger/ranger/commit/b58954d4258bc204c38f635e5209e6c1e2bce743))
+5. [ueberzug](https://github.com/seebye/ueberzug) (optional, Ranger is required at least [b58954](https://github.com/Ranger/Ranger/commit/b58954d4258bc204c38f635e5209e6c1e2bce743), if you don't use tmux, ueberzug is required at least [d86eeb](https://github.com/seebye/ueberzug/commit/d86eeb303b9468226884425853472287a794d9dd))
 
 
 ## Features
@@ -118,4 +118,3 @@ because I don't want to maintain two documents with the same contents :).
 ## License
 
 The project is licensed under a BSD-3-clause license. See [LICENSE](./LICENSE) file for details.
-

@@ -112,11 +112,6 @@ class Hacks():
         if not isinstance(self.fm.image_displayer, UeberzugImageDisplayer):
             return
 
-        if not os.getenv('TMUX'):
-            # psutil already required by ueberzug
-            from psutil import Process  # pylint: disable=import-outside-toplevel
-            nvim_tty = Process().parent().terminal()
-
         def wrap_draw(self, path, start_x, start_y, width, height):
             win_info = client.request('nvim_win_get_config', 0)
             if not win_info['relative']:
@@ -124,20 +119,6 @@ class Hacks():
             start_x += win_info['col']
             start_y += win_info['row']
 
-            # tmux is easy to hack, ueberzug will guss wrong font size for other terminals
-            # https://github.com/seebye/ueberzug/issues/29
-            if not os.getenv('TMUX'):
-                import struct  # pylint: disable=import-outside-toplevel
-                import fcntl  # pylint: disable=import-outside-toplevel
-                import termios  # pylint: disable=import-outside-toplevel
-                w_wid = win_info['width']
-                w_hei = win_info['height']
-                with open(nvim_tty) as tty:
-                    rows, cols = struct.unpack("HH",
-                                               fcntl.ioctl(tty, termios.TIOCGWINSZ,
-                                                           struct.pack("HH", 0, 0)))
-                start_x, start_y = round(start_x * w_wid / cols), round(start_y * w_hei / rows)
-                width, height = round(width * w_wid / cols), round(height * w_hei / rows)
             self.raw_draw(path, start_x, start_y, width, height)
 
         raw_draw = UeberzugImageDisplayer.draw
