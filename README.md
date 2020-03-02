@@ -114,6 +114,17 @@ let g:rnvimr_presets = [
 For more information, please refer to `:help rnvimr`,
 because I don't want to maintain two documents with the same contents :).
 
+## FAQ
+
+* Couldn't open some special type of files by using `Enter` or `l` in Ranger.
+1. The behavior of openning the file in Ranger depends on `rifle.conf`. Press `r` to make sure that the `${VISUAL:-$EDITOR} -- "$@"` is the best candidate in Ranger.
+2. If the case 1 is false, change the code in `rifle.conf` like that:
+```diff
+-!mime ^text, label editor, ext xml|json|csv|tex|py|pl|rb|js|sh|php = ${VISUAL:-$EDITOR} -- "$@"
++!mime ^text, label editor, ext xml|json|csv|tex|py|pl|rb|js|sh|php|your_file_type = ${VISUAL:-$EDITOR} -- "$@"
+```
+3. execute`:RnvimrSync` to synchronize the `rifle.conf` just modified with rnvimr.
+
 ## License
 
 The project is licensed under a BSD-3-clause license. See [LICENSE](./LICENSE) file for details.
