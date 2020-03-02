@@ -1,5 +1,5 @@
 """
-Implement rnvimr split action.
+Implement rnvimr's split action for neovim
 """
 from ranger.api.commands import Command
 from .client import client

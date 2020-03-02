@@ -1,5 +1,5 @@
 """
-Make ranger adjust to floating window of neovim.
+Make ranger adjust to floating window of neovim
 """
 import os
 import inspect

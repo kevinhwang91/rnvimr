@@ -20,7 +20,6 @@ Different than other Ranger vim-plugins, rnvimr gives you full control over Rang
 4. python3
 5. [ueberzug](https://github.com/seebye/ueberzug) (optional, Ranger is required at least [b58954](https://github.com/Ranger/Ranger/commit/b58954d4258bc204c38f635e5209e6c1e2bce743), if you don't use tmux, ueberzug is required at least [d86eeb](https://github.com/seebye/ueberzug/commit/d86eeb303b9468226884425853472287a794d9dd))
 
-
 ## Features
 
 * Replaces the built-in Netrw as a default file explorer
