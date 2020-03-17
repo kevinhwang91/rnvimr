@@ -1,13 +1,18 @@
 """
 Implement rnvimr's split action for neovim
+
 """
+
+import os
 from ranger.api.commands import Command
+from ranger.core.loader import Loadable
 from .client import client
 
 
 class SplitAndEdit(Command):
     """
-    A plugin of ranger to split and edit file.
+    A command of ranger to split and edit file.
+
     """
 
     def execute(self):
@@ -36,3 +41,37 @@ class SplitAndEdit(Command):
             client.call('rnvimr#rpc#enable_attach_file', async_=True)
 
         client.command('|'.join(cmd), async_=True)
+
+
+class AttachFile(Command):
+    """
+    A command of ranger to attach file.
+
+    """
+
+    def execute(self):
+        path = self.arg(1)
+        if os.path.isdir(path):
+            dirname = path
+        elif os.path.isfile(path):
+            self.fm.attached_file = path
+            dirname = os.path.dirname(path)
+        else:
+            return
+
+        if self.fm.thisdir == dirname or self.fm.enter_dir(dirname):
+            if os.path.isfile(path):
+                self.fm.thisdir.refilter()
+                self.fm.thisdir.move_to_obj(path)
+
+            descr = 'Redraw manually after attach event'
+            loadable = Loadable(self.redraw_status(), descr)
+            self.fm.loader.add(loadable, append=True)
+
+    def redraw_status(self):
+        """
+        Redraw statusbar cause by generator of Dictionary
+
+        """
+        self.fm.ui.status.request_redraw()
+        yield

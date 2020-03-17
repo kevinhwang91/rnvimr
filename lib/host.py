@@ -1,5 +1,6 @@
 """
 Make ranger as a host for neovim
+
 """
 import os
 import threading
@@ -11,6 +12,7 @@ from .service import Service, ServiceLoader
 class Host():
     """
     Ranger host for RPC
+
     """
 
     def __init__(self, fm, hook_ready):
@@ -20,7 +22,10 @@ class Host():
         self.service = None
 
     def hook_ready(self):
-        """Initialize host via ranger hook_ready."""
+        """
+        Initialize host via ranger hook_ready.
+
+        """
 
         socket_path = os.getenv('NVIM_LISTEN_ADDRESS')
 

@@ -1,5 +1,6 @@
 """
 A RPC client of neovim.
+
 """
 import os
 import pynvim

@@ -1,5 +1,6 @@
 """
 Build the service of ranger
+
 """
 from ranger.core.loader import Loadable
 from ranger.core.shared import FileManagerAware
@@ -8,11 +9,13 @@ from ranger.core.shared import FileManagerAware
 class Service(FileManagerAware):
     """
     Service called by neovim
+
     """
 
     class Register():
         """
         Using a class to decorate the service to register the service into table
+
         """
         table = {}
 
@@ -32,47 +35,24 @@ class Service(FileManagerAware):
         Service.Register.table[method](self, args)
 
     @Register
-    def select_file(self, args):
+    def attach_file(self, args):
         """
         Select file
 
         :param args list: The last element is target path
         """
         try:
-            self.fm.select_file(args[-1])
+            path = args[-1]
         except IndexError:
             return
         else:
-            # Redraw statusbar cause by generator of Dictionary
-            loadable = ServiceLoader(
-                'Redraw manually after select_file event', 'redraw_status', None)
-            self.fm.loader.add(loadable, append=True)
-
-    @Register
-    def enter_dir(self, args):
-        """
-        Enter directory
-
-        :param args list: The last element is target path
-        """
-        try:
-            self.fm.enter_dir(args[-1])
-        except IndexError:
-            return
-
-    @Register
-    def redraw_status(self, args): # pylint: disable=unused-argument
-        """
-        Redraw status bar of ranger.
-
-        :param args None: Unused-argument
-        """
-        self.fm.ui.status.request_redraw()
+            self.fm.execute_console('AttachFile {}'.format(path))
 
 
 class ServiceLoader(Loadable, FileManagerAware):
     """
     Execute the service in a loader of ranger
+    
     """
 
     def __init__(self, descr, event, args):

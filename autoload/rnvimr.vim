@@ -82,11 +82,8 @@ endfunction
 
 function rnvimr#open(path) abort
     if exists('s:buf_handle')
-        if filereadable(a:path)
-            call rnvimr#rpc#select_file(a:path)
-            call rnvimr#rpc#disable_attach_file()
-        elseif isdirectory(a:path)
-            call rnvimr#rpc#enter_dir(a:path)
+        if filereadable(a:path) || isdirectory(a:path)
+            call rnvimr#rpc#attach_file(a:path)
             call rnvimr#rpc#disable_attach_file()
         endif
         call rnvimr#toggle()
@@ -96,19 +93,11 @@ function rnvimr#open(path) abort
 endfunction
 
 function rnvimr#init(...) abort
-    let select = empty(a:000) ? expand('%:p') : a:1
-    if filereadable(select)
-        let select_file = select
-    elseif isdirectory(select)
-        " make the behavior of openning directory like netrw
-        let select_file = select . '/__dummmy_file'
-    else
-        let select_file = ''
-    endif
+    let select_file = empty(a:000) ? expand('%:p') : a:1
     let confdir = shellescape(s:confdir)
-    let select_file = shellescape(select_file)
+    let attach_cmd = shellescape('AttachFile ' . select_file)
     let ranger_cmd = get(g:, 'rnvimr_ranger_cmd', s:default_ranger_cmd)
-    let cmd = ranger_cmd . ' --confdir=' . confdir . ' --selectfile=' . select_file
+    let cmd = ranger_cmd . ' --confdir=' . confdir . ' --cmd=' . attach_cmd
     call s:create_ranger(cmd)
     augroup RnvimrTerm
         autocmd!

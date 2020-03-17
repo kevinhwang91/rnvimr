@@ -1,5 +1,6 @@
 """
 Make ranger adjust to floating window of neovim
+
 """
 import os
 import inspect
@@ -12,18 +13,23 @@ from .client import client
 class Hacks():
     """
     Hacking ranger
+
     """
 
     def __init__(self, fm, hook_init):
         self.fm = fm  # pylint: disable=invalid-name
+        self.fm.attached_file = None
         self.commands = fm.commands
         self.old_hook_init = hook_init
+        self.old_accept_file = ranger.container.directory.accept_file
 
     def hook_init(self):
         """
-        Initialize via ranger hook_init
+        Initialize via ranger hook_init.
+
         """
 
+        self.show_attached_file()
         self.map_split_action()
         self.calibrate_ueberzug()
         self.fix_editor()
@@ -31,9 +37,23 @@ class Hacks():
         self.fix_bulkrename()
         return self.old_hook_init(self.fm)
 
+    def show_attached_file(self):
+        """
+        Always show attached file.
+
+        """
+
+        def accept_file(fobj, filters):
+            if fobj.path == self.fm.attached_file:
+                return True
+            return self.old_accept_file(fobj, filters)
+
+        ranger.container.directory.accept_file = accept_file
+
     def map_split_action(self):
         """
         Bind key for spliting action.
+
         """
 
         try:
@@ -48,6 +68,7 @@ class Hacks():
     def fix_editor(self):
         """
         Avoid to block and redraw ranger after opening editor, make rifle smarter.
+
         """
 
         self.fm.rifle.hook_before_executing = lambda command, mimetype, flags: \
@@ -58,6 +79,7 @@ class Hacks():
     def fix_quit(self):
         """
         Make ranger pretend to quit.
+
         """
 
         quit_cls = self.commands.get_command('quit')
@@ -78,6 +100,7 @@ class Hacks():
         """
         Bulkrename need a block workflow, so restore the raw editor to edit file name.
         To avoid maintaining code about bulkrename, hack code to replace label for rifle.
+
         """
 
         bulkrename_cls = self.commands.get_command('bulkrename')
@@ -99,6 +122,7 @@ class Hacks():
     def calibrate_ueberzug(self):
         """
         Ueberzug can't capture the calibration of floating window of neovim, fix it.
+
         """
 
         try:
