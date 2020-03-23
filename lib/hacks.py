@@ -5,9 +5,8 @@ Make ranger adjust to floating window of neovim
 import os
 import inspect
 import textwrap
+import pynvim
 import ranger
-
-from .client import client
 
 
 class Hacks():
@@ -18,6 +17,9 @@ class Hacks():
 
     def __init__(self, fm, hook_init):
         self.fm = fm  # pylint: disable=invalid-name
+        self.fm.client = None
+        self.fm.service = None
+        self.fm.chan_id = None
         self.fm.attached_file = None
         self.commands = fm.commands
         self.old_hook_init = hook_init
@@ -29,6 +31,7 @@ class Hacks():
 
         """
 
+        self.bind_client()
         self.show_attached_file()
         self.map_split_action()
         self.calibrate_ueberzug()
@@ -36,6 +39,17 @@ class Hacks():
         self.fix_quit()
         self.fix_bulkrename()
         return self.old_hook_init(self.fm)
+
+    def bind_client(self):
+        """
+        Bind client of neovim.
+
+        """
+
+        socket_path = os.getenv('NVIM_LISTEN_ADDRESS')
+
+        if socket_path:
+            self.fm.client = pynvim.attach('socket', path=socket_path)
 
     def show_attached_file(self):
         """
@@ -57,7 +71,7 @@ class Hacks():
         """
 
         try:
-            action_dict = client.vars['rnvimr_split_action']
+            action_dict = self.fm.client.vars['rnvimr_split_action']
         except KeyError:
             return
         if not action_dict or not isinstance(action_dict, dict):
@@ -91,8 +105,8 @@ class Hacks():
             if len(self.fm.tabs) >= 2:
                 self.fm.tab_close()
             else:
-                client.call('rnvimr#rpc#enable_attach_file', async_=True)
-                client.request('nvim_win_close', 0, 1, async_=True)
+                self.fm.client.call('rnvimr#rpc#enable_attach_file', async_=True)
+                self.fm.client.request('nvim_win_close', 0, 1, async_=True)
 
         quit_cls.execute = execute
 
@@ -125,16 +139,7 @@ class Hacks():
 
         """
 
-        try:
-            # ueberzug is supported by ranger since [b58954d4258bc204c38f635e5209e6c1e2bce743]
-            # https://github.com/ranger/ranger/commit/b58954d4258bc204c38f635e5209e6c1e2bce743
-            # pylint: disable=import-outside-toplevel
-            from ranger.ext.img_display import UeberzugImageDisplayer
-        except ImportError:
-            return
-
-        if not isinstance(self.fm.image_displayer, UeberzugImageDisplayer):
-            return
+        client = self.fm.client
 
         def wrap_draw(self, path, start_x, start_y, width, height):
             win_info = client.request('nvim_win_get_config', 0)
@@ -145,9 +150,16 @@ class Hacks():
 
             self.raw_draw(path, start_x, start_y, width, height)
 
-        raw_draw = UeberzugImageDisplayer.draw
-        UeberzugImageDisplayer.draw = wrap_draw
-        UeberzugImageDisplayer.raw_draw = raw_draw
+        try:
+            # ueberzug is supported by ranger since [b58954d4258bc204c38f635e5209e6c1e2bce743]
+            # https://github.com/ranger/ranger/commit/b58954d4258bc204c38f635e5209e6c1e2bce743
+            # pylint: disable=import-outside-toplevel
+            from ranger.ext.img_display import UeberzugImageDisplayer
+        except ImportError:
+            pass
+        else:
+            UeberzugImageDisplayer.raw_draw = UeberzugImageDisplayer.draw
+            UeberzugImageDisplayer.draw = wrap_draw
 
 
 OLD_HOOK_INIT = ranger.api.hook_init

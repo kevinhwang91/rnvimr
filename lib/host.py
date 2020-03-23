@@ -18,8 +18,6 @@ class Host():
     def __init__(self, fm, hook_ready):
         self.fm = fm  # pylint: disable=invalid-name
         self.old_hook_ready = hook_ready
-        self.chan_id = -1
-        self.service = None
 
     def hook_ready(self):
         """
@@ -34,8 +32,8 @@ class Host():
             self.fm.service = Service()
 
             # call neovim only once as a host in order to get channel id.
-            self.chan_id = host.request('nvim_get_api_info')[0]
-            host.call('rnvimr#rpc#set_host_chan_id', self.chan_id)
+            self.fm.chan_id = host.request('nvim_get_api_info')[0]
+            host.call('rnvimr#rpc#set_host_chan_id', self.fm.chan_id)
 
             t_run_loop = threading.Thread(
                 daemon=True, target=host.run_loop,

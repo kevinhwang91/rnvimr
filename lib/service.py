@@ -52,7 +52,7 @@ class Service(FileManagerAware):
 class ServiceLoader(Loadable, FileManagerAware):
     """
     Execute the service in a loader of ranger
-    
+
     """
 
     def __init__(self, descr, event, args):

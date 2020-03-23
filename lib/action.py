@@ -6,7 +6,6 @@ Implement rnvimr's split action for neovim
 import os
 from ranger.api.commands import Command
 from ranger.core.loader import Loadable
-from .client import client
 
 
 class SplitAndEdit(Command):
@@ -20,7 +19,7 @@ class SplitAndEdit(Command):
         if not self.fm.thisfile.is_file or not action:
             return
         try:
-            pick_enable = client.vars['rnvimr_pick_enable']
+            pick_enable = self.fm.client.vars['rnvimr_pick_enable']
         except KeyError:
             pick_enable = 0
         cmd = []
@@ -38,9 +37,9 @@ class SplitAndEdit(Command):
             cmd.append('noautocmd call nvim_set_current_win(cur_win)')
             cmd.append('noautocmd startinsert')
         else:
-            client.call('rnvimr#rpc#enable_attach_file', async_=True)
+            self.fm.client.call('rnvimr#rpc#enable_attach_file', async_=True)
 
-        client.command('|'.join(cmd), async_=True)
+        self.fm.client.command('|'.join(cmd), async_=True)
 
 
 class AttachFile(Command):
@@ -51,6 +50,10 @@ class AttachFile(Command):
 
     def execute(self):
         path = self.arg(1)
+
+        if not path and self.fm.client:
+            path = self.fm.client.command_output('echo expand("#:p")')
+
         if os.path.isdir(path):
             dirname = path
         elif os.path.isfile(path):
@@ -59,7 +62,7 @@ class AttachFile(Command):
         else:
             return
 
-        if self.fm.thisdir == dirname or self.fm.enter_dir(dirname):
+        if self.fm.thisdir.path == dirname or self.fm.enter_dir(dirname):
             if os.path.isfile(path):
                 self.fm.thisdir.refilter()
                 self.fm.thisdir.move_to_obj(path)
