@@ -83,7 +83,7 @@ endfunction
 
 function rnvimr#layout#get_init_layout() abort
     let s:preset_index = s:init_index
-    return s:layout
+    return rnvimr#layout#get_current_layout()
 endfunction
 
 function rnvimr#layout#get_current_layout() abort
