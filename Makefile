@@ -10,11 +10,11 @@ RNVIMR_LIB := lib
 
 all: sync
 
-install:
+install: clean
 	mkdir -p $(RNVIMR_PLUGINS)
 	cp $(RNVIMR_LIB)/[^_]*.py $(RNVIMR_PLUGINS)
 
-sync: clean install
+sync: install
 	mkdir -p $(RNVIMR_PLUGINS)
 	-cp $(RANGER_PLUGINS)/[^_]*.py $(RNVIMR_PLUGINS)
 	-cp $(RANGER_CONFIG)/[^_]*.conf $(RNVIMR_CONFIG)
