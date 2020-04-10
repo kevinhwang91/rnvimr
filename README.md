@@ -4,7 +4,7 @@ Rnvimr is a NeoVim plugin that allows you to use Ranger in a floating window.
 
 Different than other Ranger vim-plugins, rnvimr gives you full control over Ranger. It uses [RPC](https://neovim.io/doc/user/api.html#RPC) to communicate with Ranger.
 
-**Since rnvimr requires RPC, this plugin does not support vim for now**
+**Since rnvimr requires RPC, this plugin does not support vim for now.**
 
 <p align="center">
   <img width="1080px" src="https://user-images.githubusercontent.com/17562139/74416173-b0aa8600-4e7f-11ea-83b5-31c07c384af1.gif">
@@ -22,16 +22,17 @@ Different than other Ranger vim-plugins, rnvimr gives you full control over Rang
 
 ## Features
 
-* Replaces the built-in Netrw as a default file explorer
-* Calibrated preview images for ueberzug
-* Attach file automatically when toggling Ranger
-* Runs [RPC](https://neovim.io/doc/user/api.html#RPC) inside Ranger to communicate with NeoVim
-* Automatically adjusts floating window after resizing NeoVim
-* Fully customizable layouts for floating window
+- Replaces the built-in Netrw as a default file explorer
+- Calibrated preview images for ueberzug
+- Attach file automatically when toggling Ranger
+- Runs [RPC](https://neovim.io/doc/user/api.html#RPC) inside Ranger to communicate with NeoVim
+- Automatically adjusts floating window after resizing NeoVim
+- Fully customizable layouts for floating window
 
 ## Installation
 
 Install rnvimr with your favorite plugin manager! Example for [Vim-plug](https://github.com/junegunn/vim-plug):
+
 ```vim
 Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
 ```
@@ -55,6 +56,7 @@ Pressing `q` in Ranger simply hides the floating window. Ranger will attach the 
 ### Example configuration
 
 #### Minimal configuration
+
 ```vim
 " Synchronize all Ranger's configuration and plugins with rnvimr
 Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
@@ -65,12 +67,17 @@ tnoremap <silent> <M-o> <C-\><C-n>:RnvimrToggle<CR>
 ```
 
 #### Advanced configuration
+
 ```vim
 " Synchronize all Ranger's configuration and plugins with rnvimr
 Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
 
 " Make Ranger replace netrw and be the file explorer
 let g:rnvimr_ex_enable = 1
+
+" Set up only two columns in miller mode and enable vcs
+let g:rnvimr_ranger_cmd = 'ranger --cmd="set vcs_aware false" ' .
+            \'--cmd="set column_ratios 1,1" --cmd="set vcs_aware true"'
 
 nnoremap <silent> <M-o> :RnvimrToggle<CR>
 tnoremap <silent> <M-o> <C-\><C-n>:RnvimrToggle<CR>
@@ -79,28 +86,26 @@ tnoremap <silent> <M-o> <C-\><C-n>:RnvimrToggle<CR>
 tnoremap <silent> <M-i> <C-\><C-n>:RnvimrResize<CR>
 
 " Resize floating window by special preset layouts
-tnoremap <silent> <M-l> <C-\><C-n>:RnvimrResize 1,8,9,13,11,5<CR>
+tnoremap <silent> <M-l> <C-\><C-n>:RnvimrResize 1,8,9,11,5<CR>
 
 " Resize floating window by single preset layout
 tnoremap <silent> <M-y> <C-\><C-n>:RnvimrResize 6<CR>
 
 " Customize the initial layout
 let g:rnvimr_layout = { 'relative': 'editor',
-            \ 'width': float2nr(round(0.5 * &columns)),
-            \ 'height': float2nr(round(0.5 * &lines)),
-            \ 'col': float2nr(round(0.25 * &columns)),
-            \ 'row': float2nr(round(0.25 * &lines)),
+            \ 'width': float2nr(round(0.6 * &columns)),
+            \ 'height': float2nr(round(0.6 * &lines)),
+            \ 'col': float2nr(round(0.2 * &columns)),
+            \ 'row': float2nr(round(0.2 * &lines)),
             \ 'style': 'minimal' }
 
 " Customize multiple preset layouts
 " '{}' represents the initial layout
 let g:rnvimr_presets = [
-            \ {'width': 0.250, 'height': 0.250},
-            \ {'width': 0.333, 'height': 0.333},
             \ {},
-            \ {'width': 0.666, 'height': 0.666},
-            \ {'width': 0.750, 'height': 0.750},
-            \ {'width': 0.900, 'height': 0.900},
+            \ {'width': 0.700, 'height': 0.700},
+            \ {'width': 0.800, 'height': 0.800},
+            \ {'width': 0.950, 'height': 0.950}
             \ {'width': 0.500, 'height': 0.500, 'col': 0, 'row': 0},
             \ {'width': 0.500, 'height': 0.500, 'col': 0, 'row': 0.5},
             \ {'width': 0.500, 'height': 0.500, 'col': 0.5, 'row': 0},
@@ -116,13 +121,16 @@ because I don't want to maintain two documents with the same contents :).
 
 ## FAQ
 
-* Couldn't open some special type of files by using `Enter` or `l` in Ranger.
+- Couldn't open some special type of files by using `Enter` or `l` in Ranger.
+
 1. The behavior of openning the file in Ranger depends on `rifle.conf`. Press `r` to make sure that the `${VISUAL:-$EDITOR} -- "$@"` is the best candidate in Ranger.
 2. If the case 1 is false, change the code in `rifle.conf` like that:
+
 ```diff
 -!mime ^text, label editor, ext xml|json|csv|tex|py|pl|rb|js|sh|php = ${VISUAL:-$EDITOR} -- "$@"
 +!mime ^text, label editor, ext xml|json|csv|tex|py|pl|rb|js|sh|php|your_file_type = ${VISUAL:-$EDITOR} -- "$@"
 ```
+
 3. execute`:RnvimrSync` to synchronize the `rifle.conf` just modified with rnvimr.
 
 ## License
