@@ -148,7 +148,7 @@ class Hacks():
             start_x += win_info['col']
             start_y += win_info['row']
 
-            self.raw_draw(path, start_x, start_y, width, height)
+            raw_draw(self, path, start_x, start_y, width, height)
 
         try:
             # ueberzug is supported by ranger since [b58954d4258bc204c38f635e5209e6c1e2bce743]
@@ -158,7 +158,7 @@ class Hacks():
         except ImportError:
             pass
         else:
-            UeberzugImageDisplayer.raw_draw = UeberzugImageDisplayer.draw
+            raw_draw = UeberzugImageDisplayer.draw
             UeberzugImageDisplayer.draw = wrap_draw
 
 
