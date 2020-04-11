@@ -1,19 +1,17 @@
 let s:preset_index = 0
 let s:default_layout = {
             \ 'relative': 'editor',
-            \ 'width': float2nr(round(0.5 * &columns)),
-            \ 'height': float2nr(round(0.5 * &lines)),
-            \ 'col': float2nr(round(0.25 * &columns)),
-            \ 'row': float2nr(round(0.25 * &lines)),
+            \ 'width': float2nr(round(0.6 * &columns)),
+            \ 'height': float2nr(round(0.6 * &lines)),
+            \ 'col': float2nr(round(0.2 * &columns)),
+            \ 'row': float2nr(round(0.2 * &lines)),
             \ 'style': 'minimal'
             \}
 let s:default_presets = [
-            \ {'width': 0.250, 'height': 0.250},
-            \ {'width': 0.333, 'height': 0.333},
             \ {},
-            \ {'width': 0.666, 'height': 0.666},
-            \ {'width': 0.750, 'height': 0.750},
-            \ {'width': 0.900, 'height': 0.900}
+            \ {'width': 0.700, 'height': 0.700},
+            \ {'width': 0.800, 'height': 0.800},
+            \ {'width': 0.950, 'height': 0.950}
             \ ]
 
 let s:layout = get(g:, 'rnvimr_layout', s:default_layout)
