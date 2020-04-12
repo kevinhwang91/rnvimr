@@ -113,7 +113,7 @@ g:rnvimr_presets
 g:rnvimr_split_action
     Default: {dict}
 >
-           { '<C-t>': 'tab split', '<C-x>': 'split', '<C-v>': 'vsplit' }
+           { '<C-t>': 'tabedit', '<C-x>': 'split', '<C-v>': 'vsplit' }
 <
     Split action for selected file in ranger. Disable it by using empty dict.
     The keymap should follow ranger's format.

@@ -7,6 +7,7 @@ import inspect
 import textwrap
 import pynvim
 import ranger
+from ranger.gui.ui import UI
 
 
 class Hacks():
@@ -38,6 +39,7 @@ class Hacks():
         self.fix_editor()
         self.fix_quit()
         self.fix_bulkrename()
+        self.fix_pager()
         return self.old_hook_init(self.fm)
 
     def bind_client(self):
@@ -132,6 +134,31 @@ class Hacks():
         exec(code, bulkrename_module.__dict__)  # pylint: disable=exec-used
 
         bulkrename_cls.execute = bulkrename_module.bulkrename_execute
+
+    def fix_pager(self):
+        """
+        Synchronize scroll line of pager in ranger with line number in neovim.
+
+        """
+
+        if not self.commands.get_command('EditFile'):
+            return
+
+        self.commands.alias('edit_file', 'EditFile')
+        raw_open_pager = UI.open_pager
+        raw_close_pager = UI.close_pager
+
+        def wrap_open_pager(self):
+            pager = raw_open_pager(self)
+            pager.scroll_begin = self.browser.columns[-1].scroll_extra
+            return pager
+
+        def wrap_close_pager(self):
+            self.browser.columns[-1].scroll_extra = self.pager.scroll_begin
+            raw_close_pager(self)
+
+        UI.open_pager = wrap_open_pager
+        UI.close_pager = wrap_close_pager
 
     def calibrate_ueberzug(self):
         """
