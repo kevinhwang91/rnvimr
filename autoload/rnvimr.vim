@@ -3,7 +3,7 @@ let s:editor = s:rnvimr_path . '/bin/editor.py'
 let s:confdir = s:rnvimr_path . '/ranger'
 let s:default_ranger_cmd = 'ranger'
 let s:default_split_action = {
-            \ '<C-t>': 'tab split',
+            \ '<C-t>': 'tabedit',
             \ '<C-x>': 'split',
             \ '<C-v>': 'vsplit'
             \}
@@ -70,6 +70,7 @@ function rnvimr#toggle() abort
                 call nvim_win_close(s:win_handle, 0)
             else
                 call nvim_set_current_win(s:win_handle)
+                startinsert
             endif
         else
             call rnvimr#rpc#request_attach_file(expand('%:p'))

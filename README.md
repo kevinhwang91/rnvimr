@@ -28,6 +28,7 @@ Different than other Ranger vim-plugins, rnvimr gives you full control over Rang
 - Runs [RPC](https://neovim.io/doc/user/api.html#RPC) inside Ranger to communicate with NeoVim
 - Automatically adjusts floating window after resizing NeoVim
 - Fully customizable layouts for floating window
+- Better experience for Pager view in ranger
 
 ## Installation
 
@@ -52,6 +53,11 @@ Use `:RnvimrResize` to cycle the preset layouts.
 `Enter` to open a file in Ranger. Rnvimr also supports `CTRL-T`/`CTRL-X`/`CTRL-V` key bindings that allow you to open up file in a new tab, a new horizontal split, or in a new vertical split.
 
 Pressing `q` in Ranger simply hides the floating window. Ranger will attach the file of the current buffer in the next toggle event.
+
+Synchronize the scroll line of pager view with neovim:
+<p align="center">
+  <img width="960px" src="https://user-images.githubusercontent.com/17562139/79063322-8a646380-7cd3-11ea-9184-189b134b5eef.gif">
+</p>
 
 ### Example configuration
 
