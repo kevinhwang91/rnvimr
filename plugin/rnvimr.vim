@@ -10,8 +10,8 @@ command! -nargs=0 RnvimrSync call rnvimr#sync_ranger()
 
 if get(g:, 'rnvimr_ex_enable', 0)
     augroup RnvimrFileExplorer
-        autocmd VimEnter * silent! autocmd! FileExplorer
-        autocmd VimEnter * if isdirectory(expand('<amatch>'))|
+        autocmd VimEnter * ++once silent! autocmd! FileExplorer
+        autocmd VimEnter * ++once if isdirectory(expand('<amatch>'))|
                     \ bwipeout! | call rnvimr#open(expand('<amatch>')) | endif
         autocmd BufEnter * if isdirectory(expand('<amatch>')) && v:vim_did_enter |
                     \ bwipeout! | call rnvimr#open(expand('<amatch>')) | endif
