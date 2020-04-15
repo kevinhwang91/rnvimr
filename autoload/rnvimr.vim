@@ -96,7 +96,7 @@ endfunction
 function rnvimr#init(...) abort
     let select_file = empty(a:000) ? expand('%:p') : a:1
     let confdir = shellescape(s:confdir)
-    let attach_cmd = shellescape('AttachFile ' . select_file)
+    let attach_cmd = shellescape('AttachFile ' . line('w0') . ' ' . select_file)
     let ranger_cmd = get(g:, 'rnvimr_ranger_cmd', s:default_ranger_cmd)
     let cmd = ranger_cmd . ' --confdir=' . confdir . ' --cmd=' . attach_cmd
     call s:create_ranger(cmd)

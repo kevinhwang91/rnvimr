@@ -146,6 +146,7 @@ class Hacks():
             return
 
         self.commands.alias('edit_file', 'EditFile')
+        self.commands.alias('edit', 'EditFile')
         raw_open_pager = UI.open_pager
         raw_close_pager = UI.close_pager
 

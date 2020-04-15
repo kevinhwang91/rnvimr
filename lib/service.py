@@ -42,11 +42,12 @@ class Service(FileManagerAware):
         :param args list: The last element is target path
         """
         try:
-            path = args[-1]
+            line = args[0]
+            path = args[1]
         except IndexError:
             return
         else:
-            self.fm.execute_console('AttachFile {}'.format(path))
+            self.fm.execute_console('AttachFile {} {}'.format(line, path))
 
 
 class ServiceLoader(Loadable, FileManagerAware):

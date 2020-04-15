@@ -8,8 +8,8 @@ from ranger.api.commands import Command
 from ranger.core.loader import Loadable
 
 
-def edit_this_file(fm, split=None, start_line=1):
 # pylint: disable=invalid-name
+def edit_this_file(fm, split=None, start_line=1):
     """
     Edit ranger target file with neovim.
 
@@ -72,15 +72,23 @@ class EditFile(Command):
 
     def execute(self):
         pager = self.fm.ui.pager
-        if not pager.visible:
-            arg1 = self.arg(1)
-            arg2 = self.arg(2)
-            return self.fm.edit_file(arg2) if arg1 == 'file' else self.fm.edit_file(arg1)
+        if self.arg(1):
+            return self.fm.edit_file(self.arg(1))
 
-        start = pager.scroll_begin + 1
+        if pager.visible:
+            start = pager.scroll_begin + 1
+        elif self.fm.thisfile.has_preview():
+            start = self.fm.ui.browser.columns[-1].scroll_extra + 1
+        else:
+            start = 1
+
         edit_this_file(self.fm, start_line=start)
-        self.fm.pager_close()
-        return
+        if pager.visible:
+            self.fm.pager_close()
+        return None
+
+    def tab(self, tabnum):
+        return self._tab_directory_content()
 
 
 class AttachFile(Command):
@@ -90,7 +98,12 @@ class AttachFile(Command):
     """
 
     def execute(self):
-        path = self.arg(1)
+        try:
+            line = int(self.arg(1))
+        except ValueError:
+            line = 1
+
+        path = self.rest(2)
 
         if not path and self.fm.client:
             path = self.fm.client.command_output('echo expand("#:p")')
@@ -108,9 +121,24 @@ class AttachFile(Command):
                 self.fm.thisdir.refilter()
                 self.fm.thisdir.move_to_obj(path)
 
+                if self.fm.thisfile.has_preview():
+                    descr = 'Scroll the line for preview file'
+                    loadable = Loadable(self.scroll_preview(line - 1), descr)
+                    self.fm.loader.add(loadable, append=True)
+
             descr = 'Redraw manually after attach event'
             loadable = Loadable(self.redraw_status(), descr)
             self.fm.loader.add(loadable, append=True)
+
+    def scroll_preview(self, line):
+        """
+        scroll the line for preview column
+
+        :param line int: scroll the line for preview column
+        """
+        self.fm.ui.browser.columns[-1].scroll_extra = 0
+        self.fm.scroll_preview(line)
+        yield
 
     def redraw_status(self):
         """

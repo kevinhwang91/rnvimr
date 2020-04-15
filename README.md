@@ -56,7 +56,7 @@ Pressing `q` in Ranger simply hides the floating window. Ranger will attach the 
 
 Synchronize the scroll line of pager view with neovim:
 <p align="center">
-  <img width="960px" src="https://user-images.githubusercontent.com/17562139/79063322-8a646380-7cd3-11ea-9184-189b134b5eef.gif">
+  <img width="960px" src="https://user-images.githubusercontent.com/17562139/79363617-b5241580-7f7a-11ea-9332-bd865dd2cf1e.gif">
 </p>
 
 ### Example configuration
