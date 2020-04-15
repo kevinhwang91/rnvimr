@@ -40,6 +40,7 @@ class Hacks():
         self.fix_quit()
         self.fix_bulkrename()
         self.fix_pager()
+        self.fix_vcs()
         return self.old_hook_init(self.fm)
 
     def bind_client(self):
@@ -160,6 +161,30 @@ class Hacks():
         UI.open_pager = wrap_open_pager
         UI.close_pager = wrap_close_pager
 
+    def fix_vcs(self):
+        """
+        Vcs in ranger is a bad design. It will produce a death lock with
+        --cmd='set column_ratios 1,1' caused by 'ui.redraw'.
+
+        """
+
+        def enable_vcs_aware():
+            """
+            Use a queue loader to enable vcs_aware to avoid a death lock.
+
+            """
+            self.fm.execute_console('set vcs_aware True')
+            self.fm.thisdir.load_content(schedule=False)
+            yield
+
+        if self.fm.settings.vcs_aware:
+            # pylint: disable=import-outside-toplevel
+            from ranger.core.loader import Loadable
+            self.fm.execute_console('set vcs_aware False')
+            descr = "Restore user's setting of vcs_aware"
+            loadable = Loadable(enable_vcs_aware(), descr)
+            self.fm.loader.add(loadable)
+
     def calibrate_ueberzug(self):
         """
         Ueberzug can't capture the calibration of floating window of neovim, fix it.
@@ -168,6 +193,7 @@ class Hacks():
 
         client = self.fm.client
 
+        # pylint: disable=too-many-arguments
         def wrap_draw(self, path, start_x, start_y, width, height):
             win_info = client.request('nvim_win_get_config', 0)
             if not win_info['relative']:

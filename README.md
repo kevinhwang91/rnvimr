@@ -81,9 +81,8 @@ Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
 " Make Ranger replace netrw and be the file explorer
 let g:rnvimr_ex_enable = 1
 
-" Set up only two columns in miller mode and enable vcs
-let g:rnvimr_ranger_cmd = 'ranger --cmd="set vcs_aware false" ' .
-            \'--cmd="set column_ratios 1,1" --cmd="set vcs_aware true"'
+" Set up only two columns in miller mode
+let g:rnvimr_ranger_cmd = 'ranger --cmd="set column_ratios 1,1"'
 
 nnoremap <silent> <M-o> :RnvimrToggle<CR>
 tnoremap <silent> <M-o> <C-\><C-n>:RnvimrToggle<CR>
