@@ -24,8 +24,15 @@ def edit_file():
 
     cmd = ['close'] if pick_enable else ['noautocmd wincmd p']
 
-    for file in sys.argv[2:]:
-        cmd.append('silent! edit {}'.format(file))
+    #  Rnvimr may add a scroll line argument into argv if only one file is selected.
+    index = sys.argv.index('--')
+    files = sys.argv[index + 1:]
+    if len(files) == 1:
+        start_line = sys.argv[index - 1]
+        cmd.append('silent! edit +normal\\ {}zt {}'.format(start_line, files[0]))
+    else:
+        for file in files:
+            cmd.append('silent! edit {}'.format(file))
 
     if not pick_enable:
         cmd.append('noautocmd wincmd p')

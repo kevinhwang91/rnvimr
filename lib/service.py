@@ -12,7 +12,7 @@ class Service(FileManagerAware):
 
     """
 
-    class Register():
+    class Register(): # pylint: disable=too-few-public-methods
         """
         Using a class to decorate the service to register the service into table
 
