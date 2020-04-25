@@ -86,23 +86,7 @@ class Hacks():
     def fix_editor(self):
         """
         Avoid to block and redraw ranger after opening editor, make rifle smarter.
-        Add a scroll line number into action if only one file is selected.
-
         """
-
-        def _build_command(self, files, action, flags):
-            if '$EDITOR' in action and len(files) == 1 and fm.thisfile.has_preview():
-                start_line = fm.ui.browser.columns[-1].scroll_extra + 1
-                action_list = action.split()
-                action_list.insert(1, str(start_line))
-                action = ' '.join(action_list)
-
-            return raw__build_command(self, files, action, flags)
-
-        fm = self.fm  # pylint: disable=invalid-name
-        from ranger.ext.rifle import Rifle  # pylint: disable=import-outside-toplevel
-        raw__build_command = Rifle._build_command  # pylint: disable=protected-access
-        Rifle._build_command = _build_command  # pylint: disable=protected-access
 
         self.fm.rifle.hook_before_executing = lambda command, mimetype, flags: \
             self.fm.ui.suspend() if 'f' not in flags and '$EDITOR' not in command else None

@@ -33,7 +33,9 @@ def edit_this_file(fm, split=None, start_line=1):
         cmd.append('if bufname("%") != ""')
         cmd.append(split)
         cmd.append('endif')
-    cmd.append('silent! edit +normal\\ {}zt {}'.format(start_line, fm.thisfile))
+        cmd.append('silent! edit {}'.format(fm.thisfile))
+    else:
+        cmd.append('silent! edit +normal\\ {}zt {}'.format(start_line, fm.thisfile))
 
     if pick_enable:
         cmd.append('call rnvimr#rpc#enable_attach_file()')
