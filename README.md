@@ -4,7 +4,7 @@ Rnvimr is a NeoVim plugin that allows you to use Ranger in a floating window.
 
 Different than other Ranger vim-plugins, Rnvimr gives you full control over Ranger. It uses [RPC](https://neovim.io/doc/user/api.html#RPC) to communicate with Ranger.
 
-**Since Rnvimr requires RPC, this plugin does not support vim for now.**
+**Since Rnvimr requires RPC, this plugin does not support Vim for now.**
 
 <p align="center">
   <img width="1080px" src="https://user-images.githubusercontent.com/17562139/74416173-b0aa8600-4e7f-11ea-83b5-31c07c384af1.gif">
@@ -83,6 +83,9 @@ Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
 " Make Ranger replace netrw and be the file explorer
 let g:rnvimr_ex_enable = 1
 
+" Make Ranger to be hidden after picking a file
+let g:rnvimr_pick_enable = 1
+
 " Make Neovim to wipe the buffers corresponding to the files deleted by Ranger
 let g:rnvimr_bw_enable = 1
 
@@ -131,7 +134,9 @@ because I don't want to maintain two documents with the same contents :).
 
 ## FAQ
 
-- Couldn't open some special type of files by using `Enter` or `l` in Ranger.
+Q: Couldn't open some special type of files by using `Enter` or `l` in Ranger.
+
+A: Please follow below steps to solve this issue:
 
 1. The behavior of openning the file in Ranger depends on `rifle.conf`. Press `r` to make sure that the `${VISUAL:-$EDITOR} -- "$@"` is the best candidate in Ranger.
 2. If the case 1 is false, change the code in `rifle.conf` like that:
@@ -142,6 +147,10 @@ because I don't want to maintain two documents with the same contents :).
 ```
 
 3. execute`:RnvimrSync` to synchronize the `rifle.conf` just modified with Rnvimr.
+
+Q: This plugin doesn't work for me.
+
+A: Install [Requirements](#Requirements) first, if you use Mac, you should install Ranger by `pip install ranger-fm` instead of `brew install ranger` because the Ranger installed by brew still using Python2.
 
 ## License
 
