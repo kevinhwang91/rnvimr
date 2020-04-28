@@ -11,6 +11,22 @@ let s:default_split_action = {
 let g:rnvimr_split_action = get(g:, 'rnvimr_split_action', s:default_split_action)
 let g:rnvimr_pick_enable = get(g:, 'rnvimr_pick_enable', 0)
 
+function s:buf_wipe() abort
+    let bname = []
+    for buf in getbufinfo({'buflisted': 1})
+        if buf.changed || !empty(glob(buf.name))
+            continue
+        endif
+        call add(bname, buf.name)
+    endfor
+    if len(bname) > 0
+        " execute bwipeout last buffer before leaving floating window, it may cause this issue:
+        " E5601: Cannot close window, only floating window would remain
+        " use timer to delay bwipeout after leaving floating window
+        call timer_start(0, {-> execute('bwipeout ' . join(bname, ' '))})
+    endif
+endfunction
+
 function s:redraw_win() abort
     let layout = rnvimr#layout#get_current_layout()
     call nvim_win_set_config(s:win_handle, layout)
@@ -103,6 +119,9 @@ function rnvimr#init(...) abort
     augroup RnvimrTerm
         autocmd!
         autocmd VimResized <buffer> call s:redraw_win()
+        if get(g:, 'rnvimr_bw_enable', 0)
+            autocmd WinLeave <buffer> call s:buf_wipe()
+        endif
     augroup END
 endfunction
 
