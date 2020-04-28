@@ -19,21 +19,21 @@ Examples                                                |rnvimr-config-examples|
 
 INTRODUCTION                                            *rnvimr-introduction*
 
-*Rnvimr* is a NeoVim plugin that allows you to use Ranger in a floating window.
+*Rnvimr* is a Neovim plugin that allows you to use Ranger in a floating window.
 
-Different than other Ranger vim-plugins, rnvimr gives you full control over
+Different than other Ranger vim-plugins, Rnvimr gives you full control over
 Ranger. It uses RPC to communicate with Ranger.
 
-Since rnvimr requires RPC, this plugin does not support vim for now.
+Since Rnvimr requires RPC, this plugin does not support vim for now.
 
 ================================================================================
 
 REQUIREMENTS                                            *rnvimr-requirements*
 
-1. *ranger* (https://github.com/ranger/ranger)
-2. *pynvim* (https://github.com/neovim/pynvim)
-3. python3
-4. *ueberzug* (https://github.com/seebye/ueberzug) (optional)
+1. *Ranger* (https://github.com/ranger/ranger)
+2. *Pynvim* (https://github.com/neovim/pynvim)
+3. Python3
+4. *Ueberzug* (https://github.com/seebye/ueberzug) (optional)
 
 ================================================================================
 
@@ -42,21 +42,23 @@ FEATURES                                                *rnvimr-features*
 - Replace builtin Netrw to be a file explorer
 - Calibrate preview images for ueberzug
 - Attach file automatically when toggling Ranger.
-- Run RPC inside ranger to communicate with NeoVim
+- Run RPC inside Ranger to communicate with NeoVim
 - Adjust floating window after resizing window of NeoVim
 - Fully customizable layouts for floating window
+- Better experience for Pager view in Ranger
+- Automatically wipe the buffers corresponding to the files deleted by Ranger
 
 ================================================================================
 
 USAGE                                                   *rnvimr-usage*
 
-Use |:RnvimrToggle| to create a ranger process, and if one exists,
+Use |:RnvimrToggle| to create a Ranger process, and if one exists,
 |:RnvimrToggle| simply shows or hides the floating window.
 
 Use |:RnvimrResize| to cycle the preset layouts.
 
 |:RnvimrSync| will synchronize your personal Ranger configuration and plugins
-with rnvimr this time.
+with Rnvimr this time.
 
 `Enter` to open a file in Ranger. Rnvimr also supports `CTRL-T/CTRL-X/CTRL-V`
 key bindings to open in a new tab, a new split, or in a new vertical split.
@@ -101,12 +103,13 @@ g:rnvimr_presets
     The values of 'width' and 'col' are the proportion of |&columns|.
     The values of 'height' and 'row' are the proportion of |&lines|.
 
-    If 'col' is missing but dict contains 'width' k&v, 'col' will calculated by
-    format `float2nr(round((&columns - width) / 2))`, 'row' is similar to 'col'.
+    If 'col' is missing but dict contains 'width' k&v, 'col' will be calculated
+    by format `float2nr(round((&columns - width) / 2))`, 'row' is similar to
+    'col'.
 
     If the other k&v are missing, it will extend from the |g:rnvimr_layout|.
 
-    If the element is a empty dict '{}', it represents the initial element of
+    If the element is an empty dict '{}', it represents the initial element of
     |g:rnvimr_presets| while running |:RnvimrToggle|.
 
                                                         *g:rnvimr_split_action*
@@ -115,37 +118,45 @@ g:rnvimr_split_action
 >
            { '<C-t>': 'tabedit', '<C-x>': 'split', '<C-v>': 'vsplit' }
 <
-    Split action for selected file in ranger. Disable it by using empty dict.
-    The keymap should follow ranger's format.
+    Split action for selected file in Ranger. Disable it by using empty dict.
+    The keymap should follow Ranger's format.
 
                                                         *g:rnvimr_ex_enable*
 g:rnvimr_ex_enable
     Default: 0
 
-    Enable ranger to replace builtin Netrw to be a file explorer
+    Enable Ranger to replace builtin Netrw to be a file explorer
 
                                                         *g:rnvimr_pick_enable*
 g:rnvimr_pick_enable
     Default: 0
 
-    Enable ranger to be hidden after picking a file.
+    Enable Ranger to be hidden after picking a file.
     It will automatically attach file in next |:RnvimrToggle|.
+
+                                                        *g:rnvimr_bw_enable*
+g:rnvimr_bw_enable
+    Default: 0
+
+    Enable Neovim to synchronize the buffers with the deleted files by Ranger
+    It will automatically make Neovim to execute |bwipeout| to wipe the buffers
+    corresponding to the files that has been deleted by Ranger.
 
                                                         *g:rnvimr_ranger_cmd*
 g:rnvimr_ranger_cmd
     Default: 'ranger'
 
     Use this command to run a process inside the floating window.
-    It can mix some command of ranger, such as 'ranger --cmd="xxx"'.
+    It can mix some command of Ranger, such as 'ranger --cmd="xxx"'.
 
                                                         *g:rnvimr_sync_path*
 g:rnvimr_sync_path
-    Default: ranger default path of configuration, depend on *$HOME* and
+    Default: Default path of Ranger's configuration, depend on *$HOME* and
     *$XDG_CONFIG_HOME* environment.
 
     No need to set this variable while using default configuration and path.
-    If you want to extend plugin of rnvimr, you will set this variable to
-    isolate the configuration of ranger and rnvimr.
+    If you want to extend plugin of Rnvimr, you will set this variable to
+    isolate the configuration of Ranger and Rnvimr.
 
 ================================================================================
 
@@ -153,11 +164,11 @@ COMMANDS                                                *rnvimr-commands*
 
                                                         *:RnvimrToggle*
 :RnvimrToggle
-    Toggle the ranger floating window. Reopen ranger and attach file
-    automatically after executing ranger's command |quit| with only 1 tab.
-    If run |quit| inside ranger, ranger is hidden by closing floating window
+    Toggle the Ranger floating window. Reopen Ranger and attach file
+    automatically after executing Ranger's command |quit| with only 1 tab.
+    If run |quit| inside Ranger, Ranger is hidden by closing floating window
     instead of exiting process. You can run |quit!| or |quitall| command to exit
-    ranger process.
+    Ranger process.
 
                                                         *:RnvimrResize*
 :RnvimrResize {args}
@@ -168,7 +179,7 @@ COMMANDS                                                *rnvimr-commands*
 
                                                         *:RnvimrSync*
 :RnvimrSync
-    Synchronize all configuration and plugins of ranger with rnvimr.
+    Synchronize all configuration and plugins of Ranger with Rnvimr.
 
 ================================================================================
 
@@ -185,11 +196,18 @@ Minimal configuration:
 
 Advanced configuration:
 >
-    " Synchronize all ranger's configuration and plugins with rnvimr
+    " Synchronize all Ranger's configuration and plugins with Rnvimr
     Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
 
-    " make ranger to replace netrw to be a file explorer
+    " Make Ranger to replace netrw to be a file explorer
     let g:rnvimr_ex_enable = 1
+
+    " Make Ranger to be hidden after picking a file
+    let g:rnvimr_pick_enable = 1
+
+    " Make Neovim to wipe the buffers corresponding to the files deleted by
+    " Ranger
+    let g:rnvimr_bw_enable = 1
 
     " Set up only two columns in miller mode
     let g:rnvimr_ranger_cmd = 'ranger --cmd="set column_ratios 1,1"'
