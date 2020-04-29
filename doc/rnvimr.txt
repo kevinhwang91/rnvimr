@@ -147,8 +147,6 @@ g:rnvimr_draw_border
     Default: 1
 
     Using builtin curses in Ranger to draw a border for floating window.
-    It will set winhighlight=Normal:Floating for floating window if its value
-    is 1.
 
                                                         *g:rnvimr_ranger_cmd*
 g:rnvimr_ranger_cmd

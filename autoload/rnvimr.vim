@@ -45,9 +45,6 @@ function s:create_ranger(cmd) abort
     let visual = $VISUAL
     let $VISUAL = s:editor
     call termopen(a:cmd, {'on_exit': function('s:on_exit')})
-    if g:rnvimr_draw_border
-        set winhighlight=Normal:Floating
-    endif
     if empty(visual)
         unlet $VISUAL
     else
