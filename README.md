@@ -86,11 +86,15 @@ let g:rnvimr_ex_enable = 1
 " Make Ranger to be hidden after picking a file
 let g:rnvimr_pick_enable = 1
 
+" Disable a border for floating window
+let g:rnvimr_draw_border = 0
+
 " Make Neovim to wipe the buffers corresponding to the files deleted by Ranger
 let g:rnvimr_bw_enable = 1
 
-" Set up only two columns in miller mode
-let g:rnvimr_ranger_cmd = 'ranger --cmd="set column_ratios 1,1"'
+" Set up only two columns in miller mode and draw border with separators
+let g:rnvimr_ranger_cmd = 'ranger --cmd="set column_ratios 1,1"
+            \ --cmd="set draw_borders separators"'
 
 nnoremap <silent> <M-o> :RnvimrToggle<CR>
 tnoremap <silent> <M-o> <C-\><C-n>:RnvimrToggle<CR>

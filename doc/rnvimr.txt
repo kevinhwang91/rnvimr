@@ -142,6 +142,14 @@ g:rnvimr_bw_enable
     It will automatically make Neovim to execute |bwipeout| to wipe the buffers
     corresponding to the files that has been deleted by Ranger.
 
+                                                        *g:rnvimr_draw_border*
+g:rnvimr_draw_border
+    Default: 1
+
+    Using builtin curses in Ranger to draw a border for floating window.
+    It will set winhighlight=Normal:Floating for floating window if its value
+    is 1.
+
                                                         *g:rnvimr_ranger_cmd*
 g:rnvimr_ranger_cmd
     Default: 'ranger'
@@ -205,12 +213,16 @@ Advanced configuration:
     " Make Ranger to be hidden after picking a file
     let g:rnvimr_pick_enable = 1
 
+    " Disable a border for floating window
+    let g:rnvimr_draw_border = 0
+
     " Make Neovim to wipe the buffers corresponding to the files deleted by
     " Ranger
     let g:rnvimr_bw_enable = 1
 
-    " Set up only two columns in miller mode
-    let g:rnvimr_ranger_cmd = 'ranger --cmd="set column_ratios 1,1"'
+    " Set up only two columns in miller mode and draw border with separators
+    let g:rnvimr_ranger_cmd = 'ranger --cmd="set column_ratios 1,1"
+                \ --cmd="set draw_borders separators"'
 
     nnoremap <silent> <M-o> :RnvimrToggle<CR>
     tnoremap <silent> <M-o> <C-\><C-n>:RnvimrToggle<CR>
