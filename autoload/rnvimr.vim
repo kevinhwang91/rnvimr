@@ -12,18 +12,18 @@ let g:rnvimr_split_action = get(g:, 'rnvimr_split_action', s:default_split_actio
 let g:rnvimr_pick_enable = get(g:, 'rnvimr_pick_enable', 0)
 
 function s:buf_wipe() abort
-    let bname = []
+    let bnr_list = []
     for buf in getbufinfo({'buflisted': 1})
         if buf.changed || !empty(glob(buf.name))
             continue
         endif
-        call add(bname, buf.name)
+        call add(bnr_list, buf.bufnr)
     endfor
-    if len(bname) > 0
+    if len(bnr_list) > 0
         " execute bwipeout last buffer before leaving floating window, it may cause this issue:
         " E5601: Cannot close window, only floating window would remain
         " use timer to delay bwipeout after leaving floating window
-        call timer_start(0, {-> execute('bwipeout ' . join(bname, ' '))})
+        call timer_start(0, {-> execute('bwipeout ' . join(bnr_list, ' '))})
     endif
 endfunction
 
