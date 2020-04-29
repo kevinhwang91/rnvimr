@@ -40,6 +40,7 @@ def edit_this_file(fm, split=None, start_line=1):
     if pick_enable:
         cmd.append('call rnvimr#rpc#enable_attach_file()')
     else:
+        cmd.append('call rnvimr#rpc#buf_checkpoint()')
         cmd.append('if cur_tab != nvim_get_current_tabpage()')
         cmd.append('noautocmd call nvim_win_close(cur_win, 0)')
         cmd.append('noautocmd call rnvimr#toggle()')

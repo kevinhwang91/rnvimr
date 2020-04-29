@@ -15,6 +15,27 @@ function rnvimr#rpc#disable_attach_file() abort
     let s:attach_file_enable = 0
 endfunction
 
+function rnvimr#rpc#buf_checkpoint() abort
+    let s:buf_cp_dict = {}
+    for buf in filter(getbufinfo({'buflisted': 1}),
+                \'v:val.changed == 0 && !empty(glob(v:val.name))')
+        let s:buf_cp_dict[buf.bufnr] = buf.name
+    endfor
+endfunction
+
+function rnvimr#rpc#buf_wipe() abort
+    let bw_list = []
+    for bufnr in keys(filter(s:buf_cp_dict, 'empty(glob(v:val))'))
+        call add(bw_list, bufnr)
+    endfor
+    if len(bw_list) > 0
+        " execute bwipeout last buffer before leaving floating window, it may cause this issue:
+        " E5601: Cannot close window, only floating window would remain
+        " use timer to delay bwipeout after leaving floating window
+        call timer_start(0, {-> execute('bwipeout ' . join(bw_list, ' '))})
+    endif
+endfunction
+
 function rnvimr#rpc#attach_file(file) abort
     call s:valid_setup()
     if filereadable(a:file) || isdirectory(a:file)

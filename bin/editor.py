@@ -30,6 +30,7 @@ def edit_file():
         cmd.append('silent! edit {}'.format(file))
 
     if not pick_enable:
+        cmd.append('call rnvimr#rpc#buf_checkpoint()')
         cmd.append('noautocmd wincmd p')
         cmd.append('noautocmd startinsert')
     else:
