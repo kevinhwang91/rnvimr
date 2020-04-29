@@ -8,7 +8,6 @@ import textwrap
 import pynvim
 import ranger
 from ranger.gui.ui import UI
-from ranger.gui.widgets.pager import Pager
 
 
 class Hacks():
@@ -41,6 +40,7 @@ class Hacks():
         self.fix_bulkrename()
         self.fix_pager()
         self.fix_vcs()
+        self.draw_border()
         return self.old_hook_init(self.fm)
 
     def bind_client(self):
@@ -214,6 +214,43 @@ class Hacks():
         else:
             raw_draw = UeberzugImageDisplayer.draw
             UeberzugImageDisplayer.draw = wrap_draw
+
+    def draw_border(self):
+        """
+        Using curses draw a border of floating window.
+
+        """
+
+        try:
+            draw_border = self.fm.client.vars['rnvimr_draw_border']
+            if not draw_border:
+                return
+        except KeyError:
+            return
+
+        def update_size(self):
+            self.termsize = self.win.getmaxyx()
+            y, x = self.termsize  # pylint: disable=invalid-name
+            y, x = y - 2, x - 2  # pylint: disable=invalid-name
+            self.browser.resize(self.settings.status_bar_on_top and 3 or 2, 1, y - 2, x)
+            self.taskview.resize(2, 1, y - 2, x)
+            self.pager.resize(2, 1, y - 2, x)
+            self.titlebar.resize(1, 1, 1, x)
+            self.status.resize(self.settings.status_bar_on_top and 2 or y, 1, 1, x)
+            self.console.resize(y, 1, 1, x)
+
+        UI.update_size = update_size
+
+        import curses  # pylint: disable=import-outside-toplevel
+
+        def wrap_draw(self):
+            self.win.border(curses.ACS_VLINE, curses.ACS_VLINE, curses.ACS_HLINE,
+                            curses.ACS_HLINE, curses.ACS_ULCORNER, curses.ACS_URCORNER,
+                            curses.ACS_LLCORNER, curses.ACS_LRCORNER)
+            raw_draw(self)
+
+        raw_draw = UI.draw
+        UI.draw = wrap_draw
 
 
 OLD_HOOK_INIT = ranger.api.hook_init

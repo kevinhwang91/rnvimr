@@ -9,6 +9,7 @@ let s:default_split_action = {
             \}
 
 let g:rnvimr_split_action = get(g:, 'rnvimr_split_action', s:default_split_action)
+let g:rnvimr_draw_border = get(g:, 'rnvimr_draw_border', 1)
 let g:rnvimr_pick_enable = get(g:, 'rnvimr_pick_enable', 0)
 
 function s:redraw_win() abort
@@ -44,6 +45,9 @@ function s:create_ranger(cmd) abort
     let visual = $VISUAL
     let $VISUAL = s:editor
     call termopen(a:cmd, {'on_exit': function('s:on_exit')})
+    if g:rnvimr_draw_border
+        set winhighlight=Normal:Floating
+    endif
     if empty(visual)
         unlet $VISUAL
     else
