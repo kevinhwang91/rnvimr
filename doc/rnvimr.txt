@@ -146,11 +146,13 @@ g:rnvimr_bw_enable
 g:rnvimr_draw_border
     Default: 1
 
+
     Using builtin curses in Ranger to draw a border for floating window.  >
     autocmd FileType rnvimr set winhighlight=NormalFloat:highlight-groups
 <    will replace with the default value {winhighlight=NormalFloat:Normal} in
     curses environment. Outside the curses environment such as entering $SHELL,
     the NormalFloat's valuse of winhighlight is always {NormalFloat}.
+
 
                                                         *g:rnvimr_ranger_cmd*
 g:rnvimr_ranger_cmd
