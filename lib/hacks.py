@@ -252,6 +252,35 @@ class Hacks():
         raw_draw = UI.draw
         UI.draw = wrap_draw
 
+        def wrap_initialize(self):
+            self.fm.client.command(
+                'call setwinvar(0, "&winhighlight", getbufvar(0, "curses_winhl"))')
+            raw_initialize(self)
+            
+        raw_initialize = UI.initialize
+        UI.initialize = wrap_initialize
+
+        def wrap_suspend(self):
+
+            def check_destory():
+                for displayable in self.container:
+                    if displayable.win:
+                        if hasattr(displayable, 'container'):
+                            for child in displayable.container:
+                                if child.win:
+                                    return False
+                        else:
+                            return False
+                return True
+
+            raw_suspend(self)
+            #  destory don't restore the NormalFloat highlight
+            if not check_destory():
+                self.fm.client.command('call setwinvar(0, "&winhighlight", "")')
+
+        raw_suspend = UI.suspend
+        UI.suspend = wrap_suspend
+
 
 OLD_HOOK_INIT = ranger.api.hook_init
 ranger.api.hook_init = lambda fm: Hacks(fm, OLD_HOOK_INIT).hook_init()

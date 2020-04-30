@@ -146,7 +146,13 @@ g:rnvimr_bw_enable
 g:rnvimr_draw_border
     Default: 1
 
-    Using builtin curses in Ranger to draw a border for floating window.
+
+    Using builtin curses in Ranger to draw a border for floating window.  >
+    autocmd FileType rnvimr set winhighlight=NormalFloat:highlight-groups
+<    will replace with the default value {winhighlight=NormalFloat:Normal} in
+    curses environment. Outside the curses environment such as entering $SHELL,
+    the NormalFloat's valuse of winhighlight is always {NormalFloat}.
+
 
                                                         *g:rnvimr_ranger_cmd*
 g:rnvimr_ranger_cmd
@@ -221,6 +227,9 @@ Advanced configuration:
     " Set up only two columns in miller mode and draw border with separators
     let g:rnvimr_ranger_cmd = 'ranger --cmd="set column_ratios 1,1"
                 \ --cmd="set draw_borders separators"'
+
+    " highlight text in Floating window
+    highlight NormalFloat ctermfg=0 ctermbg=16 guibg=#2b3038
 
     nnoremap <silent> <M-o> :RnvimrToggle<CR>
     tnoremap <silent> <M-o> <C-\><C-n>:RnvimrToggle<CR>

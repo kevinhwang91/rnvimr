@@ -96,6 +96,9 @@ let g:rnvimr_bw_enable = 1
 let g:rnvimr_ranger_cmd = 'ranger --cmd="set column_ratios 1,1"
             \ --cmd="set draw_borders separators"'
 
+" highlight text in Floating window
+highlight NormalFloat ctermfg=0 ctermbg=16 guibg=#2b3038
+
 nnoremap <silent> <M-o> :RnvimrToggle<CR>
 tnoremap <silent> <M-o> <C-\><C-n>:RnvimrToggle<CR>
 
@@ -133,7 +136,7 @@ let g:rnvimr_presets = [
             \ {'width': 1.000, 'height': 0.500, 'col': 0, 'row': 0.5}]
 ```
 
-For more information, please refer to `:help rnvimr`,
+For more information, please refer to [:help rnvimr](./doc/rnvimr.txt),
 because I don't want to maintain two documents with the same contents :).
 
 ## FAQ

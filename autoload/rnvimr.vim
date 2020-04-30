@@ -51,7 +51,16 @@ function s:create_ranger(cmd) abort
         let $VISUAL = visual
     endif
 
+    if g:rnvimr_draw_border
+        call setwinvar(0, '&winhighlight', '')
+    endif
     setfiletype rnvimr
+    if g:rnvimr_draw_border
+        if empty(getwinvar(0, '&winhighlight'))
+            call setwinvar(0, '&winhighlight', 'NormalFloat:Normal')
+        endif
+        call setbufvar(0, 'curses_winhl', getwinvar(0, '&winhighlight'))
+    endif
     startinsert
 endfunction
 
