@@ -88,6 +88,12 @@ class Hacks():
         Avoid to block and redraw ranger after opening editor, make rifle smarter.
         """
 
+        #  Make sure editor's path of pynvim the same with ranger's.
+        site_package = os.path.dirname(os.path.dirname(inspect.getfile(pynvim)))
+        python_path = os.getenv('PYTHONPATH')
+        os.environ['PYTHONPATH'] = site_package if not python_path \
+            else '{}:{}'.format(python_path, site_package)
+
         self.fm.rifle.hook_before_executing = lambda command, mimetype, flags: \
             self.fm.ui.suspend() if 'f' not in flags and '$EDITOR' not in command else None
         self.fm.rifle.hook_after_executing = lambda command, mimetype, flags: \
@@ -256,7 +262,7 @@ class Hacks():
             self.fm.client.command(
                 'call setwinvar(0, "&winhighlight", getbufvar(0, "curses_winhl"))')
             raw_initialize(self)
-            
+
         raw_initialize = UI.initialize
         UI.initialize = wrap_initialize
 
