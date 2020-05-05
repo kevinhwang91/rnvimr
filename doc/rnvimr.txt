@@ -10,6 +10,7 @@ CONTENTS                                                *rnvimr-contents*
 Introduction                                            |rnvimr-introduction|
 Requirements                                            |rnvimr-requirement|
 Features                                                |rnvimr-features|
+CheckHealth                                             |rnvimr-checkhealth|
 Usage                                                   |rnvimr-usage|
 Variables                                               |rnvimr-variables|
 Commands                                                |rnvimr-commands|
@@ -48,6 +49,34 @@ FEATURES                                                *rnvimr-features*
 - Better experience for Pager view in Ranger
 - Automatically wipe the buffers corresponding to the files deleted by Ranger
 
+================================================================================
+
+CHECKHEALTH                                             *rnvimr-checkhealth*
+
+Run |:checkhealth| |rnvimr|, If everything is OK, it will output like these:
+>
+    health#rnvimr#check
+    ========================================================================
+    ## OS
+      - OK: Name: Linux
+
+    ## Ranger
+      - OK: Version: ranger-master
+
+    ## Python
+      - OK: Version: 3.8.2 (default, Apr  8 2020, 14:31:25) [GCC 9.3.0]
+
+    ## Pynvim
+      - OK: Version: 0.4.1
+
+    ## Ueberzug (optional)
+      - OK: Ueberzug is ready
+
+    ## RPC
+      - OK: Install lib for checkhealth successfully
+      - OK: RPC echo: Neovim send "Give me five!" and receive "Give me five!"
+      - OK: Clean lib checkhealth successfully
+<
 ================================================================================
 
 USAGE                                                   *rnvimr-usage*

@@ -64,11 +64,11 @@ Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
 
 Run `nvim +'checkhealth rnvimr'` in shell. If everything is OK, it will output like these:
 
-```vim
+```
 health#rnvimr#check
 ========================================================================
 ## OS
-  - OK: OS: Linux
+  - OK: Name: Linux
 
 ## Ranger
   - OK: Version: ranger-master
@@ -83,9 +83,9 @@ health#rnvimr#check
   - OK: Ueberzug is ready
 
 ## RPC
-  - OK: Install Rnvimr lib for checkhealth successfully
-  - OK: RPC: Neovim send "Give me five!" and receive "Give me five!"
-  - OK: Clean Rnvimr lib checkhealth successfully
+  - OK: Install lib for checkhealth successfully
+  - OK: RPC echo: Neovim send "Give me five!" and receive "Give me five!"
+  - OK: Clean lib for checkhealth successfully
 ```
 
 ## Usage
@@ -204,7 +204,7 @@ A: Please follow below steps to solve this issue:
 
 Q: This plugin doesn't work for me.
 
-A: Install [Requirements](#Requirements) first, if you use Mac, you should install Ranger by `pip install ranger-fm` instead of `brew install ranger` because the Ranger installed by brew still using Python2.
+A: Install [Requirements](#Requirements) first, if you use Mac, you should install Ranger by `pip3 install ranger-fm` instead of `brew install ranger` because the Ranger installed by brew still using Python2.
 
 ## License
 

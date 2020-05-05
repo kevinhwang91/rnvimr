@@ -18,7 +18,7 @@ function! s:install_lib() abort
     if v:shell_error
         call health#report_error(msg)
     else
-        call health#report_ok('Install Rnvimr lib for checkhealth successfully')
+        call health#report_ok('Install lib for checkhealth successfully')
     endif
 endfunction
 
@@ -28,7 +28,7 @@ function! s:clean_lib() abort
     if v:shell_error
         call health#report_error(msg)
     else
-        call health#report_ok('Clean Rnvimr lib checkhealth successfully')
+        call health#report_ok('Clean lib for checkhealth successfully')
     endif
 endfunction
 
@@ -47,7 +47,7 @@ function! s:check_os() abort
     if s:os != 'Mac' && s:os != 'Linux'
         call health#report_error('Ranger is not supported for you OS')
     else
-        call health#report_ok('OS: ' . s:os)
+        call health#report_ok('Name: ' . s:os)
     endif
 endfunction
 
@@ -128,7 +128,7 @@ function! s:check_rpc() abort
     else
         let send = 'Give me five!'
         let rec = rpcrequest(opts.ranger_host_id, 'echo', send)
-        let msg = 'RPC: Neovim send "' . send . '" and receive "' . rec . '"'
+        let msg = 'RPC echo: Neovim send "' . send . '" and receive "' . rec . '"'
         if send ==# rec
             call health#report_ok(msg)
         else
