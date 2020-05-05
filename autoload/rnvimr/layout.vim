@@ -17,7 +17,7 @@ let s:default_presets = [
 let s:layout = get(g:, 'rnvimr_layout', s:default_layout)
 let s:presets = get(g:, 'rnvimr_presets', s:default_presets)
 
-function s:get_init_index()
+function! s:get_init_index()
     let i = 0
     while i < len(s:presets)
         if empty(s:presets[i])
@@ -34,7 +34,7 @@ endfunction
 
 let s:init_index = s:get_init_index()
 
-function s:process_layout_opts(opts) abort
+function! s:process_layout_opts(opts) abort
     let opts = copy(a:opts)
     if has_key(opts, 'width')
         let t = type(opts.width)
@@ -75,20 +75,20 @@ function s:process_layout_opts(opts) abort
     return opts
 endfunction
 
-function s:extend_layout(base, extend) abort
+function! s:extend_layout(base, extend) abort
     return extend(copy(a:base), s:process_layout_opts(a:extend))
 endfunction
 
-function rnvimr#layout#get_init_layout() abort
+function! rnvimr#layout#get_init_layout() abort
     let s:preset_index = s:init_index
     return rnvimr#layout#get_current_layout()
 endfunction
 
-function rnvimr#layout#get_current_layout() abort
+function! rnvimr#layout#get_current_layout() abort
     return s:extend_layout(s:layout, s:presets[s:preset_index])
 endfunction
 
-function rnvimr#layout#get_next_layout(...) abort
+function! rnvimr#layout#get_next_layout(...) abort
     if !empty(a:000)
         let presets = []
         let cur_index = 0

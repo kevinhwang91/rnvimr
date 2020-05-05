@@ -12,7 +12,7 @@ class Service(FileManagerAware):
 
     """
 
-    class Register(): # pylint: disable=too-few-public-methods
+    class Register():  # pylint: disable=too-few-public-methods
         """
         Using a class to decorate the service to register the service into table
 
@@ -31,8 +31,8 @@ class Service(FileManagerAware):
         :param args list: list of arguments
         """
         if method not in Service.Register.table:
-            return
-        Service.Register.table[method](self, args)
+            return '{} did not register in table'.format(method)
+        return Service.Register.table[method](self, args)
 
     @Register
     def attach_file(self, args):
@@ -49,22 +49,55 @@ class Service(FileManagerAware):
         else:
             self.fm.execute_console('AttachFile {} {}'.format(line, path))
 
+    @Register
+    def echo(self, args):  # pylint: disable=no-self-use
+        """
+        Echo Test for checkhealth
 
-class ServiceLoader(Loadable, FileManagerAware):
+        :param args list: List of string
+        """
+
+        return ''.join(args)
+
+
+class ServiceRunner(FileManagerAware):
     """
-    Execute the service in a loader of ranger
+    Service runner instance
+
+    """
+
+    def __init__(self, event, args):
+        self.event = event
+        self.args = args
+
+    def run(self):
+        """
+        Run the registered services
+
+        """
+        return self.fm.service.call(self.event, self.args)
+
+
+class ServiceLoader(Loadable, ServiceRunner):
+    """
+    Service in a loader instance of ranger
 
     """
 
     def __init__(self, descr, event, args):
         Loadable.__init__(self, self.generate(), descr)
-        self.event = event
-        self.args = args
+        ServiceRunner.__init__(self, event, args)
 
     def generate(self):
         """
-        Generator of ranger loader
+        Generator for wrapping ServiceRunner.run()
 
         """
-        self.fm.service.call(self.event, self.args)
-        yield
+        yield self.run()
+
+    def load(self):
+        """
+        Add the loader to ranger
+
+        """
+        self.fm.loader.add(self, append=True)

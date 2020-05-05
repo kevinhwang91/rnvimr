@@ -6,7 +6,7 @@ import os
 import threading
 import pynvim
 import ranger
-from .service import Service, ServiceLoader
+from .service import Service, ServiceRunner, ServiceLoader
 
 
 class Host():
@@ -18,6 +18,19 @@ class Host():
     def __init__(self, fm, hook_ready):
         self.fm = fm  # pylint: disable=invalid-name
         self.old_hook_ready = hook_ready
+
+    def host_ready(self, host):
+        """
+        Notify neovim that ranger host is ready
+
+        """
+        # job start with pty option in neovim only use stdout to communicate
+        if os.getenv('RNVIMR_CHECKHEALTH'):
+            print()
+            print('RNVIMR_CHECKHEALTH', self.fm.host_id, 'RNVIMR_CHECKHEALTH')
+            host.call('rnvimr#rpc#set_host_chan_id', self.fm.host_id)
+        else:
+            host.call('rnvimr#rpc#set_host_chan_id', self.fm.host_id)
 
     def hook_ready(self):
         """
@@ -32,35 +45,34 @@ class Host():
             self.fm.service = Service()
 
             # call neovim only once as a host in order to get channel id.
-            self.fm.chan_id = host.request('nvim_get_api_info')[0]
-            host.call('rnvimr#rpc#set_host_chan_id', self.fm.chan_id)
+            self.fm.host_id = host.request('nvim_get_api_info')[0]
 
             t_run_loop = threading.Thread(
                 daemon=True, target=host.run_loop,
                 args=(self.request_event, self.notify_event))
             t_run_loop.start()
 
+            host.async_call(self.host_ready, host)
+
         return self.old_hook_ready(self.fm)
 
-    def notify_event(self, method, args):
+    def notify_event(self, method, args):  # pylint: disable=no-self-use
         """
         notify event called by pynvim
 
         :param method str: method name of service
         :param args list: list of arguments
         """
-        loadable = ServiceLoader(
-            'notifying method: {}.'.format(method), method, args)
-        self.fm.loader.add(loadable, append=True)
+        ServiceLoader('notifying method: {}.'.format(method), method, args).load()
 
-    def request_event(self, method, args):
+    def request_event(self, method, args):  # pylint: disable=no-self-use
         """
         request event called by neovim
 
         :param method str: method name of service
         :param args list: list of arguments
         """
-        # reserve the request event for further extension
+        return ServiceRunner(method, args).run()
 
 
 OLD_HOOK_READY = ranger.api.hook_ready
