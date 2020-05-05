@@ -33,6 +33,25 @@ Different than other Ranger vim-plugins, Rnvimr gives you full control over Rang
 
 ## Installation
 
+### Requirements
+
+Example for [yay](https://github.com/Jguer/yay) in ArchLinux and [pip](https://pip.pypa.io/en/stable/) in other *unix distributions:
+
+```sh
+# ueberzug is optional
+
+# ArchLinux install all requirements is extreme convenient
+yay -S ranger-git python-pynvim python-ueberzug-git
+
+# pip
+pip3 install ranger-fm pynvim
+# If you use tmux, run `pip3 ueberzug` directly to install ueberzug, otherwise install by source code
+git clone https://github.com/seebye/ueberzug.git && cd ueberzug
+pip3 install .
+```
+
+### Plugin
+
 Install Rnvimr with your favorite plugin manager! Example for [Vim-plug](https://github.com/junegunn/vim-plug):
 
 ```vim
@@ -40,6 +59,34 @@ Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
 ```
 
 > If you want Rnvimr to use the default (vanilla) Ranger configuration, please using `make install` instead of `make sync`.
+
+### CheckHealth (optional)
+
+Run `nvim +'checkhealth rnvimr'` in shell. If everything is OK, it will output like these:
+
+```vim
+health#rnvimr#check
+========================================================================
+## OS
+  - OK: OS: Linux
+
+## Ranger
+  - OK: Version: ranger-master
+
+## Python
+  - OK: Version: 3.8.2 (default, Apr  8 2020, 14:31:25) [GCC 9.3.0]
+
+## Pynvim
+  - OK: Version: 0.4.1
+
+## Ueberzug (optional)
+  - OK: Ueberzug is ready
+
+## RPC
+  - OK: Install Rnvimr lib for checkhealth successfully
+  - OK: RPC: Neovim send "Give me five!" and receive "Give me five!"
+  - OK: Clean Rnvimr lib checkhealth successfully
+```
 
 ## Usage
 

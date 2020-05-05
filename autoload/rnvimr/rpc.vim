@@ -1,21 +1,21 @@
 let s:host_chan_id = -1
 let s:attach_file_enable = 0
 
-function s:valid_setup() abort
+function! s:valid_setup() abort
     if s:host_chan_id == -1
         echoerr 'ranger has not started yet.'
     endif
 endfunction
 
-function rnvimr#rpc#enable_attach_file() abort
+function! rnvimr#rpc#enable_attach_file() abort
     let s:attach_file_enable = 1
 endfunction
 
-function rnvimr#rpc#disable_attach_file() abort
+function! rnvimr#rpc#disable_attach_file() abort
     let s:attach_file_enable = 0
 endfunction
 
-function rnvimr#rpc#buf_checkpoint() abort
+function! rnvimr#rpc#buf_checkpoint() abort
     let s:buf_cp_dict = {}
     for buf in filter(getbufinfo({'buflisted': 1}),
                 \'v:val.changed == 0 && !empty(glob(v:val.name))')
@@ -23,7 +23,7 @@ function rnvimr#rpc#buf_checkpoint() abort
     endfor
 endfunction
 
-function rnvimr#rpc#buf_wipe() abort
+function! rnvimr#rpc#buf_wipe() abort
     let bw_list = []
     for bufnr in keys(filter(s:buf_cp_dict, 'empty(glob(v:val))'))
         call add(bw_list, bufnr)
@@ -36,22 +36,22 @@ function rnvimr#rpc#buf_wipe() abort
     endif
 endfunction
 
-function rnvimr#rpc#attach_file(file) abort
+function! rnvimr#rpc#attach_file(file) abort
     call s:valid_setup()
     if filereadable(a:file) || isdirectory(a:file)
         call rpcnotify(s:host_chan_id, 'attach_file', line('w0'), a:file)
     endif
 endfunction
 
-function rnvimr#rpc#set_host_chan_id(id) abort
+function! rnvimr#rpc#set_host_chan_id(id) abort
     let s:host_chan_id = a:id
 endfunction
 
-function rnvimr#rpc#reset_host_chan_id() abort
+function! rnvimr#rpc#reset_host_chan_id() abort
     let s:host_chan_id = -1
 endfunction
 
-function rnvimr#rpc#request_attach_file(file) abort
+function! rnvimr#rpc#attach_file_once(file) abort
     if s:attach_file_enable == 1
         call rnvimr#rpc#attach_file(a:file)
         let s:attach_file_enable = 0

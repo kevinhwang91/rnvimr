@@ -12,7 +12,7 @@ let g:rnvimr_split_action = get(g:, 'rnvimr_split_action', s:default_split_actio
 let g:rnvimr_draw_border = get(g:, 'rnvimr_draw_border', 1)
 let g:rnvimr_pick_enable = get(g:, 'rnvimr_pick_enable', 0)
 
-function s:redraw_win() abort
+function! s:redraw_win() abort
     let layout = rnvimr#layout#get_current_layout()
     call nvim_win_set_config(s:win_handle, layout)
     " TODO
@@ -21,13 +21,13 @@ function s:redraw_win() abort
     call timer_start(0, {-> execute('mode')})
 endfunction
 
-function s:reopen_win() abort
+function! s:reopen_win() abort
     let layout = rnvimr#layout#get_current_layout()
     let s:win_handle = nvim_open_win(s:buf_handle, v:true, layout)
     startinsert
 endfunction
 
-function s:on_exit(job_id, data, event) abort
+function! s:on_exit(job_id, data, event) abort
     if a:data == 0
         bdelete!
     endif
@@ -35,7 +35,7 @@ function s:on_exit(job_id, data, event) abort
     call rnvimr#rpc#reset_host_chan_id()
 endfunction
 
-function s:create_ranger(cmd) abort
+function! s:create_ranger(cmd) abort
     let init_layout = rnvimr#layout#get_init_layout()
     let s:buf_handle = nvim_create_buf(v:false, v:true)
     let s:win_handle = nvim_open_win(s:buf_handle, v:true, init_layout)
@@ -64,7 +64,7 @@ function s:create_ranger(cmd) abort
     startinsert
 endfunction
 
-function rnvimr#resize(...) abort
+function! rnvimr#resize(...) abort
     if !nvim_win_is_valid(s:win_handle) || nvim_get_current_win() != s:win_handle
         return
     endif
@@ -73,7 +73,7 @@ function rnvimr#resize(...) abort
     startinsert
 endfunction
 
-function rnvimr#toggle() abort
+function! rnvimr#toggle() abort
     if exists('s:buf_handle')
         if exists('s:win_handle') && nvim_win_is_valid(s:win_handle)
             if nvim_get_current_win() == s:win_handle
@@ -83,7 +83,7 @@ function rnvimr#toggle() abort
                 startinsert
             endif
         else
-            call rnvimr#rpc#request_attach_file(expand('%:p'))
+            call rnvimr#rpc#attach_file_once(expand('%:p'))
             call s:reopen_win()
         endif
     else
@@ -91,7 +91,7 @@ function rnvimr#toggle() abort
     endif
 endfunction
 
-function rnvimr#open(path) abort
+function! rnvimr#open(path) abort
     if exists('s:buf_handle')
         if filereadable(a:path) || isdirectory(a:path)
             call rnvimr#rpc#attach_file(a:path)
@@ -103,7 +103,7 @@ function rnvimr#open(path) abort
     endif
 endfunction
 
-function rnvimr#init(...) abort
+function! rnvimr#init(...) abort
     let select_file = empty(a:000) ? expand('%:p') : a:1
     let confdir = shellescape(s:confdir)
     let attach_cmd = shellescape('AttachFile ' . line('w0') . ' ' . select_file)
@@ -120,11 +120,11 @@ function rnvimr#init(...) abort
     augroup END
 endfunction
 
-function rnvimr#sync_ranger() abort
+function! rnvimr#sync_ranger() abort
     let sync_path = get(g:, 'rnvimr_sync_path')
     let make_cmd = sync_path == 0 ? 'make sync' : 'make RANGER_CONFIG='
                 \ . shellescape(sync_path) . 'sync'
-    let msg =system('cd ' . s:rnvimr_path . ';' . make_cmd)
+    let msg = system('cd ' . s:rnvimr_path . ';' . make_cmd)
     if v:shell_error
         echoerr msg
     endif
