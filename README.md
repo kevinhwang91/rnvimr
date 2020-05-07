@@ -143,8 +143,8 @@ let g:rnvimr_bw_enable = 1
 let g:rnvimr_ranger_cmd = 'ranger --cmd="set column_ratios 1,1"
             \ --cmd="set draw_borders separators"'
 
-" highlight text in Floating window
-highlight NormalFloat ctermfg=0 ctermbg=16 guibg=#2b3038
+" Link CursorLine into RnvimrNormal highlight in the Floating window
+highlight link RnvimrNormal CursorLine
 
 nnoremap <silent> <M-o> :RnvimrToggle<CR>
 tnoremap <silent> <M-o> <C-\><C-n>:RnvimrToggle<CR>

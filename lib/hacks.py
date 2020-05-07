@@ -282,7 +282,8 @@ class Hacks():
             raw_suspend(self)
             #  destory don't restore the NormalFloat highlight
             if not check_destory():
-                self.fm.client.command('call setwinvar(0, "&winhighlight", "")')
+                self.fm.client.command(
+                    'call setwinvar(0, "&winhighlight", getbufvar(0, "normal_winhl"))')
 
         raw_suspend = UI.suspend
         UI.suspend = wrap_suspend

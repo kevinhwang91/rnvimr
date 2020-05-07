@@ -12,6 +12,9 @@ let g:rnvimr_split_action = get(g:, 'rnvimr_split_action', s:default_split_actio
 let g:rnvimr_draw_border = get(g:, 'rnvimr_draw_border', 1)
 let g:rnvimr_pick_enable = get(g:, 'rnvimr_pick_enable', 0)
 
+highlight default link RnvimrNormal NormalFloat
+highlight default link RnvimrCurses Normal
+
 function! s:redraw_win() abort
     let layout = rnvimr#layout#get_current_layout()
     call nvim_win_set_config(s:win_handle, layout)
@@ -35,6 +38,17 @@ function! s:on_exit(job_id, data, event) abort
     call rnvimr#rpc#reset_host_chan_id()
 endfunction
 
+function! s:setup_winhl() abort
+    call setbufvar(0, 'normal_winhl', 'Normal:RnvimrNormal')
+    call setbufvar(0, 'curses_winhl', 'Normal:RnvimrCurses')
+    if g:rnvimr_draw_border
+        let default_winhl = getbufvar(0, 'curses_winhl')
+    else
+        let default_winhl = getbufvar(0, 'normal_winhl')
+    endif
+    call setwinvar(0, '&winhighlight', default_winhl)
+endfunction
+
 function! s:create_ranger(cmd) abort
     let init_layout = rnvimr#layout#get_init_layout()
     let s:buf_handle = nvim_create_buf(v:false, v:true)
@@ -51,16 +65,8 @@ function! s:create_ranger(cmd) abort
         let $VISUAL = visual
     endif
 
-    if g:rnvimr_draw_border
-        call setwinvar(0, '&winhighlight', '')
-    endif
     setfiletype rnvimr
-    if g:rnvimr_draw_border
-        if empty(getwinvar(0, '&winhighlight'))
-            call setwinvar(0, '&winhighlight', 'NormalFloat:Normal')
-        endif
-        call setbufvar(0, 'curses_winhl', getwinvar(0, '&winhighlight'))
-    endif
+    call s:setup_winhl()
     startinsert
 endfunction
 
