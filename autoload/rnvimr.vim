@@ -35,39 +35,32 @@ function! s:on_exit(job_id, data, event) abort
         bdelete!
     endif
     unlet s:buf_handle
-    call rnvimr#rpc#reset_host_chan_id()
+    call rnvimr#rpc#reset()
 endfunction
 
 function! s:setup_winhl() abort
-    call setbufvar(0, 'normal_winhl', 'Normal:RnvimrNormal')
-    call setbufvar(0, 'curses_winhl', 'Normal:RnvimrCurses')
+    call setbufvar(s:buf_handle, 'normal_winhl', 'Normal:RnvimrNormal')
+    call setbufvar(s:buf_handle, 'curses_winhl', 'Normal:RnvimrCurses')
     if g:rnvimr_draw_border
-        let default_winhl = getbufvar(0, 'curses_winhl')
+        let default_winhl = getbufvar(s:buf_handle, 'curses_winhl')
     else
-        let default_winhl = getbufvar(0, 'normal_winhl')
+        let default_winhl = getbufvar(s:buf_handle, 'normal_winhl')
     endif
-    call setwinvar(0, '&winhighlight', default_winhl)
+    call setwinvar(s:win_handle, '&winhighlight', default_winhl)
 endfunction
 
 function! s:create_ranger(cmd) abort
     let init_layout = rnvimr#layout#get_init_layout()
     let s:buf_handle = nvim_create_buf(v:false, v:true)
     let s:win_handle = nvim_open_win(s:buf_handle, v:true, init_layout)
-    " TODO
-    " {opts.env} didn't work, I had post the issue
-    " https://github.com/neovim/neovim/issues/11829
-    let visual = $VISUAL
-    let $VISUAL = s:editor
     call termopen(a:cmd, {'on_exit': function('s:on_exit')})
-    if empty(visual)
-        unlet $VISUAL
-    else
-        let $VISUAL = visual
-    endif
-
     setfiletype rnvimr
     call s:setup_winhl()
     startinsert
+endfunction
+
+function! rnvimr#set_winhl(winhl) abort
+    call setwinvar(s:win_handle, '&winhighlight', getbufvar(s:buf_handle, a:winhl))
 endfunction
 
 function! rnvimr#resize(...) abort

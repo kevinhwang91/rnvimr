@@ -47,7 +47,7 @@ function! rnvimr#rpc#set_host_chan_id(id) abort
     let s:host_chan_id = a:id
 endfunction
 
-function! rnvimr#rpc#reset_host_chan_id() abort
+function! rnvimr#rpc#reset() abort
     let s:host_chan_id = -1
 endfunction
 
@@ -56,4 +56,9 @@ function! rnvimr#rpc#attach_file_once(file) abort
         call rnvimr#rpc#attach_file(a:file)
         let s:attach_file_enable = 0
     endif
+endfunction
+
+" ranger to neovim
+function! rnvimr#rpc#set_winhl(winhl) abort
+    return rnvimr#set_winhl(a:winhl)
 endfunction

@@ -7,53 +7,6 @@ import os
 from ranger.api.commands import Command
 from ranger.core.loader import Loadable
 
-
-# pylint: disable=invalid-name
-def edit_this_file(fm, split=None, start_line=1):
-    """
-    Edit ranger target file with neovim.
-
-    :param fm object: ranger fm
-    :param split str: neovim split command
-    :param start_line int: start line number
-    """
-
-    try:
-        pick_enable = fm.client.vars['rnvimr_pick_enable']
-    except KeyError:
-        pick_enable = 0
-    cmd = []
-    if pick_enable:
-        cmd.append('close')
-    else:
-        cmd.append('let cur_tab = nvim_get_current_tabpage()')
-        cmd.append('let cur_win = nvim_get_current_win()')
-        cmd.append('noautocmd wincmd p')
-    if split:
-        cmd.append('if bufname("%") != ""')
-        cmd.append(split)
-        cmd.append('endif')
-        cmd.append('silent! edit {}'.format(fm.thisfile))
-    else:
-        cmd.append('silent! edit +normal\\ {}zt {}'.format(start_line, fm.thisfile))
-
-    if pick_enable:
-        cmd.append('call rnvimr#rpc#enable_attach_file()')
-    else:
-        cmd.append('call rnvimr#rpc#buf_checkpoint()')
-        cmd.append('if cur_tab != nvim_get_current_tabpage()')
-        cmd.append('noautocmd call nvim_win_close(cur_win, 0)')
-        cmd.append('noautocmd call rnvimr#toggle()')
-        cmd.append('else')
-        cmd.append('noautocmd call nvim_set_current_win(cur_win)')
-        cmd.append('endif')
-        cmd.append('noautocmd startinsert')
-        cmd.append('unlet cur_tab')
-        cmd.append('unlet cur_win')
-
-    fm.client.command('|'.join(cmd), async_=True)
-
-
 class SplitAndEdit(Command):
     """
     A command of ranger to split and edit file.
@@ -64,7 +17,7 @@ class SplitAndEdit(Command):
         action = ' '.join(self.args[1:])
         if not self.fm.thisfile.is_file or not action:
             return
-        edit_this_file(self.fm, split=action)
+        self.fm.client.rpc_edit([self.fm.thisfile], split=action)
 
 
 class EditFile(Command):
@@ -85,7 +38,7 @@ class EditFile(Command):
         else:
             start = 1
 
-        edit_this_file(self.fm, start_line=start)
+        self.fm.client.rpc_edit([self.fm.thisfile], start_line=start)
         if pager.visible:
             self.fm.pager_close()
         return None
@@ -109,7 +62,7 @@ class AttachFile(Command):
         path = self.rest(2)
 
         if not path and self.fm.client:
-            path = self.fm.client.command_output('echo expand("#:p")')
+            path = self.fm.client.nvim.command_output('echo expand("#:p")')
 
         if os.path.isdir(path):
             dirname = path

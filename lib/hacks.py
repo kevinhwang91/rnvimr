@@ -5,9 +5,10 @@ Make ranger adjust to floating window of neovim
 import os
 import inspect
 import textwrap
-import pynvim
 import ranger
+from ranger.ext.rifle import Rifle
 from ranger.gui.ui import UI
+from .client import Client
 
 
 class Hacks():
@@ -20,7 +21,6 @@ class Hacks():
         self.fm = fm  # pylint: disable=invalid-name
         self.fm.client = None
         self.fm.service = None
-        self.fm.chan_id = None
         self.fm.attached_file = None
         self.commands = fm.commands
         self.old_hook_init = hook_init
@@ -31,7 +31,7 @@ class Hacks():
 
         """
 
-        self.bind_client()
+        self.client_attach()
         self.show_attached_file()
         self.map_split_action()
         self.calibrate_ueberzug()
@@ -43,16 +43,14 @@ class Hacks():
         self.draw_border()
         return self.old_hook_init(self.fm)
 
-    def bind_client(self):
+    def client_attach(self):
         """
-        Bind client of neovim.
+        Client attach  neovim.
 
         """
 
-        socket_path = os.getenv('NVIM_LISTEN_ADDRESS')
-
-        if socket_path:
-            self.fm.client = pynvim.attach('socket', path=socket_path)
+        self.fm.client = Client()
+        self.fm.client.attach_nvim()
 
     def show_attached_file(self):
         """
@@ -75,7 +73,7 @@ class Hacks():
         """
 
         try:
-            action_dict = self.fm.client.vars['rnvimr_split_action']
+            action_dict = self.fm.client.nvim.vars['rnvimr_split_action']
         except KeyError:
             return
         if not action_dict or not isinstance(action_dict, dict):
@@ -86,18 +84,20 @@ class Hacks():
     def fix_editor(self):
         """
         Avoid to block and redraw ranger after opening editor, make rifle smarter.
+        Use a 'true' built-in command to mock a dummy $EDITOR.
         """
 
-        #  Make sure editor's path of pynvim the same with ranger's.
-        site_package = os.path.dirname(os.path.dirname(inspect.getfile(pynvim)))
-        python_path = os.getenv('PYTHONPATH')
-        os.environ['PYTHONPATH'] = site_package if not python_path \
-            else '{}:{}'.format(python_path, site_package)
+        client = self.fm.client
 
-        self.fm.rifle.hook_before_executing = lambda command, mimetype, flags: \
-            self.fm.ui.suspend() if 'f' not in flags and '$EDITOR' not in command else None
-        self.fm.rifle.hook_after_executing = lambda command, mimetype, flags: \
-            self.fm.ui.initialize() if 'f' not in flags and '$EDITOR' not in command else None
+        def wrap_build_command(self, files, action, flags):
+            if '$EDITOR' in action:
+                client.rpc_edit(files)
+                self._app_flags = 'f'
+                return 'true'
+            return raw_build_command(self, files, action, flags)
+
+        raw_build_command = Rifle._build_command  # pylint: disable=protected-access
+        Rifle._build_command = wrap_build_command  # pylint: disable=protected-access
 
     def fix_quit(self):
         """
@@ -114,8 +114,7 @@ class Hacks():
             if len(self.fm.tabs) >= 2:
                 self.fm.tab_close()
             else:
-                self.fm.client.call('rnvimr#rpc#enable_attach_file', async_=True)
-                self.fm.client.request('nvim_win_close', 0, 1, async_=True)
+                self.fm.client.hide_window()
 
         quit_cls.execute = execute
 
@@ -198,11 +197,11 @@ class Hacks():
 
         """
 
-        client = self.fm.client
-
+        nvim = self.fm.client.nvim
         # pylint: disable=too-many-arguments
+
         def wrap_draw(self, path, start_x, start_y, width, height):
-            win_info = client.request('nvim_win_get_config', 0)
+            win_info = nvim.request('nvim_win_get_config', 0)
             if not win_info['relative']:
                 return
             start_x += win_info['col']
@@ -227,11 +226,12 @@ class Hacks():
 
         """
 
+        client = self.fm.client
         try:
-            draw_border = self.fm.client.vars['rnvimr_draw_border']
-            if not draw_border:
-                return
+            draw_border = client.nvim.vars['rnvimr_draw_border']
         except KeyError:
+            return
+        if not draw_border:
             return
 
         def update_size(self):
@@ -259,8 +259,7 @@ class Hacks():
         UI.draw = wrap_draw
 
         def wrap_initialize(self):
-            self.fm.client.command(
-                'call setwinvar(0, "&winhighlight", getbufvar(0, "curses_winhl"))')
+            client.set_winhl('curses_winhl')
             raw_initialize(self)
 
         raw_initialize = UI.initialize
@@ -282,8 +281,7 @@ class Hacks():
             raw_suspend(self)
             #  destory don't restore the NormalFloat highlight
             if not check_destory():
-                self.fm.client.command(
-                    'call setwinvar(0, "&winhighlight", getbufvar(0, "normal_winhl"))')
+                client.set_winhl('normal_winhl')
 
         raw_suspend = UI.suspend
         UI.suspend = wrap_suspend
