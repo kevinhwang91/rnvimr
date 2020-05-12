@@ -42,7 +42,7 @@ REQUIREMENTS                                            *rnvimr-requirements*
 FEATURES                                                *rnvimr-features*
 
 - Replace builtin Netrw to be a file explorer
-- Calibrate preview images for ueberzug
+- Calibrate preview images for Ueberzug
 - Attach file automatically when toggling Ranger.
 - Run RPC inside Ranger to communicate with NeoVim
 - Adjust floating window after resizing window of NeoVim
@@ -93,8 +93,8 @@ with Rnvimr this time.
 `Enter` to open a file in Ranger. Rnvimr also supports `CTRL-T/CTRL-X/CTRL-V`
 key bindings to open in a new tab, a new split, or in a new vertical split.
 
-Pressing `q` in Ranger just hide floating window. Ranger will attach file of
-the current buffer in the next toggle event.
+Pressing `q` in Ranger just hides the floating window. Ranger will attach the
+file of the current buffer in the next toggle event.
 
 ================================================================================
 
@@ -162,24 +162,24 @@ g:rnvimr_pick_enable
     Default: 0
 
     Enable Ranger to be hidden after picking a file.
-    It will automatically attach file in next |:RnvimrToggle|.
+    It will automatically attach a file in next |:RnvimrToggle|.
 
                                                         *g:rnvimr_bw_enable*
 g:rnvimr_bw_enable
     Default: 0
 
     Enable Neovim to synchronize the buffers with the deleted files by Ranger
-    It will automatically make Neovim to execute |bwipeout| to wipe the buffers
-    corresponding to the files that has been deleted by Ranger.
+    It will automatically make Neovim execute |bwipeout| to wipe the buffers
+    corresponding to the files that have been deleted by Ranger.
 
                                                         *g:rnvimr_draw_border*
 g:rnvimr_draw_border
     Default: 1
 
     Using builtin curses in Ranger to draw a border for the floating window.
-    The border is only drew in curses environment, so leaving curses environment
-    such as entering SHELL in Ranger doenn't draw a border no mater what the
-    value of *g:rnvimr_draw_border* is.
+    The border is only drawn in curses environment, so leaving curses
+    environment such as entering SHELL in Ranger doesn't draw a border no mater
+    what the value of *g:rnvimr_draw_border* is.
 
 
                                                         *g:rnvimr_ranger_cmd*
@@ -195,14 +195,14 @@ g:rnvimr_sync_path
     *$XDG_CONFIG_HOME* environment.
 
     No need to set this variable while using default configuration and path.
-    If you want to extend plugin of Rnvimr, you will set this variable to
+    If you want to extend the plugin of Rnvimr, you will set this variable to
     isolate the configuration of Ranger and Rnvimr.
 
 ================================================================================
 
 HIGHLIGHTS                                              *rnvimr-highlights*
 
-Here are the default link for highlight groups of Rnvimr.
+Here is the default link for highlight groups of Rnvimr.
 >
     highlight default link RnvimrNormal NormalFloat
     highlight default link RnvimrCurses Normal
@@ -218,9 +218,9 @@ COMMANDS                                                *rnvimr-commands*
 
                                                         *:RnvimrToggle*
 :RnvimrToggle
-    Toggle the Ranger floating window. Reopen Ranger and attach file
+    Toggle the Ranger floating window. Reopen Ranger and attach a file
     automatically after executing Ranger's command |quit| with only 1 tab.
-    If run |quit| inside Ranger, Ranger is hidden by closing floating window
+    If run |quit| inside Ranger, Ranger is hidden by closing the floating window
     instead of exiting process. You can run |quit!| or |quitall| command to exit
     Ranger process.
 
@@ -253,7 +253,7 @@ Advanced configuration:
     " Synchronize all Ranger's configuration and plugins with Rnvimr
     Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
 
-    " Make Ranger to replace netrw to be a file explorer
+    " Make Ranger replace netrw to be a file explorer
     let g:rnvimr_ex_enable = 1
 
     " Make Ranger to be hidden after picking a file
@@ -262,8 +262,7 @@ Advanced configuration:
     " Disable a border for floating window
     let g:rnvimr_draw_border = 0
 
-    " Make Neovim to wipe the buffers corresponding to the files deleted by
-    " Ranger
+    " Make Neovim wipe the buffers corresponding to the files deleted by Ranger
     let g:rnvimr_bw_enable = 1
 
     " Set up only two columns in miller mode and draw border with separators

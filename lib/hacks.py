@@ -235,6 +235,7 @@ class Hacks():
             return
 
         def update_size(self):
+            self.win.erase()
             self.termsize = self.win.getmaxyx()
             y, x = self.termsize  # pylint: disable=invalid-name
             y, x = y - 2, x - 2  # pylint: disable=invalid-name

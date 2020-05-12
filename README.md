@@ -96,9 +96,9 @@ Use `:RnvimrResize` to cycle the preset layouts.
 
 `:RnvimrSync` will synchronize your personal Ranger configuration and plugins with Rnvimr this time.
 
-**Note:** if your Ranger config changes, you will have to run `:RnvimrSync` in order to use your updated Ranger configuration with Rnvimr
+**Note:** if your Ranger config changes, you will have to run `:RnvimrSync` to use your updated Ranger configuration with Rnvimr
 
-`Enter` to open a file in Ranger. Rnvimr also supports `CTRL-T`/`CTRL-X`/`CTRL-V` key bindings that allow you to open up file in a new tab, a new horizontal split, or in a new vertical split.
+`Enter` to open a file in Ranger. Rnvimr also supports `CTRL-T`/`CTRL-X`/`CTRL-V` key bindings that allow you to open up a file in a new tab, a new horizontal split, or in a new vertical split.
 
 Pressing `q` in Ranger simply hides the floating window. Ranger will attach the file of the current buffer in the next toggle event.
 
@@ -127,7 +127,7 @@ tnoremap <silent> <M-o> <C-\><C-n>:RnvimrToggle<CR>
 " Synchronize all Ranger's configuration and plugins with Rnvimr
 Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
 
-" Make Ranger replace netrw and be the file explorer
+" Make Ranger replace Netrw and be the file explorer
 let g:rnvimr_ex_enable = 1
 
 " Make Ranger to be hidden after picking a file
@@ -136,7 +136,7 @@ let g:rnvimr_pick_enable = 1
 " Disable a border for floating window
 let g:rnvimr_draw_border = 0
 
-" Make Neovim to wipe the buffers corresponding to the files deleted by Ranger
+" Make Neovim wipe the buffers corresponding to the files deleted by Ranger
 let g:rnvimr_bw_enable = 1
 
 " Set up only two columns in miller mode and draw border with separators
@@ -188,11 +188,11 @@ because I don't want to maintain two documents with the same contents :).
 
 ## FAQ
 
-Q: Couldn't open some special type of files by using `Enter` or `l` in Ranger.
+Q: Couldn't open some special types of files by using `Enter` or `l` in Ranger.
 
-A: Please follow below steps to solve this issue:
+A: Please follow the below steps to solve this issue:
 
-1. The behavior of openning the file in Ranger depends on `rifle.conf`. Press `r` to make sure that the `${VISUAL:-$EDITOR} -- "$@"` is the best candidate in Ranger.
+1. The behavior of opening the file in Ranger depends on `rifle.conf`. Press `r` to make sure that the `${VISUAL:-$EDITOR} -- "$@"` is the best candidate in Ranger.
 2. If the case 1 is false, change the code in `rifle.conf` like that:
 
 ```diff
