@@ -310,7 +310,19 @@ class Hacks():
         except KeyError:
             attr_dict = {}
 
-        attr = curses.color_pair(color.get_color(attr_dict.get('fg', -1), attr_dict.get('bg', -1)))
+        try:
+            attr_fg, attr_bg = attr_dict.get('fg', -1), attr_dict.get('bg', -1)
+            attr_fg, attr_bg = int(attr_fg), int(attr_bg)
+            if not -1 <= attr_fg < 256:
+                attr_fg = -1
+            if not -1 <= attr_bg < 256:
+                attr_bg = -1
+        except TypeError:
+            attr_fg, attr_bg = -1, -1
+        except ValueError:
+            attr_fg, attr_bg = -1, -1
+
+        attr = curses.color_pair(color.get_color(attr_fg, attr_bg))
 
         def wrap_draw(self):
             self.win.attrset(attr)
