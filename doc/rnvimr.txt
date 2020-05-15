@@ -181,6 +181,15 @@ g:rnvimr_draw_border
     environment such as entering SHELL in Ranger doesn't draw a border no mater
     what the value of *g:rnvimr_draw_border* is.
 
+                                                        *g:rnvimr_border_attr*
+g:rnvimr_border_attr
+    Default: {dict}
+>
+        {'fg': -1, 'bg': -1}
+<
+    Builtin curses attributes, the range of integer value is [-1, 255]. It maps
+    the Neovim's terminal color. -1 means the default color attribute of curses
+    in ranger.
 
                                                         *g:rnvimr_ranger_cmd*
 g:rnvimr_ranger_cmd
@@ -262,12 +271,15 @@ Advanced configuration:
     " Disable a border for floating window
     let g:rnvimr_draw_border = 0
 
+    " Change the border's color
+    let g:rnvimr_border_attr = {'fg': 14, 'bg': -1}
+
     " Make Neovim wipe the buffers corresponding to the files deleted by Ranger
     let g:rnvimr_bw_enable = 1
 
     " Set up only two columns in miller mode and draw border with separators
     let g:rnvimr_ranger_cmd = 'ranger --cmd="set column_ratios 1,1"
-                \ --cmd="set draw_borders separators"'
+                \ --cmd="set draw_borders both"'
 
     " Link CursorLine into RnvimrNormal highlight in the Floating window
     highlight link RnvimrNormal CursorLine

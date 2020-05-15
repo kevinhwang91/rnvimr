@@ -5,6 +5,7 @@ Make ranger adjust to floating window of neovim
 import os
 import inspect
 import textwrap
+import curses
 import ranger
 from ranger.ext.rifle import Rifle
 from ranger.gui.ui import UI
@@ -220,6 +221,60 @@ class Hacks():
             raw_draw = UeberzugImageDisplayer.draw
             UeberzugImageDisplayer.draw = wrap_draw
 
+    def fix_view_miller(self, attr):
+        """
+        Call by draw_border, fix ViewMiller can't draw border properly.
+
+        :param attr int: attribute of curses
+        """
+        # pylint: disable=import-outside-toplevel
+        from ranger.gui.widgets.view_miller import ViewMiller
+
+        code = textwrap.dedent(inspect.getsource(ViewMiller.resize))
+        code = code.replace('def resize', 'def view_miller_resize')
+        code = code.replace('left = pad', 'left = 0')
+        code = code.replace('wid = int(self.wid - left + 1 - pad)',
+                            'wid = int(self.wid - left + 1)')
+
+        view_miller_module = inspect.getmodule(ViewMiller)
+        exec(code, view_miller_module.__dict__)  # pylint: disable=exec-used
+
+        ViewMiller.resize = view_miller_module.view_miller_resize
+
+        def view_miller_draw_border(self, border_types):
+            self.win.attrset(attr)
+            if 'outline' in border_types:
+                try:
+                    self.win.hline(0, 0, curses.ACS_HLINE, self.wid)
+                    self.win.hline(self.hei - 1, 0, curses.ACS_HLINE, self.wid)
+                    y, x = self.win.getparyx()  # pylint: disable=invalid-name
+                    self.parent.addch(y, 0, curses.ACS_LTEE)
+                    self.parent.addch(y, self.wid + 1, curses.ACS_RTEE)
+                    self.parent.addch(y + self.hei - 1, 0, curses.ACS_LTEE)
+                    self.parent.addch(y + self.hei - 1, self.wid + 1, curses.ACS_RTEE)
+                except curses.error:
+                    pass
+
+            if 'separators' in border_types:
+                for child in self.columns[:-1]:
+                    if not child.has_preview():
+                        continue
+                    if child.main_column and self.pager.visible:
+                        break
+                    y, x = self.hei - 1, child.x + child.wid - 1  # pylint: disable=invalid-name
+                    try:
+                        self.win.vline(1, x, curses.ACS_VLINE, y - 1)
+                        if 'outline' in border_types:
+                            self.addch(0, x, curses.ACS_TTEE, 0)
+                            self.addch(y, x, curses.ACS_BTEE, 0)
+                        else:
+                            self.addch(0, x, curses.ACS_VLINE, 0)
+                            self.addch(y, x, curses.ACS_VLINE, 0)
+                    except curses.error:
+                        pass
+
+        ViewMiller._draw_borders = view_miller_draw_border  # pylint: disable=protected-access
+
     def draw_border(self):
         """
         Using curses draw a border of floating window.
@@ -248,9 +303,17 @@ class Hacks():
 
         UI.update_size = update_size
 
-        import curses  # pylint: disable=import-outside-toplevel
+        from ranger.gui import color  # pylint: disable=import-outside-toplevel
+
+        try:
+            attr_dict = client.nvim.vars['rnvimr_border_attr']
+        except KeyError:
+            attr_dict = {}
+
+        attr = curses.color_pair(color.get_color(attr_dict.get('fg', -1), attr_dict.get('bg', -1)))
 
         def wrap_draw(self):
+            self.win.attrset(attr)
             self.win.border(curses.ACS_VLINE, curses.ACS_VLINE, curses.ACS_HLINE,
                             curses.ACS_HLINE, curses.ACS_ULCORNER, curses.ACS_URCORNER,
                             curses.ACS_LLCORNER, curses.ACS_LRCORNER)
@@ -286,6 +349,8 @@ class Hacks():
 
         raw_suspend = UI.suspend
         UI.suspend = wrap_suspend
+
+        self.fix_view_miller(attr)
 
 
 OLD_HOOK_INIT = ranger.api.hook_init
