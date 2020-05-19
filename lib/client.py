@@ -71,7 +71,8 @@ class Client():
             cmd.append('silent! edit {}'.format(files[0]))
         else:
             for file in files:
-                cmd.append('silent! edit +normal\\ {}zt {}'.format(start_line, file))
+                cmd.append('noautocmd silent! edit +normal\\ {}zt {}'.format(start_line, file))
+            cmd[-1].replace('noautocmd ', '')
 
         if pick_enable:
             cmd.append('call rnvimr#rpc#enable_attach_file()')
