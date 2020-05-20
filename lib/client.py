@@ -61,8 +61,8 @@ class Client():
         if pick_enable:
             cmd.append('close')
         else:
-            cmd.append('let cur_tab = nvim_get_current_tabpage()')
-            cmd.append('let cur_win = nvim_get_current_win()')
+            cmd.append('let rnvimr_cur_tab = nvim_get_current_tabpage()')
+            cmd.append('let rnvimr_cur_win = nvim_get_current_win()')
             cmd.append('noautocmd wincmd p')
         if split:
             cmd.append('if bufname("%") != ""')
@@ -78,14 +78,14 @@ class Client():
             cmd.append('call rnvimr#rpc#enable_attach_file()')
         else:
             cmd.append('call rnvimr#rpc#buf_checkpoint()')
-            cmd.append('if cur_tab != nvim_get_current_tabpage()')
-            cmd.append('noautocmd call nvim_win_close(cur_win, 0)')
-            cmd.append('noautocmd call rnvimr#toggle()')
+            cmd.append('if rnvimr_cur_tab != nvim_get_current_tabpage()')
+            cmd.append('noautocmd call nvim_win_close(rnvimr_cur_win, 0)')
+            cmd.append('call rnvimr#toggle()')
             cmd.append('else')
-            cmd.append('noautocmd call nvim_set_current_win(cur_win)')
+            cmd.append('call nvim_set_current_win(rnvimr_cur_win)')
             cmd.append('endif')
             cmd.append('noautocmd startinsert')
-            cmd.append('unlet cur_tab')
-            cmd.append('unlet cur_win')
+            cmd.append('unlet rnvimr_cur_tab')
+            cmd.append('unlet rnvimr_cur_win')
 
         self.nvim.command('|'.join(cmd), async_=True)
