@@ -41,7 +41,7 @@ class Client():
         """
         self.nvim.call('rnvimr#rpc#set_winhl', winhl)
 
-    def rpc_edit(self, files, split=None, start_line=1):
+    def rpc_edit(self, files, split=None, start_line=0):
         """
         Edit ranger target files in neovim though RPC.
 
@@ -63,7 +63,7 @@ class Client():
         else:
             cmd.append('let rnvimr_cur_tab = nvim_get_current_tabpage()')
             cmd.append('let rnvimr_cur_win = nvim_get_current_win()')
-            cmd.append('noautocmd wincmd p')
+            cmd.append('wincmd p')
         if split:
             cmd.append('if bufname("%") != ""')
             cmd.append(split)
@@ -71,7 +71,10 @@ class Client():
             cmd.append('silent! edit {}'.format(files[0]))
         else:
             for file in files:
-                cmd.append('noautocmd silent! edit +normal\\ {}zt {}'.format(start_line, file))
+                if start_line > 0:
+                    cmd.append('noautocmd silent! edit +normal\\ {}zt {}'.format(start_line, file))
+                else:
+                    cmd.append('noautocmd silent! edit {}'.format(file))
             cmd[-1] = cmd[-1].replace('noautocmd ', '', 1)
 
         if pick_enable:
