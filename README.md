@@ -14,7 +14,7 @@ Different than other Ranger vim-plugins, Rnvimr gives you full control over Rang
 
 ## Requirements
 
-1. [Ranger](https://github.com/ranger/ranger)
+1. [Ranger](https://github.com/ranger/ranger) (v1.9.3 at least)
 2. [Pynvim](https://github.com/neovim/pynvim)
 3. [Neovim](https://github.com/neovim/neovim)
 4. Python3
