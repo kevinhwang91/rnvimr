@@ -70,12 +70,11 @@ class Client():
             cmd.append('endif')
             cmd.append('silent! edit {}'.format(files[0]))
         else:
-            for file in files:
-                if start_line > 0:
-                    cmd.append('noautocmd silent! edit +normal\\ {}zt {}'.format(start_line, file))
-                else:
-                    cmd.append('noautocmd silent! edit {}'.format(file))
-            cmd[-1] = cmd[-1].replace('noautocmd ', '', 1)
+            if start_line == 0:
+                cmd.append('silent! arglocal {}'.format(' '.join(files)))
+                cmd.append('argglobal')
+            else:
+                cmd.append('silent! edit +normal\\ {}zt {}'.format(start_line, files[0]))
 
         if pick_enable:
             cmd.append('call rnvimr#rpc#enable_attach_file()')
@@ -91,4 +90,5 @@ class Client():
             cmd.append('unlet rnvimr_cur_tab')
             cmd.append('unlet rnvimr_cur_win')
 
+        cmd.append('cd .')
         self.nvim.command('|'.join(cmd), async_=True)
