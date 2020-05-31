@@ -50,7 +50,7 @@ class Service(FileManagerAware):
             self.fm.execute_console('AttachFile {} {}'.format(line, path))
 
     @Register
-    def destory(self, args):  # pylint: disable=no-self-use
+    def destory(self, args):  # pylint: disable=unused-argument
         """
         Destroy everything execpt heavy UI
 

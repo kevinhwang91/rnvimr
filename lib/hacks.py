@@ -221,6 +221,65 @@ class Hacks():
             raw_draw = UeberzugImageDisplayer.draw
             UeberzugImageDisplayer.draw = wrap_draw
 
+    def fix_ui(self, attr, client):
+        """
+        Call by draw_border, fix UI to draw a border.
+
+        :param attr int: attribute of curses
+        :param client object: Object of attached neovim session
+        """
+        def update_size(self):
+            self.win.erase()
+            self.termsize = self.win.getmaxyx()
+            y, x = self.termsize  # pylint: disable=invalid-name
+            y, x = y - 2, x - 2  # pylint: disable=invalid-name
+            self.browser.resize(self.settings.status_bar_on_top and 3 or 2, 1, y - 2, x)
+            self.taskview.resize(2, 1, y - 2, x)
+            self.pager.resize(2, 1, y - 2, x)
+            self.titlebar.resize(1, 1, 1, x)
+            self.status.resize(self.settings.status_bar_on_top and 2 or y, 1, 1, x)
+            self.console.resize(y, 1, 1, x)
+
+        UI.update_size = update_size
+
+        def wrap_draw(self):
+            self.win.attrset(attr)
+            self.win.border(curses.ACS_VLINE, curses.ACS_VLINE, curses.ACS_HLINE,
+                            curses.ACS_HLINE, curses.ACS_ULCORNER, curses.ACS_URCORNER,
+                            curses.ACS_LLCORNER, curses.ACS_LRCORNER)
+            raw_draw(self)
+
+        raw_draw = UI.draw
+        UI.draw = wrap_draw
+
+        def wrap_initialize(self):
+            client.set_winhl('curses_winhl')
+            raw_initialize(self)
+
+        raw_initialize = UI.initialize
+        UI.initialize = wrap_initialize
+
+        def wrap_suspend(self):
+
+            def check_destory():
+                for displayable in self.container:
+                    if displayable.win:
+                        if hasattr(displayable, 'container'):
+                            for child in displayable.container:
+                                if child.win:
+                                    return False
+                        else:
+                            return False
+                return True
+
+            raw_suspend(self)
+            #  destory don't restore the NormalFloat highlight
+            if not check_destory():
+                client.set_winhl('normal_winhl')
+
+        raw_suspend = UI.suspend
+        UI.suspend = wrap_suspend
+
     def fix_view_miller(self, attr):
         """
         Call by draw_border, fix ViewMiller can't draw border properly.
@@ -289,20 +348,6 @@ class Hacks():
         if not draw_border:
             return
 
-        def update_size(self):
-            self.win.erase()
-            self.termsize = self.win.getmaxyx()
-            y, x = self.termsize  # pylint: disable=invalid-name
-            y, x = y - 2, x - 2  # pylint: disable=invalid-name
-            self.browser.resize(self.settings.status_bar_on_top and 3 or 2, 1, y - 2, x)
-            self.taskview.resize(2, 1, y - 2, x)
-            self.pager.resize(2, 1, y - 2, x)
-            self.titlebar.resize(1, 1, 1, x)
-            self.status.resize(self.settings.status_bar_on_top and 2 or y, 1, 1, x)
-            self.console.resize(y, 1, 1, x)
-
-        UI.update_size = update_size
-
         from ranger.gui import color  # pylint: disable=import-outside-toplevel
 
         try:
@@ -324,44 +369,7 @@ class Hacks():
 
         attr = curses.color_pair(color.get_color(attr_fg, attr_bg))
 
-        def wrap_draw(self):
-            self.win.attrset(attr)
-            self.win.border(curses.ACS_VLINE, curses.ACS_VLINE, curses.ACS_HLINE,
-                            curses.ACS_HLINE, curses.ACS_ULCORNER, curses.ACS_URCORNER,
-                            curses.ACS_LLCORNER, curses.ACS_LRCORNER)
-            raw_draw(self)
-
-        raw_draw = UI.draw
-        UI.draw = wrap_draw
-
-        def wrap_initialize(self):
-            client.set_winhl('curses_winhl')
-            raw_initialize(self)
-
-        raw_initialize = UI.initialize
-        UI.initialize = wrap_initialize
-
-        def wrap_suspend(self):
-
-            def check_destory():
-                for displayable in self.container:
-                    if displayable.win:
-                        if hasattr(displayable, 'container'):
-                            for child in displayable.container:
-                                if child.win:
-                                    return False
-                        else:
-                            return False
-                return True
-
-            raw_suspend(self)
-            #  destory don't restore the NormalFloat highlight
-            if not check_destory():
-                client.set_winhl('normal_winhl')
-
-        raw_suspend = UI.suspend
-        UI.suspend = wrap_suspend
-
+        self.fix_ui(attr, client)
         self.fix_view_miller(attr)
 
 

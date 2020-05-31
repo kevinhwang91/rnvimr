@@ -41,7 +41,7 @@ class EmitRangerCwd(Command):
 
     def execute(self):
         if self.fm.client:
-            path = self.fm.client.set_cwd(self.fm.thisdir.path)
+            self.fm.client.set_cwd(self.fm.thisdir.path)
 
 class EditFile(Command):
     """
