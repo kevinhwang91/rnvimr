@@ -112,6 +112,7 @@ function! rnvimr#init(...) abort
     augroup RnvimrTerm
         autocmd!
         autocmd VimResized <buffer> call s:redraw_win()
+        autocmd VimLeavePre * call rnvimr#rpc#destory()
         if get(g:, 'rnvimr_bw_enable', 0)
             autocmd TermEnter,WinEnter <buffer> call rnvimr#rpc#buf_checkpoint()
             autocmd WinLeave <buffer> call rnvimr#rpc#buf_wipe()

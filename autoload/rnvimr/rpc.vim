@@ -58,6 +58,10 @@ function! rnvimr#rpc#attach_file_once(file) abort
     endif
 endfunction
 
+function! rnvimr#rpc#destory() abort
+    return rpcrequest(s:host_chan_id, 'destory')
+endfunction
+
 " ranger to neovim
 function! rnvimr#rpc#set_winhl(winhl) abort
     return rnvimr#set_winhl(a:winhl)

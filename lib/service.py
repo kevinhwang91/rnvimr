@@ -50,6 +50,16 @@ class Service(FileManagerAware):
             self.fm.execute_console('AttachFile {} {}'.format(line, path))
 
     @Register
+    def destory(self, args):  # pylint: disable=no-self-use
+        """
+        Destroy everything execpt heavy UI
+
+        :param args args list: No use
+        """
+        self.fm.ui.console.destroy()
+        self.fm.loader.destroy()
+
+    @Register
     def echo(self, args):  # pylint: disable=no-self-use
         """
         Echo Test for checkhealth
