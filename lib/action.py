@@ -7,9 +7,10 @@ import os
 from ranger.api.commands import Command
 from ranger.core.loader import Loadable
 
-class SplitAndEdit(Command):
+
+class Edit(Command):
     """
-    A command of ranger to split and edit file.
+    A command of ranger to edit file.
 
     """
 
@@ -17,8 +18,30 @@ class SplitAndEdit(Command):
         action = ' '.join(self.args[1:])
         if not self.fm.thisfile.is_file or not action:
             return
-        self.fm.client.rpc_edit([self.fm.thisfile], split=action)
+        self.fm.client.rpc_edit([self.fm.thisfile], edit=action)
 
+
+class JumpNvimCwd(Command):
+    """
+    A command of ranger to jump into the cwd of neovim.
+
+    """
+
+    def execute(self):
+        path = None
+        if self.fm.client:
+            path = self.fm.client.get_cwd()
+        self.fm.cd(path)
+
+class EmitRangerCwd(Command):
+    """
+    A command of ranger to emit cwd of ranger to neovim.
+
+    """
+
+    def execute(self):
+        if self.fm.client:
+            path = self.fm.client.set_cwd(self.fm.thisdir.path)
 
 class EditFile(Command):
     """
@@ -62,7 +85,7 @@ class AttachFile(Command):
         path = self.rest(2)
 
         if not path and self.fm.client:
-            path = self.fm.client.nvim.command_output('echo expand("#:p")')
+            path = self.fm.client.get_cb()
 
         if os.path.isdir(path):
             dirname = path

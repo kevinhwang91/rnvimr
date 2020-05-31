@@ -34,7 +34,7 @@ class Hacks():
 
         self.client_attach()
         self.show_attached_file()
-        self.map_split_action()
+        self.map_action()
         self.calibrate_ueberzug()
         self.fix_editor()
         self.fix_quit()
@@ -67,20 +67,20 @@ class Hacks():
         old_accept_file = ranger.container.directory.accept_file
         ranger.container.directory.accept_file = accept_file
 
-    def map_split_action(self):
+    def map_action(self):
         """
-        Bind key for spliting action.
+        Bind key for action.
 
         """
 
         try:
-            action_dict = self.fm.client.nvim.vars['rnvimr_split_action']
+            action_dict = self.fm.client.nvim.vars['rnvimr_action']
         except KeyError:
             return
         if not action_dict or not isinstance(action_dict, dict):
             return
         for key, val in action_dict.items():
-            self.fm.execute_console('map {} SplitAndEdit {}'.format(key, val))
+            self.fm.execute_console('map {} {}'.format(key, val))
 
     def fix_editor(self):
         """

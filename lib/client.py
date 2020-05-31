@@ -41,12 +41,33 @@ class Client():
         """
         self.nvim.call('rnvimr#rpc#set_winhl', winhl)
 
-    def rpc_edit(self, files, split=None, start_line=0):
+    def get_cb(self):
+        """
+        Get current buffer of neovim.
+
+        """
+        return self.nvim.command_output('echo expand("#:p")')
+
+    def get_cwd(self):
+        """
+        Get current work directory of neovim.
+
+        """
+        return self.nvim.command_output('pwd')
+
+    def set_cwd(self, path):
+        """
+        Set current work directory of neovim.
+
+        """
+        self.nvim.command('cd {}'.format(path))
+
+    def rpc_edit(self, files, edit=None, start_line=0):
         """
         Edit ranger target files in neovim though RPC.
 
         :param files list: list of file name
-        :param split str: neovim split command
+        :param edit str: neovim edit command
         :param start_line int: start line number
         """
 
@@ -64,9 +85,9 @@ class Client():
             cmd.append('let rnvimr_cur_tab = nvim_get_current_tabpage()')
             cmd.append('let rnvimr_cur_win = nvim_get_current_win()')
             cmd.append('wincmd p')
-        if split:
+        if edit:
             cmd.append('if bufname("%") != ""')
-            cmd.append(split)
+            cmd.append(edit)
             cmd.append('endif')
             cmd.append('silent! edit {}'.format(files[0]))
         else:

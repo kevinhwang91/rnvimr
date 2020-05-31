@@ -161,6 +161,15 @@ tnoremap <silent> <M-l> <C-\><C-n>:RnvimrResize 1,8,9,11,5<CR>
 " Resize floating window by single preset layout
 tnoremap <silent> <M-y> <C-\><C-n>:RnvimrResize 6<CR>
 
+" Map Rnvimr action
+let g:rnvimr_action = {
+            \ '<C-t>': 'Edit tabedit',
+            \ '<C-x>': 'Edit split',
+            \ '<C-v>': 'Edit vsplit',
+            \ 'gw': 'JumpNvimCwd',
+            \ 'yw': 'EmitRangerCwd'
+            \ }
+
 " Customize the initial layout
 let g:rnvimr_layout = { 'relative': 'editor',
             \ 'width': float2nr(round(0.6 * &columns)),

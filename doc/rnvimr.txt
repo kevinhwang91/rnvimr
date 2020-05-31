@@ -142,14 +142,32 @@ g:rnvimr_presets
     If the element is an empty dict '{}', it represents the initial element of
     |g:rnvimr_presets| while running |:RnvimrToggle|.
 
-                                                        *g:rnvimr_split_action*
-g:rnvimr_split_action
+                                                        *g:rnvimr_action*
+g:rnvimr_action
     Default: {dict}
 >
-           { '<C-t>': 'tabedit', '<C-x>': 'split', '<C-v>': 'vsplit' }
+            { 
+                '<C-t>': 'Edit tabedit',
+                '<C-x>': 'Edit split',
+                '<C-v>': 'Edit vsplit',
+                'gw': 'JumpNvimCwd',
+                'yw': 'EmitRangerCwd'
+            }
 <
-    Split action for selected file in Ranger. Disable it by using empty dict.
-    The keymap should follow Ranger's format.
+    *Edit* : Use Neovim's command to edit the selected file in Ranger.
+    *JumpNvimCwd* : Change Ranger's cwd to Neovim's.
+    *EmitRangerCwd* : Change Neovim's cwd to Ranger's.
+
+    Disable it by using empty dict. The keymap should follow Ranger's format.
+
+                                                        *g:rnvimr_jump_action*
+g:rnvimr_jump_action
+    Default: {dict}
+>
+           { 'gw': 'JumpNvimCwd' }
+<
+
+    Disable it by using empty dict. The keymap should follow Ranger's format.
 
                                                         *g:rnvimr_ex_enable*
 g:rnvimr_ex_enable
@@ -295,6 +313,15 @@ Advanced configuration:
 
     " Resize floating window by single preset layout
     tnoremap <silent> <M-y> <C-\><C-n>:RnvimrResize 6<CR>
+
+    " Map Rnvimr action
+    let g:rnvimr_action = {
+                \ '<C-t>': 'Edit tabedit',
+                \ '<C-x>': 'Edit split',
+                \ '<C-v>': 'Edit vsplit',
+                \ 'gw': 'JumpNvimCwd',
+                \ 'yw': 'EmitRangerCwd'
+                \ }
 
     " Customize initial layout
     let g:rnvimr_layout = { 'relative': 'editor',

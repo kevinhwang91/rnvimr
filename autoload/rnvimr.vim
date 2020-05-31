@@ -2,13 +2,15 @@ let s:rnvimr_path = expand('<sfile>:h:h')
 let s:editor = s:rnvimr_path . '/bin/editor.py'
 let s:confdir = s:rnvimr_path . '/ranger'
 let s:default_ranger_cmd = 'ranger'
-let s:default_split_action = {
-            \ '<C-t>': 'tabedit',
-            \ '<C-x>': 'split',
-            \ '<C-v>': 'vsplit'
+let s:default_action = {
+            \ '<C-t>': 'Edit tabedit',
+            \ '<C-x>': 'Edit split',
+            \ '<C-v>': 'Edit vsplit',
+            \ 'gw': 'JumpNvimCwd',
+            \ 'yw': 'EmitRangerCwd'
             \}
 
-let g:rnvimr_split_action = get(g:, 'rnvimr_split_action', s:default_split_action)
+let g:rnvimr_action = get(g:, 'rnvimr_action', s:default_action)
 let g:rnvimr_draw_border = get(g:, 'rnvimr_draw_border', 1)
 let g:rnvimr_pick_enable = get(g:, 'rnvimr_pick_enable', 0)
 
