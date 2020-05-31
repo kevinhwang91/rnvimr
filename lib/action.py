@@ -8,9 +8,9 @@ from ranger.api.commands import Command
 from ranger.core.loader import Loadable
 
 
-class Edit(Command):
+class NvimEdit(Command):
     """
-    A command of ranger to edit file.
+    A command of ranger to use neovim's command to edit file.
 
     """
 

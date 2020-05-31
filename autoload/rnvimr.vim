@@ -3,9 +3,9 @@ let s:editor = s:rnvimr_path . '/bin/editor.py'
 let s:confdir = s:rnvimr_path . '/ranger'
 let s:default_ranger_cmd = 'ranger'
 let s:default_action = {
-            \ '<C-t>': 'Edit tabedit',
-            \ '<C-x>': 'Edit split',
-            \ '<C-v>': 'Edit vsplit',
+            \ '<C-t>': 'NvimEdit tabedit',
+            \ '<C-x>': 'NvimEdit split',
+            \ '<C-v>': 'NvimEdit vsplit',
             \ 'gw': 'JumpNvimCwd',
             \ 'yw': 'EmitRangerCwd'
             \}

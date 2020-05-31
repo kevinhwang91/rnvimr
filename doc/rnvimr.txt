@@ -147,14 +147,14 @@ g:rnvimr_action
     Default: {dict}
 >
             { 
-                '<C-t>': 'Edit tabedit',
-                '<C-x>': 'Edit split',
-                '<C-v>': 'Edit vsplit',
+                '<C-t>': 'NvimEdit tabedit',
+                '<C-x>': 'NvimEdit split',
+                '<C-v>': 'NvimEdit vsplit',
                 'gw': 'JumpNvimCwd',
                 'yw': 'EmitRangerCwd'
             }
 <
-    *Edit* : Use Neovim's command to edit the selected file in Ranger.
+    *NvimEdit* : Use Neovim's command to edit the selected file in Ranger.
     *JumpNvimCwd* : Change Ranger's cwd to Neovim's.
     *EmitRangerCwd* : Change Neovim's cwd to Ranger's.
 
@@ -316,9 +316,9 @@ Advanced configuration:
 
     " Map Rnvimr action
     let g:rnvimr_action = {
-                \ '<C-t>': 'Edit tabedit',
-                \ '<C-x>': 'Edit split',
-                \ '<C-v>': 'Edit vsplit',
+                \ '<C-t>': 'NvimEdit tabedit',
+                \ '<C-x>': 'NvimEdit split',
+                \ '<C-v>': 'NvimEdit vsplit',
                 \ 'gw': 'JumpNvimCwd',
                 \ 'yw': 'EmitRangerCwd'
                 \ }

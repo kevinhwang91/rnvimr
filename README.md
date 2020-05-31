@@ -163,9 +163,9 @@ tnoremap <silent> <M-y> <C-\><C-n>:RnvimrResize 6<CR>
 
 " Map Rnvimr action
 let g:rnvimr_action = {
-            \ '<C-t>': 'Edit tabedit',
-            \ '<C-x>': 'Edit split',
-            \ '<C-v>': 'Edit vsplit',
+            \ '<C-t>': 'NvimEdit tabedit',
+            \ '<C-x>': 'NvimEdit split',
+            \ '<C-v>': 'NvimEdit vsplit',
             \ 'gw': 'JumpNvimCwd',
             \ 'yw': 'EmitRangerCwd'
             \ }
