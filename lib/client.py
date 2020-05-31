@@ -92,6 +92,9 @@ class Client():
             cmd.append('silent! edit {}'.format(files[0]))
         else:
             if start_line == 0:
+                cmd.append('if bufname("%") == ""')
+                cmd.append('edit {}'.format(files[0]))
+                cmd.append('endif')
                 cmd.append('silent! arglocal {}'.format(' '.join(files)))
                 cmd.append('argglobal')
             else:
