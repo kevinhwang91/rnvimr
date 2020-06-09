@@ -40,7 +40,7 @@ Example for [yay](https://github.com/Jguer/yay) in ArchLinux and [pip](https://p
 ```sh
 # ueberzug is optional
 
-# ArchLinux install all requirements is extreme convenient
+# ArchLinux install all requirements is extremely convenient
 yay -S ranger-git python-pynvim python-ueberzug-git
 
 # pip
@@ -214,9 +214,13 @@ A: Please follow the below steps to solve this issue:
 
 3. execute`:RnvimrSync` to synchronize the `rifle.conf` just modified with Rnvimr.
 
-Q: This plugin doesn't work for me.
+Q: I'm Using Mac, this plugin doesn't work for me.
 
-A: Install [Requirements](#Requirements) first, if you use Mac, you should install Ranger by `pip3 install ranger-fm` instead of `brew install ranger` because the Ranger installed by brew still using Python2.
+A: Install [Requirements](#Requirements) first, you should install Ranger by `pip3 install ranger-fm` instead of `brew install ranger` because the Ranger installed by brew still using Python2.
+
+Q: CheckHealth says RPC timeout.
+
+A: Install [Requirements](#Requirements) first, run ex command `:echo  $NVIM_LISTEN_ADDRESS` to confirm that the message output is in a format like this `/tmp/nvimIYj484/0`, Rnvimr needs this environment variable as the socket path.
 
 ## License
 
