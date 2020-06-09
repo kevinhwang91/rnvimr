@@ -104,41 +104,45 @@ endfunction
 
 function! s:check_rpc() abort
     call health#report_start('RPC')
-    call s:install_lib()
-    let $RNVIMR_CHECKHEALTH = 1
-    let opts = {
-                \'pty': 1,
-                \'ranger_host_id': -1,
-                \'on_stdout': function('s:system_handler'),
-                \}
+    try
+        call s:install_lib()
+        let $RNVIMR_CHECKHEALTH = 1
+        let opts = {
+                    \'pty': 1,
+                    \'ranger_host_id': -1,
+                    \'on_stdout': function('s:system_handler'),
+                    \}
 
-    let confdir = shellescape(s:rnvimr_path . '/_ranger')
-    let cmd = s:ranger_cmd . ' --confdir=' . confdir
-    let jobid = jobstart(cmd, opts)
+        let confdir = shellescape(s:rnvimr_path . '/_ranger')
+        let cmd = s:ranger_cmd . ' --confdir=' . confdir
+        let jobid = jobstart(cmd, opts)
 
-    " jobwait doesn't work with pty option
-    let count = 30
-    while count > 0 && opts.ranger_host_id == -1
-        sleep 100m
-        let count -= 1
-    endwhile
+        " jobwait doesn't work with pty option
+        let count = 30
+        while count > 0 && opts.ranger_host_id == -1
+            sleep 100m
+            let count -= 1
+        endwhile
 
-    if count == 0
-        call health#report_error('RPC: timeout 3s')
-    else
-        let send = 'Give me five!'
-        let rec = rpcrequest(opts.ranger_host_id, 'echo', send)
-        let msg = 'RPC echo: Neovim send "' . send . '" and receive "' . rec . '"'
-        if send ==# rec
-            call health#report_ok(msg)
+        if count == 0
+            call health#report_error('RPC: timeout 3s')
         else
-            call health#report_error(msg)
+            let send = 'Give me five!'
+            let rec = rpcrequest(opts.ranger_host_id, 'echo', send)
+            let msg = 'RPC echo: Neovim send "' . send . '" and receive "' . rec . '"'
+            if send ==# rec
+                call health#report_ok(msg)
+            else
+                call health#report_error(msg)
+            endif
         endif
-    endif
-
-    call jobstop(jobid)
-    unlet $RNVIMR_CHECKHEALTH
-    call s:clean_lib()
+        call jobstop(jobid)
+    catch /.*/
+        call health#report_error(v:exception)       
+    finally
+        silent! unlet $RNVIMR_CHECKHEALTH
+        call s:clean_lib()
+    endtry
 endfunction
 
 function! health#rnvimr#check() abort

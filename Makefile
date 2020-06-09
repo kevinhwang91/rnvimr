@@ -16,7 +16,7 @@ install: clean
 
 sync: install
 	mkdir -p $(RNVIMR_PLUGINS)
-	-cp $(RANGER_PLUGINS)/[^_]*.py $(RNVIMR_PLUGINS)
+	-cp -r $(RANGER_PLUGINS)/[^_]* $(RNVIMR_PLUGINS)
 	-cp $(RANGER_CONFIG)/commands.py $(RNVIMR_PLUGINS)/0commands.py
 	-cp $(RANGER_CONFIG)/rc.conf $(RNVIMR_CONFIG)
 	-cp $(RANGER_CONFIG)/rifle.conf $(RNVIMR_CONFIG)
