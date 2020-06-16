@@ -13,6 +13,7 @@ let s:default_action = {
 let g:rnvimr_action = get(g:, 'rnvimr_action', s:default_action)
 let g:rnvimr_draw_border = get(g:, 'rnvimr_draw_border', 1)
 let g:rnvimr_pick_enable = get(g:, 'rnvimr_pick_enable', 0)
+let g:rnvimr_hide_git = get(g:, 'rnvimr_hide_git', 0)
 
 highlight default link RnvimrNormal NormalFloat
 highlight default link RnvimrCurses Normal

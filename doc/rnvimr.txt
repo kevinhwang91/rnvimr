@@ -190,6 +190,12 @@ g:rnvimr_bw_enable
     It will automatically make Neovim execute |bwipeout| to wipe the buffers
     corresponding to the files that have been deleted by Ranger.
 
+                                                        *g:rnvimr_hide_git*
+g:rnvimr_hide_git
+    Default: 0
+
+    Make Ranger to hide the files included in gitignore.
+
                                                         *g:rnvimr_draw_border*
 g:rnvimr_draw_border
     Default: 1
@@ -288,6 +294,9 @@ Advanced configuration:
 
     " Disable a border for floating window
     let g:rnvimr_draw_border = 0
+
+    " Hide the files included in gitignore
+    let g:rnvimr_hide_git = 1
 
     " Change the border's color
     let g:rnvimr_border_attr = {'fg': 14, 'bg': -1}
