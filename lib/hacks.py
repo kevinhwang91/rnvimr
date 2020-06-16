@@ -9,6 +9,7 @@ import curses
 import ranger
 from ranger.ext.rifle import Rifle
 from ranger.gui.ui import UI
+from ranger.core.loader import Loadable
 from .client import Client
 
 
@@ -40,6 +41,7 @@ class Hacks():
         self.fix_quit()
         self.fix_bulkrename()
         self.fix_pager()
+        self.fix_column_ratio()
         self.fix_vcs()
         self.draw_border()
         return self.old_hook_init(self.fm)
@@ -168,6 +170,18 @@ class Hacks():
         UI.open_pager = wrap_open_pager
         UI.close_pager = wrap_close_pager
 
+    def fix_column_ratio(self):
+        """
+        set column_ratios will reconstruct Browser widget.
+        Browser widget referenced by Status widget can't be updated.
+
+        """
+
+        def sync_status():
+            self.fm.ui.status.column = self.fm.ui.browser.main_column
+
+        self.fm.settings.signal_bind('setopt.column_ratios', sync_status, priority=0.05)
+
     def fix_vcs(self):
         """
         Vcs in ranger is a bad design. It will produce a death lock with
@@ -186,7 +200,6 @@ class Hacks():
 
         if self.fm.settings.vcs_aware:
             # pylint: disable=import-outside-toplevel
-            from ranger.core.loader import Loadable
             self.fm.execute_console('set vcs_aware False')
             descr = "Restore user's setting of vcs_aware"
             loadable = Loadable(enable_vcs_aware(), descr)
