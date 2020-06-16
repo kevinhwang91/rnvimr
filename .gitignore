@@ -2,3 +2,4 @@ _ranger
 ranger
 doc/tags
 *.pyc
+/.vim

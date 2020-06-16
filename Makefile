@@ -13,6 +13,7 @@ all: sync
 install: clean
 	mkdir -p $(RNVIMR_PLUGINS)
 	cp $(RNVIMR_LIB)/[^_]*.py $(RNVIMR_PLUGINS)
+	cp $(RNVIMR_LIB)/patch/[^_]*.py $(RNVIMR_PLUGINS)
 
 sync: install
 	mkdir -p $(RNVIMR_PLUGINS)

@@ -25,6 +25,13 @@ class Client():
         if socket_path:
             self.nvim = pynvim.attach('socket', path=socket_path)
 
+    def get_window_info(self):
+        """
+        Get the floating window info.
+
+        """
+        return self.nvim.request('nvim_win_get_config', 0)
+
     def hide_window(self):
         """
         Hide the floating window.
