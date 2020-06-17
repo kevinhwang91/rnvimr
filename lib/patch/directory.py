@@ -4,17 +4,17 @@ Patch ranger.container.directory.Directory
 """
 
 import os.path
-from os import stat as os_stat, lstat as os_lstat
 import re
 import subprocess
+from os import lstat as os_lstat
+from os import stat as os_stat
 from time import time
 
-from ranger.ext.mount_path import mount_path
+import ranger.container.directory
+from ranger.container.directory import Directory, InodeFilterConstants
 from ranger.container.file import File
-from ranger.container.directory import InodeFilterConstants
-from ranger.container.directory import Directory
-from ranger.container.directory import accept_file
 from ranger.ext.human_readable import human_readable
+from ranger.ext.mount_path import mount_path
 
 
 def wrap_dir_for_git():
@@ -300,7 +300,7 @@ def refilter(self):
         filters.append(lambda fobj: temporary_filter_search(fobj.basename))
     filters.extend(self.filter_stack)
 
-    self.files = [f for f in self.files_all if accept_file(f, filters)]
+    self.files = [f for f in self.files_all if ranger.container.directory.accept_file(f, filters)]
 
     # A fix for corner cases when the user invokes show_hidden on a
     # directory that contains only hidden directories and hidden files.
