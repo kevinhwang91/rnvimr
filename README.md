@@ -187,7 +187,7 @@ let g:rnvimr_presets = [
             \ {},
             \ {'width': 0.700, 'height': 0.700},
             \ {'width': 0.800, 'height': 0.800},
-            \ {'width': 0.950, 'height': 0.950}
+            \ {'width': 0.950, 'height': 0.950},
             \ {'width': 0.500, 'height': 0.500, 'col': 0, 'row': 0},
             \ {'width': 0.500, 'height': 0.500, 'col': 0, 'row': 0.5},
             \ {'width': 0.500, 'height': 0.500, 'col': 0.5, 'row': 0},
