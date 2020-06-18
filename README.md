@@ -17,7 +17,7 @@ Different than other Ranger vim-plugins, Rnvimr gives you full control over Rang
 1. [Ranger](https://github.com/ranger/ranger) (v1.9.3 at least)
 2. [Pynvim](https://github.com/neovim/pynvim)
 3. [Neovim](https://github.com/neovim/neovim)
-4. Python3
+4. Python3.6
 5. [Ueberzug](https://github.com/seebye/ueberzug) (optional, if you don't use Tmux, Ueberzug is required at least [d86eeb](https://github.com/seebye/ueberzug/commit/d86eeb303b9468226884425853472287a794d9dd))
 
 ## Features
@@ -25,11 +25,11 @@ Different than other Ranger vim-plugins, Rnvimr gives you full control over Rang
 - Replaces the built-in Netrw as a default file explorer
 - Calibrated preview images for ueberzug
 - Attach file automatically when toggling Ranger
-- Runs [RPC](https://neovim.io/doc/user/api.html#RPC) inside Ranger to communicate with NeoVim
 - Automatically adjusts floating window after resizing NeoVim
 - Fully customizable layouts for floating window
 - Better experience for Pager view in Ranger
-- Automatically wipe the buffers corresponding to the files deleted by Ranger
+- Automatically wipe out the buffers corresponding to the files deleted by Ranger
+- Synchronize the current working directory of Neovim and Ranger
 
 ## Installation
 
@@ -96,17 +96,22 @@ Use `:RnvimrResize` to cycle the preset layouts.
 
 `:RnvimrSync` will synchronize your personal Ranger configuration and plugins with Rnvimr this time.
 
+`:RnvimrInstall` Only install the library of this plugin, default (vanilla) Ranger configuration.
+
 **Note:** if your Ranger config changes, you will have to run `:RnvimrSync` to use your updated Ranger configuration with Rnvimr
 
 `Enter` to open a file in Ranger. Rnvimr also supports `CTRL-T`/`CTRL-X`/`CTRL-V` key bindings that allow you to open up a file in a new tab, a new horizontal split, or in a new vertical split.
 
 Pressing `q` in Ranger simply hides the floating window. Ranger will attach the file of the current buffer in the next toggle event.
 
-Synchronize the scroll line of pager view with Neovim:
+Pressing `yw` in Ranger will emit Ranger's cwd to Neovim's, `gw` will Jump to Neovim's cwd.
 
+<details>
+<summary>Synchronize the scroll line of pager view with Neovim:</summary>
 <p align="center">
   <img width="960px" src="https://user-images.githubusercontent.com/17562139/79363617-b5241580-7f7a-11ea-9332-bd865dd2cf1e.gif">
 </p>
+</details>
 
 ### Example configuration
 
@@ -128,10 +133,10 @@ tnoremap <silent> <M-o> <C-\><C-n>:RnvimrToggle<CR>
 Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
 
 " Make Ranger replace Netrw and be the file explorer
-let g:rnvimr_ex_enable = 1
+let g:rnvimr_enable_ex = 1
 
 " Make Ranger to be hidden after picking a file
-let g:rnvimr_pick_enable = 1
+let g:rnvimr_enable_picker = 1
 
 " Disable a border for floating window
 let g:rnvimr_draw_border = 0
@@ -140,7 +145,7 @@ let g:rnvimr_draw_border = 0
 let g:rnvimr_border_attr = {'fg': 14, 'bg': -1}
 
 " Make Neovim wipe the buffers corresponding to the files deleted by Ranger
-let g:rnvimr_bw_enable = 1
+let g:rnvimr_enable_bw = 1
 
 " Set up only two columns in miller mode and draw border with separators
 let g:rnvimr_ranger_cmd = 'ranger --cmd="set column_ratios 1,1"
@@ -221,6 +226,10 @@ A: Install [Requirements](#Requirements) first, you should install Ranger by `pi
 Q: CheckHealth says RPC timeout.
 
 A: Install [Requirements](#Requirements) first, run ex command `:echo  $NVIM_LISTEN_ADDRESS` to confirm that the message output is in a format like this `/tmp/nvimIYj484/0`, Rnvimr needs this environment variable as the socket path.
+
+Q: How can I go back to the previous directory in Ranger after attaching a new file.
+
+A: Press `H` in Ranger, mean go back to the last history directory.
 
 ## License
 
