@@ -76,6 +76,8 @@ class AttachFile(Command):
 
     """
 
+    resolve_macros = False
+
     def execute(self):
         try:
             line = int(self.arg(1))

@@ -77,48 +77,8 @@ class Client():
         :param edit str: neovim edit command
         :param start_line int: start line number
         """
-
         if not files:
             return
 
-        try:
-            pick_enable = self.nvim.vars['rnvimr_pick_enable']
-        except KeyError:
-            pick_enable = 0
-        cmd = []
-        if pick_enable:
-            cmd.append('close')
-        else:
-            cmd.append('let rnvimr_cur_tab = nvim_get_current_tabpage()')
-            cmd.append('let rnvimr_cur_win = nvim_get_current_win()')
-            cmd.append('wincmd p')
-        if edit:
-            cmd.append('if bufname("%") != ""')
-            cmd.append(edit)
-            cmd.append('endif')
-            cmd.append('silent! edit {}'.format(files[0]))
-        else:
-            if start_line == 0:
-                cmd.append('silent! edit {}'.format(files[0]))
-                if len(files) > 1:
-                    cmd.append('silent! arglocal {}'.format(' '.join(files)))
-                    cmd.append('argglobal')
-            else:
-                cmd.append('silent! edit +normal\\ {}zt {}'.format(start_line, files[0]))
-
-        if pick_enable:
-            cmd.append('call rnvimr#rpc#enable_attach_file()')
-        else:
-            cmd.append('call rnvimr#rpc#buf_checkpoint()')
-            cmd.append('if rnvimr_cur_tab != nvim_get_current_tabpage()')
-            cmd.append('noautocmd call nvim_win_close(rnvimr_cur_win, 0)')
-            cmd.append('call rnvimr#toggle()')
-            cmd.append('else')
-            cmd.append('call nvim_set_current_win(rnvimr_cur_win)')
-            cmd.append('endif')
-            cmd.append('noautocmd startinsert')
-            cmd.append('unlet rnvimr_cur_tab')
-            cmd.append('unlet rnvimr_cur_win')
-
-        cmd.append('cd .')
-        self.nvim.command('|'.join(cmd), async_=True)
+        self.nvim.call('rnvimr#rpc#edit', edit, start_line,
+                       [str(file) for file in files], async_=True)
