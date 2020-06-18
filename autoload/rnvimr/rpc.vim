@@ -62,7 +62,47 @@ function! rnvimr#rpc#destory() abort
     return rpcrequest(s:host_chan_id, 'destory')
 endfunction
 
-" ranger to neovim
+function! rnvimr#rpc#edit(edit, start_line, files) abort
+    let files = map(copy(a:files), 'fnameescape(v:val)')
+    let pick = get(g:, 'rnvimr_pick_enable', 0)
+    if pick
+        close
+    else
+        let cur_tab = nvim_get_current_tabpage()
+        let cur_win = nvim_get_current_win()
+        wincmd p
+    endif
+    if !empty(a:edit)
+        if bufname('%') != ''
+            execute 'noautocmd ' . a:edit
+        endif
+        execute 'silent! edit ' . files[0]
+    else
+        if a:start_line == 0
+            execute 'silent! edit ' . files[0]
+            if len(files) > 1
+                execute 'silent! arglocal ' . join(files)
+                argglobal
+            endif
+        else
+            execute 'silent! edit +normal\ ' . a:start_line . 'zt ' . files[0]
+        endif
+    endif
+    if pick
+        call rnvimr#rpc#enable_attach_file()
+    else
+        call rnvimr#rpc#buf_checkpoint()
+        if cur_tab != nvim_get_current_tabpage()
+            noautocmd call nvim_win_close(cur_win, 0)
+            call rnvimr#toggle()
+        else
+            call nvim_set_current_win(cur_win)
+        endif
+    endif
+    cd .
+endfunction
+
+" ranger to neovi
 function! rnvimr#rpc#set_winhl(winhl) abort
     return rnvimr#set_winhl(a:winhl)
 endfunction
