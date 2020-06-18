@@ -102,7 +102,7 @@ class AttachFile(Command):
                 self.fm.thisdir.refilter()
                 self.fm.thisdir.move_to_obj(path)
 
-                if self.fm.thisfile.has_preview():
+                if hasattr(self.fm.thisfile, 'has_preview') and self.fm.thisfile.has_preview():
                     descr = 'Scroll the line for preview file'
                     loadable = Loadable(self.scroll_preview(line - 1), descr)
                     self.fm.loader.add(loadable, append=True)

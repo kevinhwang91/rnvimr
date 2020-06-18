@@ -4,6 +4,7 @@ Make ranger as a client to neovim
 """
 import os
 import pynvim
+from . import rutil
 
 
 class Client():
@@ -46,7 +47,50 @@ class Client():
 
         :param winhl str: variable in ranger buffer
         """
-        self.nvim.call('rnvimr#rpc#set_winhl', winhl)
+        self.nvim.call('rnvimr#rpc#set_winhl', winhl, async_=True)
+
+    def list_buf_name_nr(self):
+        """
+        List buffers in a dict, with name as key and number as val.
+
+        """
+        return self.nvim.call('rnvimr#rpc#list_buf_name_nr')
+
+    def do_saveas(self, bufnr, target_name):
+        """
+        Use bufnr to save buffer as target_name.
+        target_name must be existed before saving buffer, otherwise nothing happens.
+
+        :param bufnr int: buffer number in neovim
+        :param target_name str: absolute path of a target name
+        """
+        if not os.path.exists(target_name):
+            return
+        self.nvim.call('rnvimr#rpc#do_saveas', bufnr, target_name, async_=True)
+
+    def move_buf(self, src, dst):
+        """
+        Move the buffer from src to dst for saving information of loaded buffers included in src.
+
+        :param src str: absolute path of source
+        :param dst str: absolute path of destination
+        """
+        buf_name_nr = self.list_buf_name_nr()
+        isdir = os.path.isdir(dst)
+        if isdir:
+            ncwd = self.get_cwd()
+            self.set_cwd('', noautocmd=True)
+        for name, num in buf_name_nr.items():
+            if isdir:
+                if rutil.is_subpath(src, name):
+                    real_dst = os.path.join(dst, os.path.relpath(name, src))
+                    self.do_saveas(num, real_dst)
+            elif name == src:
+                self.do_saveas(num, dst)
+                break
+
+        if isdir:
+            self.set_cwd(ncwd, noautocmd=True)
 
     def get_cb(self):
         """
@@ -62,12 +106,14 @@ class Client():
         """
         return self.nvim.command_output('pwd')
 
-    def set_cwd(self, path):
+    def set_cwd(self, path, noautocmd=False):
         """
         Set current work directory of neovim.
 
+        :param path str: absolute path
+        :param noautocmd bool: whether use noautocmd command
         """
-        self.nvim.command('cd {}'.format(path))
+        self.nvim.command('{} cd {}'.format('noautocmd' if noautocmd else '', path))
 
     def rpc_edit(self, files, edit=None, start_line=0):
         """
