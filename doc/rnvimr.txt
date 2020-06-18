@@ -1,6 +1,6 @@
 *rnvimr.txt*
 
-Version: 0.1.0
+Version: 0.2.0
 Author : kevinhwang <https://github.com/kevinhwang91>
 License: BSD3
 
@@ -34,7 +34,7 @@ REQUIREMENTS                                            *rnvimr-requirements*
 
 1. *Ranger* (https://github.com/ranger/ranger)
 2. *Pynvim* (https://github.com/neovim/pynvim)
-3. Python3
+3. Python3.6
 4. *Ueberzug* (https://github.com/seebye/ueberzug) (optional)
 
 ================================================================================
@@ -44,11 +44,12 @@ FEATURES                                                *rnvimr-features*
 - Replace builtin Netrw to be a file explorer
 - Calibrate preview images for Ueberzug
 - Attach file automatically when toggling Ranger.
-- Run RPC inside Ranger to communicate with NeoVim
 - Adjust floating window after resizing window of NeoVim
 - Fully customizable layouts for floating window
 - Better experience for Pager view in Ranger
-- Automatically wipe the buffers corresponding to the files deleted by Ranger
+- Automatically wipe out the buffers corresponding to the files deleted by
+  Ranger
+- Synchronize the current working directory of Neovim and Ranger
 
 ================================================================================
 
@@ -90,11 +91,17 @@ Use |:RnvimrResize| to cycle the preset layouts.
 |:RnvimrSync| will synchronize your personal Ranger configuration and plugins
 with Rnvimr this time.
 
+|:RnvimrInstall| Only install the library of this plugin, default (vanilla)
+Ranger configuration.
+
 `Enter` to open a file in Ranger. Rnvimr also supports `CTRL-T/CTRL-X/CTRL-V`
 key bindings to open in a new tab, a new split, or in a new vertical split.
 
 Pressing `q` in Ranger just hides the floating window. Ranger will attach the
 file of the current buffer in the next toggle event.
+
+Pressing `yw` in Ranger will emit Ranger's cwd to Neovim's, `gw` will Jump
+to Neovim's cwd.
 
 ================================================================================
 
@@ -127,8 +134,8 @@ g:rnvimr_presets
     values are the final result of the layout, such as `{'width': 10}`, the
     width of floating window is 10.
 
-    If the type of values of 'width', 'height', 'col', 'row' are {float}, its
-    value must be {0.0-1.0}. It represents the proportion of the columns or
+    If the type of values of 'width', 'height', 'col', 'row' are {float}, the
+    values must be {0.0-1.0}. It represents the proportion of the columns or
     lines of NeoVim.
     The values of 'width' and 'col' are the proportion of |&columns|.
     The values of 'height' and 'row' are the proportion of |&lines|.
@@ -146,7 +153,7 @@ g:rnvimr_presets
 g:rnvimr_action
     Default: {dict}
 >
-            { 
+            {
                 '<C-t>': 'NvimEdit tabedit',
                 '<C-x>': 'NvimEdit split',
                 '<C-v>': 'NvimEdit vsplit',
@@ -154,41 +161,31 @@ g:rnvimr_action
                 'yw': 'EmitRangerCwd'
             }
 <
-    *NvimEdit* : Use Neovim's command to edit the selected file in Ranger.
-    *JumpNvimCwd* : Change Ranger's cwd to Neovim's.
-    *EmitRangerCwd* : Change Neovim's cwd to Ranger's.
+    |NvimEdit| : Use Neovim's command to edit the selected file in Ranger.
+    |JumpNvimCwd| : Change Ranger's cwd to Neovim's.
+    |EmitRangerCwd| : Change Neovim's cwd to Ranger's.
 
     Disable it by using empty dict. The keymap should follow Ranger's format.
 
-                                                        *g:rnvimr_jump_action*
-g:rnvimr_jump_action
-    Default: {dict}
->
-           { 'gw': 'JumpNvimCwd' }
-<
-
-    Disable it by using empty dict. The keymap should follow Ranger's format.
-
-                                                        *g:rnvimr_ex_enable*
-g:rnvimr_ex_enable
+                                                        *g:rnvimr_enable_ex*
+g:rnvimr_enable_ex
     Default: 0
 
-    Enable Ranger to replace builtin Netrw to be a file explorer
+    Enable Ranger to replace builtin Netrw to be a file explorer.
 
-                                                        *g:rnvimr_pick_enable*
-g:rnvimr_pick_enable
+                                                        *g:rnvimr_enable_picker*
+g:rnvimr_enable_picker
     Default: 0
 
     Enable Ranger to be hidden after picking a file.
     It will automatically attach a file in next |:RnvimrToggle|.
 
-                                                        *g:rnvimr_bw_enable*
-g:rnvimr_bw_enable
+                                                        *g:rnvimr_enable_bw*
+g:rnvimr_enable_bw
     Default: 0
 
-    Enable Neovim to synchronize the buffers with the deleted files by Ranger
-    It will automatically make Neovim execute |bwipeout| to wipe the buffers
-    corresponding to the files that have been deleted by Ranger.
+    Make Neovim automatically execute |bwipeout| to wipe out the buffers deleted
+    by Ranger.
 
                                                         *g:rnvimr_hide_git*
 g:rnvimr_hide_git
@@ -202,7 +199,7 @@ g:rnvimr_draw_border
 
     Using builtin curses in Ranger to draw a border for the floating window.
     The border is only drawn in curses environment, so leaving curses
-    environment such as entering SHELL in Ranger doesn't draw a border no mater
+    environment such as entering $SHELL in Ranger doesn't draw a border no mater
     what the value of *g:rnvimr_draw_border* is.
 
                                                         *g:rnvimr_border_attr*
@@ -213,7 +210,7 @@ g:rnvimr_border_attr
 <
     Builtin curses attributes, the range of integer value is [-1, 255]. It maps
     the Neovim's terminal color. -1 means the default color attribute of curses
-    in ranger.
+    in Ranger.
 
                                                         *g:rnvimr_ranger_cmd*
 g:rnvimr_ranger_cmd
@@ -227,7 +224,7 @@ g:rnvimr_sync_path
     Default: Default path of Ranger's configuration, depend on *$HOME* and
     *$XDG_CONFIG_HOME* environment.
 
-    No need to set this variable while using default configuration and path.
+    No need to set this option while using default configuration and path.
     If you want to extend the plugin of Rnvimr, you will set this variable to
     isolate the configuration of Ranger and Rnvimr.
 
@@ -268,6 +265,10 @@ COMMANDS                                                *rnvimr-commands*
 :RnvimrSync
     Synchronize all configuration and plugins of Ranger with Rnvimr.
 
+                                                        *:RnvimrInstall*
+:RnvimrInstall
+    Only install library of this plugin, default (vanilla) Ranger configuration.
+
 ================================================================================
 
 EXAMPLES                                                *rnvimr-config-examples*
@@ -287,10 +288,10 @@ Advanced configuration:
     Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
 
     " Make Ranger replace netrw to be a file explorer
-    let g:rnvimr_ex_enable = 1
+    let g:rnvimr_enable_ex = 1
 
     " Make Ranger to be hidden after picking a file
-    let g:rnvimr_pick_enable = 1
+    let g:rnvimr_enable_picker = 1
 
     " Disable a border for floating window
     let g:rnvimr_draw_border = 0
@@ -302,7 +303,7 @@ Advanced configuration:
     let g:rnvimr_border_attr = {'fg': 14, 'bg': -1}
 
     " Make Neovim wipe the buffers corresponding to the files deleted by Ranger
-    let g:rnvimr_bw_enable = 1
+    let g:rnvimr_enable_bw = 1
 
     " Set up only two columns in miller mode and draw border with separators
     let g:rnvimr_ranger_cmd = 'ranger --cmd="set column_ratios 1,1"
