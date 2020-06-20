@@ -12,6 +12,7 @@ from . import rifle
 from . import ueberzug
 from . import ui
 from . import viewmiller
+from . import directory
 from .client import Client
 
 
@@ -38,6 +39,7 @@ class Hacks():
         self.client_attach()
         self.map_action()
         self.fake_editor()
+        self.hide_git_files()
         self.show_attached_file()
         self.draw_border()
         self.calibrate_ueberzug()
@@ -79,6 +81,22 @@ class Hacks():
         """
 
         rifle.build_fake_editor(self.fm.client)
+
+    def hide_git_files(self):
+        """
+        Hide the files included in gitignore.
+
+        """
+
+        client = self.fm.client
+        try:
+            hide_git = client.nvim.vars['rnvimr_hide_gitignore']
+        except KeyError:
+            return
+        if not hide_git:
+            return
+
+        directory.wrap_dir_for_git()
 
     def show_attached_file(self):
         """

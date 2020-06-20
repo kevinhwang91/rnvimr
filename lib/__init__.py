@@ -7,4 +7,6 @@ from .patch import rifle
 from .patch import ueberzug
 from .patch import ui
 from .patch import viewmiller
+from .patch import directory
+from .patch import loader
 from .patch import statusbar
