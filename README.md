@@ -30,6 +30,7 @@ Different than other Ranger vim-plugins, Rnvimr gives you full control over Rang
 - Better experience for Pager view in Ranger
 - Automatically wipe out the buffers corresponding to the files deleted by Ranger
 - Synchronize the current working directory of Neovim and Ranger
+- Hide the files included in gitignore
 
 ## Installation
 
@@ -142,7 +143,7 @@ let g:rnvimr_enable_picker = 1
 let g:rnvimr_draw_border = 0
 
 " Hide the files included in gitignore
-let g:rnvimr_hide_git = 1
+let g:rnvimr_hide_gitignore = 1
 
 " Change the border's color
 let g:rnvimr_border_attr = {'fg': 14, 'bg': -1}
@@ -150,7 +151,7 @@ let g:rnvimr_border_attr = {'fg': 14, 'bg': -1}
 " Make Neovim wipe the buffers corresponding to the files deleted by Ranger
 let g:rnvimr_enable_bw = 1
 
-" Set up only two columns in miller mode and draw border with separators
+" Set up only two columns in miller mode and draw border with both
 let g:rnvimr_ranger_cmd = 'ranger --cmd="set column_ratios 1,1"
             \ --cmd="set draw_borders both"'
 

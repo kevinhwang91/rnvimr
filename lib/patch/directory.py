@@ -16,6 +16,8 @@ from ranger.container.file import File
 from ranger.ext.human_readable import human_readable
 from ranger.ext.mount_path import mount_path
 
+from .loader import GitignoreLoader
+from . import rutil
 
 def wrap_dir_for_git():
     """
@@ -26,20 +28,6 @@ def wrap_dir_for_git():
     Directory.load_bit_by_bit = load_bit_by_bit
     Directory.refilter = refilter
     Directory.load_content_if_outdated = load_content_if_outdated
-
-
-def _find_git_root(path):
-    while True:
-        if os.path.basename(path) == '.git':
-            return None
-        repodir = os.path.join(path, '.git')
-        if os.path.exists(repodir):
-            return path
-        path_o = path
-        path = os.path.dirname(path)
-        if path == path_o:
-            return None
-
 
 def _walklevel(some_dir, level):
     some_dir = some_dir.rstrip(os.path.sep)
@@ -65,30 +53,29 @@ def _mtimelevel(path, level):
 
 
 def _build_git_ignore_process(fobj):
-    git_root = _find_git_root(fobj.path)
+    git_root = rutil.find_git_root(fobj.path)
     if git_root:
         grfobj = fobj.fm.get_directory(git_root)
         git_ignore_cmd = ['git', 'status', '--ignored', '-z', '--porcelain', '.']
-        if grfobj.load_content_mtime > fobj.load_content_mtime \
-                and hasattr(grfobj, 'ignored'):
+        if grfobj.load_content_mtime > fobj.load_content_mtime and hasattr(grfobj, 'ignored'):
             fobj.ignored = grfobj.ignored
         else:
             fobj.ignore_proc = subprocess.Popen(git_ignore_cmd, cwd=fobj.path,
                                                 stdout=subprocess.PIPE,
                                                 stderr=subprocess.PIPE)
+            fobj.fm.loader.add(GitignoreLoader(fobj.ignore_proc, fobj.path), append=True)
 
 
 def load_bit_by_bit(self):
-    """An iterator that loads a part on every next() call
+    """
+    Almost code is copied from ranger.
+    An iterator that loads a part on every next() call
 
     Returns a generator which load a part of the directory
     in each iteration.
     """
 
     self.ignore_proc = None
-    if not self.settings.show_hidden and self.settings.hidden_filter:
-        _build_git_ignore_process(self)
-
     self.loading = True
     self.percent = 0
     self.load_if_outdated()
@@ -121,6 +108,9 @@ def load_bit_by_bit(self):
                 filenames = [mypath + (mypath == '/' and fname or '/' + fname)
                              for fname in filelist]
                 self.load_content_mtime = os.stat(mypath).st_mtime
+
+            if not self.settings.show_hidden:
+                _build_git_ignore_process(self)
 
             if self.cumulative_size_calculated:
                 # If self.content_loaded is true, this is not the first
@@ -202,7 +192,7 @@ def load_bit_by_bit(self):
             self.filenames = filenames
             self.files_all = files
 
-            self._clear_marked_items()
+            self._clear_marked_items()  # pylint: disable=protected-access
             for item in self.files_all:
                 if item.path in marked_paths:
                     item.mark_set(True)
@@ -235,6 +225,10 @@ def load_bit_by_bit(self):
 
 
 def refilter(self):
+    """
+    Almost code is copied from ranger.
+
+    """
     if self.files_all is None:
         return  # propably not loaded yet
 
@@ -252,25 +246,6 @@ def refilter(self):
                     return False
             return True
         filters.append(hidden_filter_func)
-
-        def exclude_ignore(fobj):
-            for rpath in self.ignored:
-                if os.path.commonprefix([fobj.path, rpath]) == rpath:
-                    return False
-            return True
-
-        if self.ignore_proc:
-            out, err = self.ignore_proc.communicate()
-            if err:
-                self.fm.notify(err.decode('utf-8'))
-            else:
-                self.ignored = [os.path.normpath(os.path.join(_find_git_root(self.path), line[3:]))
-                                for line in out.decode('utf-8').split('\0')[:-1]
-                                if line.startswith('!! ')]
-            self.ignore_proc = None
-
-        if hasattr(self, 'ignored'):
-            filters.append(exclude_ignore)
 
     if self.narrow_filter:
         # pylint: disable=unsupported-membership-test
@@ -299,6 +274,12 @@ def refilter(self):
         temporary_filter_search = self.temporary_filter.search
         filters.append(lambda fobj: temporary_filter_search(fobj.basename))
     filters.extend(self.filter_stack)
+
+    if not self.settings.show_hidden:
+        if hasattr(self, 'ignored'):
+            filters.append(
+                lambda fobj: all([os.path.commonprefix([fobj.path, ipath]) != ipath
+                                  for ipath in self.ignored]))
 
     self.files = [f for f in self.files_all if ranger.container.directory.accept_file(f, filters)]
 

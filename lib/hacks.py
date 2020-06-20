@@ -90,7 +90,7 @@ class Hacks():
 
         client = self.fm.client
         try:
-            hide_git = client.nvim.vars['rnvimr_hide_git']
+            hide_git = client.nvim.vars['rnvimr_hide_gitignore']
         except KeyError:
             return
         if not hide_git:
