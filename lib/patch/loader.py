@@ -46,8 +46,8 @@ class GitignoreLoader(Loadable, FileManagerAware):
             if fobj.files and not fobj.pointed_obj:
                 fobj.pointed_obj = fobj.files[0]
             elif not fobj.files:
-                fobj.content_loaded = False
                 fobj.pointed_obj = None
+                fobj.correct_pointer()
 
             fobj.move_to_obj(fobj.pointed_obj)
             self.fm.ui.browser.request_clear()

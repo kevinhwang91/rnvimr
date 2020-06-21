@@ -109,8 +109,7 @@ def load_bit_by_bit(self):
                              for fname in filelist]
                 self.load_content_mtime = os.stat(mypath).st_mtime
 
-            if not self.settings.show_hidden:
-                _build_git_ignore_process(self)
+            _build_git_ignore_process(self)
 
             if self.cumulative_size_calculated:
                 # If self.content_loaded is true, this is not the first
@@ -288,8 +287,8 @@ def refilter(self):
     if self.files and not self.pointed_obj:
         self.pointed_obj = self.files[0]
     elif not self.files:
-        self.content_loaded = False
         self.pointed_obj = None
+        self.correct_pointer()
 
     self.move_to_obj(self.pointed_obj)
 
