@@ -4,7 +4,9 @@ let s:attach_file_enabled = 0
 function! s:valid_setup() abort
     if s:host_chan_id == -1
         echoerr 'ranger has not started yet.'
+        return 1
     endif
+    return 0
 endfunction
 
 function! rnvimr#rpc#enable_attach_file() abort
@@ -16,7 +18,9 @@ function! rnvimr#rpc#disable_attach_file() abort
 endfunction
 
 function! rnvimr#rpc#attach_file(file) abort
-    call s:valid_setup()
+    if s:valid_setup()
+        return
+    endif
     if filereadable(a:file) || isdirectory(a:file)
         call rpcnotify(s:host_chan_id, 'attach_file', line('w0'), a:file)
     endif
@@ -41,7 +45,7 @@ function! rnvimr#rpc#destory() abort
     return rpcrequest(s:host_chan_id, 'destory')
 endfunction
 
-" ranger to neovi
+" ranger to neovim
 function! rnvimr#rpc#edit(edit, start_line, files) abort
     let files = map(copy(a:files), 'fnameescape(v:val)')
     let picker_enabled = get(g:, 'rnvimr_enable_picker', 0)

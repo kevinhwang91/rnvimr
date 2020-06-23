@@ -40,7 +40,7 @@ class GitignoreLoader(Loadable, FileManagerAware):
         fobj.ignore_proc = None
 
         if not fobj.settings.show_hidden:
-            gitignore_filter = lambda f: all([os.path.commonprefix([f.path, ipath]) != ipath
+            gitignore_filter = lambda f: all([not rutil.is_path_subset(ipath, f.path)
                                               for ipath in fobj.ignored])
             fobj.files = [f for f in fobj.files if gitignore_filter(f)]
             if fobj.files and not fobj.pointed_obj:

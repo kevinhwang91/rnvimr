@@ -23,7 +23,6 @@ def wrap_dir_for_git():
     """
     Wrap directory for hidden git ignored files.
 
-    :param client object: Object of attached neovim session
     """
     Directory.load_bit_by_bit = load_bit_by_bit
     Directory.refilter = refilter
@@ -277,7 +276,7 @@ def refilter(self):
     if not self.settings.show_hidden:
         if hasattr(self, 'ignored'):
             filters.append(
-                lambda fobj: all([os.path.commonprefix([fobj.path, ipath]) != ipath
+                lambda fobj: all([not rutil.is_path_subset(ipath, fobj.path)
                                   for ipath in self.ignored]))
 
     self.files = [f for f in self.files_all if ranger.container.directory.accept_file(f, filters)]

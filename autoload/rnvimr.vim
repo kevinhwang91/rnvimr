@@ -1,5 +1,4 @@
 let s:rnvimr_path = expand('<sfile>:h:h')
-let s:editor = s:rnvimr_path . '/bin/editor.py'
 let s:confdir = s:rnvimr_path . '/ranger'
 let s:default_ranger_cmd = 'ranger'
 let s:default_action = {
@@ -80,7 +79,8 @@ endfunction
 
 function! rnvimr#toggle() abort
     if rnvimr#context#get_buf_handle() != -1
-        if rnvimr#context#get_win_handle() != -1 && nvim_win_is_valid(rnvimr#context#get_win_handle())
+        if rnvimr#context#get_win_handle() != -1 &&
+                    \ nvim_win_is_valid(rnvimr#context#get_win_handle())
             if nvim_get_current_win() == rnvimr#context#get_win_handle()
                 call nvim_win_close(rnvimr#context#get_win_handle(), 0)
             else
