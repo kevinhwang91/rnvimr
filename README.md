@@ -45,10 +45,14 @@ Example for [yay](https://github.com/Jguer/yay) in ArchLinux and [pip](https://p
 yay -S ranger-git python-pynvim python-ueberzug-git
 
 # pip
+
+# macOS user please install ranger by `pip3 ranger-fm` instead of `brew install ranger`
+# There're some issues about installation, such as https://github.com/ranger/ranger/issues/1214
+# Please refer to the issues of ranger for more details
 pip3 install ranger-fm pynvim
-# If you use tmux, run `pip3 ueberzug` directly to install ueberzug, otherwise install by source code
-git clone https://github.com/seebye/ueberzug.git && cd ueberzug
-pip3 install .
+
+# If you use tmux, run `pip3 ueberzug` directly to install ueberzug, otherwise install from github
+pip3 install git+https://github.com/seebye/ueberzug.git
 ```
 
 ### Plugin
@@ -223,7 +227,7 @@ A: Please follow the below steps to solve this issue:
 
 3. execute`:RnvimrSync` to synchronize the `rifle.conf` just modified with Rnvimr.
 
-Q: I'm Using Mac, this plugin doesn't work for me.
+Q: I'm Using macOS, this plugin doesn't work for me.
 
 A: Install [Requirements](#Requirements) first, you should install Ranger by `pip3 install ranger-fm` instead of `brew install ranger` because the Ranger installed by brew still using Python2.
 

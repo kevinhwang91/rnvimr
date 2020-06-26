@@ -46,12 +46,13 @@ function! s:on_exit(job_id, data, event) abort
 endfunction
 
 function! s:setup_winhl() abort
-    call setbufvar(rnvimr#context#get_buf_handle(), 'normal_winhl', 'Normal:RnvimrNormal')
-    call setbufvar(rnvimr#context#get_buf_handle(), 'curses_winhl', 'Normal:RnvimrCurses')
+    let buf_hd = rnvimr#context#get_buf_handle()
+    call setbufvar(buf_hd, 'normal_winhl', 'Normal:RnvimrNormal')
+    call setbufvar(buf_hd, 'curses_winhl', 'Normal:RnvimrCurses')
     if g:rnvimr_draw_border
-        let default_winhl = getbufvar(rnvimr#context#get_buf_handle(), 'curses_winhl')
+        let default_winhl = getbufvar(buf_hd, 'curses_winhl')
     else
-        let default_winhl = getbufvar(rnvimr#context#get_buf_handle(), 'normal_winhl')
+        let default_winhl = getbufvar(buf_hd, 'normal_winhl')
     endif
     call setwinvar(rnvimr#context#get_win_handle(), '&winhighlight', default_winhl)
 endfunction
@@ -68,23 +69,24 @@ function! s:create_ranger(cmd) abort
 endfunction
 
 function! rnvimr#resize(...) abort
-    if !nvim_win_is_valid(rnvimr#context#get_win_handle()) ||
-                \ nvim_get_current_win() != rnvimr#context#get_win_handle()
+    let win_hd = rnvimr#context#get_win_handle()
+    if !nvim_win_is_valid(win_hd) ||
+                \ nvim_get_current_win() != win_hd
         return
     endif
     let layout = call(function('rnvimr#layout#get_next_layout'), a:000)
-    call nvim_win_set_config(rnvimr#context#get_win_handle(), layout)
+    call nvim_win_set_config(win_hd, layout)
     startinsert
 endfunction
 
 function! rnvimr#toggle() abort
+    let win_hd = rnvimr#context#get_win_handle()
     if rnvimr#context#get_buf_handle() != -1
-        if rnvimr#context#get_win_handle() != -1 &&
-                    \ nvim_win_is_valid(rnvimr#context#get_win_handle())
-            if nvim_get_current_win() == rnvimr#context#get_win_handle()
-                call nvim_win_close(rnvimr#context#get_win_handle(), 0)
+        if win_hd != -1 && nvim_win_is_valid(win_hd)
+            if nvim_get_current_win() == win_hd
+                call nvim_win_close(win_hd, 0)
             else
-                call nvim_set_current_win(rnvimr#context#get_win_handle())
+                call nvim_set_current_win(win_hd)
                 startinsert
             endif
         else

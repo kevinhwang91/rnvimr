@@ -25,19 +25,21 @@ function! rnvimr#context#check_point() abort
     let s:buf_cp_dict = {}
     for buf in filter(getbufinfo({'buflisted': 1}),
                 \'v:val.changed == 0 && !empty(glob(v:val.name))')
-        let s:buf_cp_dict[buf.bufnr] = buf.name
+        let s:buf_cp_dict[buf.name] = buf.bufnr
     endfor
 endfunction
 
 function! rnvimr#context#buf_wipe() abort
     let bw_list = []
-    for bufnr in keys(filter(s:buf_cp_dict, 'empty(glob(v:val))'))
-        call add(bw_list, bufnr)
+    for [name, nr] in items(filter(s:buf_cp_dict, 'empty(glob(v:key))'))
+        if bufexists(nr) && name == fnamemodify(bufname(nr), ':p')
+            call add(bw_list, nr)
+        endif
     endfor
     if len(bw_list) > 0
         " execute bwipeout last buffer before leaving floating window, it may cause this issue:
         " E5601: Cannot close window, only floating window would remain
         " use timer to delay bwipeout after leaving floating window
-        call timer_start(0, {-> execute('bwipeout ' . join(bw_list, ' '))})
+        call timer_start(0, {-> execute('silent! bwipeout ' . join(bw_list, ' '))})
     endif
 endfunction

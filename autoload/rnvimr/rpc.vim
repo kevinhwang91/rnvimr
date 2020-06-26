@@ -65,8 +65,9 @@ function! rnvimr#rpc#edit(edit, start_line, files) abort
         if a:start_line == 0
             execute 'silent! edit ' . files[0]
             if len(files) > 1
-                execute 'silent! arglocal ' . join(files)
-                argglobal
+                for f in files[1:]
+                    execute 'badd ' . f
+                endfor
             endif
         else
             execute 'silent! edit +normal\ ' . a:start_line . 'zt ' . files[0]

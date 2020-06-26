@@ -192,7 +192,8 @@ g:rnvimr_enable_bw
 g:rnvimr_hide_gitignore
     Default: 0
 
-    Make Ranger to hide the files included in gitignore.
+    Make Ranger to hide the files included in gitignore when show_hidden=False
+    in Ranger.
 
                                                         *g:rnvimr_draw_border*
 g:rnvimr_draw_border
