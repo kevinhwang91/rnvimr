@@ -3,9 +3,11 @@ Patch ranger.core.loader.Loadable
 
 """
 import os
+import subprocess
 from ranger.core.shared import FileManagerAware
 from ranger.core.loader import Loadable
 from . import rutil
+
 
 class GitignoreLoader(Loadable, FileManagerAware):
     """
@@ -16,17 +18,20 @@ class GitignoreLoader(Loadable, FileManagerAware):
     def __init__(self, proc, path):
         self.proc = proc
         self.path = path
+        self.seconds_of_work_time = 0.01
         Loadable.__init__(self, self.generate(), 'Asynchronous callback from gitignore process.')
-
 
     def generate(self):
         """
         Poll gitignore process until it have finished.
 
         """
-        while self.proc.poll() is None:
-            yield
-        out, err = self.proc.communicate()
+        while True:
+            try:
+                out, err = self.proc.communicate(timeout=0.01)
+                break
+            except subprocess.TimeoutExpired:
+                yield
 
         if err:
             self.fm.notify('GitignoreLoader callback error: {}'
@@ -40,7 +45,8 @@ class GitignoreLoader(Loadable, FileManagerAware):
         fobj.ignore_proc = None
 
         if not fobj.settings.show_hidden:
-            gitignore_filter = lambda f: all([not rutil.is_path_subset(ipath, f.path)
+            yield
+            gitignore_filter = lambda f: all([not rutil.is_subpath(ipath, f.path)
                                               for ipath in fobj.ignored])
             fobj.files = [f for f in fobj.files if gitignore_filter(f)]
             if fobj.files and not fobj.pointed_obj:

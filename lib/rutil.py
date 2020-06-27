@@ -4,7 +4,6 @@ util
 """
 
 import os
-from pathlib import Path
 
 def find_git_root(path):
     """
@@ -23,11 +22,15 @@ def find_git_root(path):
         if path == path_o:
             return None
 
-def is_path_subset(spath, lpath):
+def is_subpath(spath, lpath):
     """
-    check the short path is a subset of long path
+    check the short path is a subpath of long path
 
     :param spath str: short path
     :param lpath str: long path
     """
-    return Path(spath) in Path(lpath).parents or Path(spath) == Path(lpath)
+
+    if lpath.startswith(spath):
+        slen, llen = len(spath), len(lpath)
+        return True if slen == llen else lpath[slen] == '/'
+    return False

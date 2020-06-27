@@ -19,6 +19,7 @@ from ranger.ext.mount_path import mount_path
 from .loader import GitignoreLoader
 from . import rutil
 
+
 def wrap_dir_for_git():
     """
     Wrap directory for hidden git ignored files.
@@ -27,6 +28,7 @@ def wrap_dir_for_git():
     Directory.load_bit_by_bit = load_bit_by_bit
     Directory.refilter = refilter
     Directory.load_content_if_outdated = load_content_if_outdated
+
 
 def _walklevel(some_dir, level):
     some_dir = some_dir.rstrip(os.path.sep)
@@ -57,7 +59,8 @@ def _build_git_ignore_process(fobj):
         grfobj = fobj.fm.get_directory(git_root)
         git_ignore_cmd = ['git', 'status', '--ignored', '-z', '--porcelain', '.']
         if grfobj.load_content_mtime > fobj.load_content_mtime and hasattr(grfobj, 'ignored'):
-            fobj.ignored = grfobj.ignored
+            fobj.ignored = [ignored for ignored in grfobj.ignored
+                            if rutil.is_subpath(ignored, fobj.path)]
         else:
             fobj.ignore_proc = subprocess.Popen(git_ignore_cmd, cwd=fobj.path,
                                                 stdout=subprocess.PIPE,
@@ -276,7 +279,7 @@ def refilter(self):
     if not self.settings.show_hidden:
         if hasattr(self, 'ignored'):
             filters.append(
-                lambda fobj: all([not rutil.is_path_subset(ipath, fobj.path)
+                lambda fobj: all([not rutil.is_subpath(ipath, fobj.path)
                                   for ipath in self.ignored]))
 
     self.files = [f for f in self.files_all if ranger.container.directory.accept_file(f, filters)]
