@@ -7,7 +7,7 @@ Different than other Ranger vim-plugins, Rnvimr gives you full control over Rang
 **Since Rnvimr requires RPC, this plugin does not support Vim for now.**
 
 <p align="center">
-  <img width="1080px" src="https://user-images.githubusercontent.com/17562139/74416173-b0aa8600-4e7f-11ea-83b5-31c07c384af1.gif">
+    <img width="1080px" src="https://user-images.githubusercontent.com/17562139/74416173-b0aa8600-4e7f-11ea-83b5-31c07c384af1.gif">
 </p>
 
 > [vimade](https://github.com/TaDaa/vimade) was used to fade interactive windows.
@@ -31,6 +31,7 @@ Different than other Ranger vim-plugins, Rnvimr gives you full control over Rang
 - Automatically wipe out the buffers corresponding to the files deleted by Ranger
 - Synchronize the current working directory of Neovim and Ranger
 - Hide the files included in gitignore
+- Save Buffer information when the src files are moved from Ranger
 
 ## Installation
 
@@ -111,11 +112,26 @@ Pressing `q` in Ranger simply hides the floating window. Ranger will attach the 
 
 Pressing `yw` in Ranger will emit Ranger's cwd to Neovim's, `gw` will Jump to Neovim's cwd.
 
+### demo
+
 <details>
-<summary>Synchronize the scroll line of pager view with Neovim:</summary>
-<p align="center">
-  <img width="960px" src="https://user-images.githubusercontent.com/17562139/79363617-b5241580-7f7a-11ea-9332-bd865dd2cf1e.gif">
-</p>
+    <summary>Synchronize the scroll line of pager view with Neovim</summary>
+    <p align="center">
+        <img width="960px" src="https://user-images.githubusercontent.com/17562139/79363617-b5241580-7f7a-11ea-9332-bd865dd2cf1e.gif">
+    </p>
+</details>
+
+<details>
+    <summary>Hide the files included in gitignore</summary>
+    <p align="center">
+        <img src="https://user-images.githubusercontent.com/17562139/86036499-8e04bc80-ba70-11ea-9f89-dac26795b7ec.png">
+    </p>
+</details>
+<details>
+    <summary>Save buffers information (undo) when the src files are moved from Ranger</summary>
+    <p align="center">
+        <img width="960px" src="https://user-images.githubusercontent.com/17562139/86033825-23518200-ba6c-11ea-88d6-914d8d8f1f96.gif">
+    </p>
 </details>
 
 ### Example configuration

@@ -51,6 +51,7 @@ FEATURES                                                *rnvimr-features*
   Ranger
 - Synchronize the current working directory of Neovim and Ranger
 - Hide the files included in gitignore
+- Save Buffer information when the src files are moved from Ranger
 
 ================================================================================
 
