@@ -9,7 +9,7 @@ import curses
 from ranger.gui.widgets.view_miller import ViewMiller
 
 
-def adapt_draw_border(attr):
+def enhance_draw_border(attr):
     """
     Call by draw_border, fix ViewMiller can't draw border properly.
 

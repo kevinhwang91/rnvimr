@@ -6,7 +6,7 @@ Patch ranger.gui.ui.UI
 import curses
 from ranger.gui.ui import UI
 
-def adapt_draw_border(attr, client):
+def enhance_draw_border(attr, client):
     """
     Call by draw_border, fix UI to draw a border.
 

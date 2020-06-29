@@ -2,9 +2,6 @@
 Make ranger adjust to floating window of neovim
 
 """
-import os
-import inspect
-import textwrap
 import curses
 import ranger
 from ranger.core.loader import Loadable
@@ -12,7 +9,10 @@ from . import rifle
 from . import ueberzug
 from . import ui
 from . import viewmiller
+from . import action
 from . import directory
+from . import ccommands
+from . import shutil_generatorized
 from .client import Client
 
 
@@ -27,7 +27,6 @@ class Hacks():
         self.fm.client = None
         self.fm.service = None
         self.fm.attached_file = None
-        self.commands = fm.commands
         self.old_hook_init = hook_init
 
     def hook_init(self):
@@ -43,9 +42,9 @@ class Hacks():
         self.show_attached_file()
         self.draw_border()
         self.calibrate_ueberzug()
-        self.adapt_scroll_pager()
-        self.adapt_quit()
-        self.adapt_bulkrename()
+        self.enhance_move_file()
+        self.enhance_scroll_pager()
+        self.enhance_quit()
         self.fix_column_ratio()
         self.fix_vcs()
         return self.old_hook_init(self.fm)
@@ -147,8 +146,8 @@ class Hacks():
 
         attr = curses.color_pair(color.get_color(attr_fg, attr_bg))
 
-        ui.adapt_draw_border(attr, client)
-        viewmiller.adapt_draw_border(attr)
+        ui.enhance_draw_border(attr, client)
+        viewmiller.enhance_draw_border(attr)
 
     def calibrate_ueberzug(self):
         """
@@ -157,60 +156,30 @@ class Hacks():
         """
         ueberzug.wrap_draw(self.fm.client)
 
-    def adapt_scroll_pager(self):
+    def enhance_move_file(self):
+        """
+        Persistent information of loaded buffers will be copied to destination files moved
+        by ranger and neovim will load destination files as buffers automatically.
+
+        """
+        action.enhance_rename(self.fm.client)
+        shutil_generatorized.wrap_move(self.fm.client)
+        ccommands.enhance_bulkrename(self.fm.commands, self.fm.client)
+
+    def enhance_scroll_pager(self):
         """
         Synchronize scroll line of pager in ranger with line number in neovim.
 
         """
-
-        if not self.commands.get_command('EditFile'):
-            return
-
-        self.commands.alias('edit_file', 'EditFile')
-        self.commands.alias('edit', 'EditFile')
+        ccommands.alias_edit_file(self.fm.commands)
         ui.wrap_pager()
 
-    def adapt_quit(self):
+    def enhance_quit(self):
         """
         Make ranger pretend to quit.
 
         """
-
-        quit_cls = self.commands.get_command('quit')
-        if not quit_cls:
-            return
-
-        def execute(self):
-
-            if len(self.fm.tabs) >= 2:
-                self.fm.tab_close()
-            else:
-                self.fm.client.hide_window()
-
-        quit_cls.execute = execute
-
-    def adapt_bulkrename(self):
-        """
-        Bulkrename need a block workflow, so restore the raw editor to edit file name.
-        To avoid maintaining code about bulkrename, hack code to replace label for rifle.
-
-        """
-
-        bulkrename_cls = self.commands.get_command('bulkrename')
-        if not bulkrename_cls:
-            return
-
-        editor = os.getenv('EDITOR')
-        if not editor:
-            editor = 'nvim'
-        code = textwrap.dedent(inspect.getsource(bulkrename_cls.execute))
-        code = code.replace('def execute', 'def bulkrename_execute')
-        code = code.replace("app='editor'", "app='{}'".format(editor))
-
-        bulkrename_module = inspect.getmodule(bulkrename_cls)
-        exec(code, bulkrename_module.__dict__)  # pylint: disable=exec-used
-
-        bulkrename_cls.execute = bulkrename_module.bulkrename_execute
+        ccommands.enhance_quit(self.fm.commands, self.fm.client)
 
     def fix_column_ratio(self):
         """
@@ -241,7 +210,6 @@ class Hacks():
             yield
 
         if self.fm.settings.vcs_aware:
-            # pylint: disable=import-outside-toplevel
             self.fm.execute_console('set vcs_aware False')
             descr = "Restore user's setting of vcs_aware"
             loadable = Loadable(enable_vcs_aware(), descr)
