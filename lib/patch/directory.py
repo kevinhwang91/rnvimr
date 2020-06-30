@@ -57,11 +57,12 @@ def _build_git_ignore_process(fobj):
     git_root = rutil.find_git_root(fobj.path)
     if git_root:
         grfobj = fobj.fm.get_directory(git_root)
-        git_ignore_cmd = ['git', 'status', '--ignored', '-z', '--porcelain', '.']
         if grfobj.load_content_mtime > fobj.load_content_mtime and hasattr(grfobj, 'ignored'):
             fobj.ignored = [ignored for ignored in grfobj.ignored
-                            if rutil.is_subpath(ignored, fobj.path)]
+                            if rutil.is_subpath(ignored, fobj.path) or
+                            os.path.dirname(ignored) == fobj.path]
         else:
+            git_ignore_cmd = ['git', 'status', '--ignored', '-z', '--porcelain', '.']
             fobj.ignore_proc = subprocess.Popen(git_ignore_cmd, cwd=fobj.path,
                                                 stdout=subprocess.PIPE,
                                                 stderr=subprocess.PIPE)
