@@ -203,7 +203,7 @@ g:rnvimr_draw_border
     Using builtin curses in Ranger to draw a border for the floating window.
     The border is only drawn in curses environment, so leaving curses
     environment such as entering $SHELL in Ranger doesn't draw a border no mater
-    what the value of *g:rnvimr_draw_border* is.
+    what the value of |g:rnvimr_draw_border| is.
 
                                                         *g:rnvimr_border_attr*
 g:rnvimr_border_attr
