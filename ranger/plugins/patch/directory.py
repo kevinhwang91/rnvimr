@@ -17,7 +17,7 @@ from ranger.ext.human_readable import human_readable
 from ranger.ext.mount_path import mount_path
 
 from .loader import GitignoreLoader
-from . import rutil
+from .. import rutil
 
 
 def wrap_dir_for_git():

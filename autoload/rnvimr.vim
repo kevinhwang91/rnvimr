@@ -18,6 +18,8 @@ let g:rnvimr_enable_picker = get(g:, 'rnvimr_enable_picker', 0)
 let g:rnvimr_enable_bw = get(g:, 'rnvimr_enable_bw', 0)
             \ || get(g:, 'rnvimr_bw_enable', 0)
 
+let g:rnvimr_vanilla = get(g:, 'rnvimr_vanilla', 0)
+
 highlight default link RnvimrNormal NormalFloat
 highlight default link RnvimrCurses Normal
 
@@ -126,18 +128,4 @@ function! rnvimr#init(...) abort
             autocmd WinLeave <buffer> call rnvimr#context#buf_wipe()
         endif
     augroup END
-endfunction
-
-function! rnvimr#make(sync_enabled) abort
-    let sync_path = get(g:, 'rnvimr_sync_path', '')
-    if a:sync_enabled
-        let make_cmd = empty(sync_path) ? 'make sync' : 'make sync RANGER_CONFIG='
-                    \ . shellescape(sync_path)
-    else
-        let make_cmd = 'make install'
-    endif
-    let msg = system('cd ' . s:rnvimr_path . ';' . make_cmd)
-    if v:shell_error
-        echoerr msg
-    endif
 endfunction

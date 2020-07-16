@@ -1,0 +1,25 @@
+CHANGES FROM 0.2.0 TO 0.3.0
+
+* dynamic import user configuration by default, remove everything about synchronizing configuration
+
+* remove :RnvimrSync and :RnvimrInstall ex command
+
+* delete Makefile, so `make install` and `make sync` are unnecessary
+
+* g:rnvimr_sync_path was desperated, use g:rnvimr_urc_path instead
+
+* g:rnvimr_ex_enable was desperated, use g:rnvimr_enable_ex instead
+
+* g:rnvimr_picker_enable was desperated, use g:rnvimr_enable_picker instead
+
+* g:rnvimr_bw_enable was desperated, use g:rnvimr_enable_bw instead
+
+* add g:rnvimr_vanilla to disable Rnvimr to import user configuration
+
+* add g:rnvimr_hide_gitignore to hide the files included in gitignore
+
+* add `JumpNvimCwd` and `EmitRangerCwd` actions
+
+* support border for floating window by default
+
+* save Buffer information when the src files are moved from Ranger

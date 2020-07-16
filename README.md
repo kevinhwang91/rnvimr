@@ -2,7 +2,8 @@
 
 Rnvimr is a NeoVim plugin that allows you to use Ranger in a floating window.
 
-Different than other Ranger vim-plugins, Rnvimr gives you full control over Ranger. It uses [RPC](https://neovim.io/doc/user/api.html#RPC) to communicate with Ranger.
+Different than other Ranger vim-plugins, Rnvimr gives you full control over Ranger.
+It uses [RPC](https://neovim.io/doc/user/api.html#RPC) to communicate with Ranger.
 
 **Since Rnvimr requires RPC, this plugin does not support Vim for now.**
 
@@ -18,14 +19,14 @@ Different than other Ranger vim-plugins, Rnvimr gives you full control over Rang
 2. [Pynvim](https://github.com/neovim/pynvim)
 3. [Neovim](https://github.com/neovim/neovim)
 4. Python3.6
-5. [Ueberzug](https://github.com/seebye/ueberzug) (optional, if you don't use Tmux, Ueberzug is required at least [d86eeb](https://github.com/seebye/ueberzug/commit/d86eeb303b9468226884425853472287a794d9dd))
+5. [Ueberzug](https://github.com/seebye/ueberzug) (optional, v18.1.6 at least)
 
 ## Features
 
 - Replaces the built-in Netrw as a default file explorer
 - Calibrated preview images for ueberzug
 - Attach file automatically when toggling Ranger
-- Automatically adjusts floating window after resizing NeoVim
+- Automatically adjusts floating window size after resizing NeoVim
 - Fully customizable layouts for floating window
 - Better experience for Pager view in Ranger
 - Automatically wipe out the buffers corresponding to the files deleted by Ranger
@@ -35,42 +36,41 @@ Different than other Ranger vim-plugins, Rnvimr gives you full control over Rang
 
 ## Installation
 
-### Requirements
+### Dependence
 
-Example for [yay](https://github.com/Jguer/yay) in ArchLinux and [pip](https://pip.pypa.io/en/stable/) in other *unix distributions:
+Example for [yay](https://github.com/Jguer/yay) in ArchLinux and
+[pip](https://pip.pypa.io/en/stable/) in other \*unix distributions:
 
 ```sh
-# ueberzug is optional
-
 # ArchLinux install all requirements is extremely convenient
 yay -S ranger-git python-pynvim python-ueberzug-git
 
 # pip
 
-# macOS user please install ranger by `pip3 ranger-fm` instead of `brew install ranger`
+# macOS users please install ranger by `pip3 ranger-fm` instead of `brew install ranger`
 # There're some issues about installation, such as https://github.com/ranger/ranger/issues/1214
 # Please refer to the issues of ranger for more details
 pip3 install ranger-fm pynvim
 
-# If you use tmux, run `pip3 ueberzug` directly to install ueberzug, otherwise install from github
-pip3 install git+https://github.com/seebye/ueberzug.git
+# ueberzug is not supported in macOS because it depends on X11
+pip3 install ueberzug
 ```
+
+> Ueberzug is optional
 
 ### Plugin
 
 Install Rnvimr with your favorite plugin manager! Example for [Vim-plug](https://github.com/junegunn/vim-plug):
 
 ```vim
-Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
+Plug 'kevinhwang91/rnvimr'
 ```
-
-> If you want Rnvimr to use the default (vanilla) Ranger configuration, please using `make install` instead of `make sync`.
 
 ### CheckHealth (optional)
 
 Run `nvim +'checkhealth rnvimr'` in shell. If everything is OK, it will output like these:
 
-```
+```log
 health#rnvimr#check
 ========================================================================
 ## OS
@@ -80,7 +80,7 @@ health#rnvimr#check
   - OK: Version: ranger-master
 
 ## Python
-  - OK: Version: 3.8.2 (default, Apr  8 2020, 14:31:25) [GCC 9.3.0]
+  - OK: Version: 3.8.3 (default, May 17 2020, 18:15:42) [GCC 10.1.0]
 
 ## Pynvim
   - OK: Version: 0.4.1
@@ -89,30 +89,27 @@ health#rnvimr#check
   - OK: Ueberzug is ready
 
 ## RPC
-  - OK: Install lib for checkhealth successfully
   - OK: RPC echo: Neovim send "Give me five!" and receive "Give me five!"
-  - OK: Clean lib for checkhealth successfully
 ```
 
 ## Usage
 
-Use `:RnvimrToggle` to create a Ranger process, and if one exists, `:RnvimrToggle` simply shows or hides the floating window.
+Use `:RnvimrToggle` to create a Ranger process, and if one exists,
+`:RnvimrToggle` simply shows or hides the floating window.
 
 Use `:RnvimrResize` to cycle the preset layouts.
 
-`:RnvimrSync` will synchronize your personal Ranger configuration and plugins with Rnvimr this time.
+`Enter` to open a file in Ranger.
 
-`:RnvimrInstall` Only install the library of this plugin, default (vanilla) Ranger configuration.
+Rnvimr also supports `CTRL-T`/`CTRL-X`/`CTRL-V` key bindingsthat allow you to
+open up a file in a new tab, a new horizontal split, or in a new vertical split.
 
-**Note:** if your Ranger config changes, you will have to run `:RnvimrSync` to use your updated Ranger configuration with Rnvimr
+Pressing `q` in Ranger simply hides the floating window.
+Ranger will attach the file of the current buffer in the next toggle event.
 
-`Enter` to open a file in Ranger. Rnvimr also supports `CTRL-T`/`CTRL-X`/`CTRL-V` key bindings that allow you to open up a file in a new tab, a new horizontal split, or in a new vertical split.
+Pressing `yw` in Ranger will emit Ranger's cwd to Neovim's, `gw` will jump to Neovim's cwd.
 
-Pressing `q` in Ranger simply hides the floating window. Ranger will attach the file of the current buffer in the next toggle event.
-
-Pressing `yw` in Ranger will emit Ranger's cwd to Neovim's, `gw` will Jump to Neovim's cwd.
-
-### demo
+### Demonstration
 
 <details>
     <summary>Synchronize the scroll line of pager view with Neovim</summary>
@@ -139,8 +136,7 @@ Pressing `yw` in Ranger will emit Ranger's cwd to Neovim's, `gw` will Jump to Ne
 #### Minimal configuration
 
 ```vim
-" Synchronize all Ranger's configuration and plugins with Rnvimr
-Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
+Plug 'kevinhwang91/rnvimr'
 
 tnoremap <silent> <M-i> <C-\><C-n>:RnvimrResize<CR>
 nnoremap <silent> <M-o> :RnvimrToggle<CR>
@@ -150,8 +146,7 @@ tnoremap <silent> <M-o> <C-\><C-n>:RnvimrToggle<CR>
 #### Advanced configuration
 
 ```vim
-" Synchronize all Ranger's configuration and plugins with Rnvimr
-Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
+Plug 'kevinhwang91/rnvimr'
 
 " Make Ranger replace Netrw and be the file explorer
 let g:rnvimr_enable_ex = 1
@@ -233,27 +228,33 @@ Q: Couldn't open some special types of files by using `Enter` or `l` in Ranger.
 
 A: Please follow the below steps to solve this issue:
 
-1. The behavior of opening the file in Ranger depends on `rifle.conf`. Press `r` to make sure that the `${VISUAL:-$EDITOR} -- "$@"` is the best candidate in Ranger.
+1. The behavior of opening the file in Ranger depends on `rifle.conf`.
+   Press `r` to make sure that the `${VISUAL:-$EDITOR} -- "$@"` is the best candidate in Ranger.
 2. If the case 1 is false, change the code in `rifle.conf` like that:
+
+<!-- markdownlint-disable MD013 -->
 
 ```diff
 -!mime ^text, label editor, ext xml|json|csv|tex|py|pl|rb|js|sh|php = ${VISUAL:-$EDITOR} -- "$@"
 +!mime ^text, label editor, ext xml|json|csv|tex|py|pl|rb|js|sh|php|your_file_type = ${VISUAL:-$EDITOR} -- "$@"
 ```
 
-3. execute`:RnvimrSync` to synchronize the `rifle.conf` just modified with Rnvimr.
-
-Q: I'm Using macOS, this plugin doesn't work for me.
-
-A: Install [Requirements](#Requirements) first, you should install Ranger by `pip3 install ranger-fm` instead of `brew install ranger` because the Ranger installed by brew still using Python2.
+<!-- markdownlint-enable MD013 -->
 
 Q: CheckHealth says RPC timeout.
 
-A: Install [Requirements](#Requirements) first, run ex command `:echo  $NVIM_LISTEN_ADDRESS` to confirm that the message output is in a format like this `/tmp/nvimIYj484/0`, Rnvimr needs this environment variable as the socket path.
+A: Install [Dependence](#Dependence) first,
+run ex command`:echo $NVIM_LISTEN_ADDRESS` to
+confirm that the message output is in a format like this `/tmp/nvimIYj484/0`,
+Rnvimr needs this environment variable as the socket path.
 
-Q: How can I go back to the previous directory in Ranger after attaching a new file.
+Q: How can I go back to the previous directory in Ranger after attaching a new file?
 
 A: Press `H` in Ranger, mean go back to the last history directory.
+
+Q: How can I use Ranger defualt configuration (vanilla)?
+
+A: Write `let g:rnvimr_vanilla = 1` to your vim configuration.
 
 ## License
 

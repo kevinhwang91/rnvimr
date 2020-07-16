@@ -6,7 +6,7 @@ import os
 import subprocess
 from ranger.core.shared import FileManagerAware
 from ranger.core.loader import Loadable
-from . import rutil
+from .. import rutil
 
 
 class GitignoreLoader(Loadable, FileManagerAware):

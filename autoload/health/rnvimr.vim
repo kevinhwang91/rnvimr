@@ -12,26 +12,6 @@ function! s:system_handler(jobid, data, event) dict abort
     endif
 endfunction
 
-function! s:install_lib() abort
-    let make_cmd = 'make RNVIMR_CONFIG=_ranger ' . 'install'
-    let msg = system('cd ' . s:rnvimr_path . ';' . make_cmd)
-    if v:shell_error
-        call health#report_error(msg)
-    else
-        call health#report_ok('Install lib for checkhealth successfully')
-    endif
-endfunction
-
-function! s:clean_lib() abort
-    let make_cmd = 'make RNVIMR_CONFIG=_ranger ' . 'clean'
-    let msg = system('cd ' . s:rnvimr_path . ';' . make_cmd)
-    if v:shell_error
-        call health#report_error(msg)
-    else
-        call health#report_ok('Clean lib for checkhealth successfully')
-    endif
-endfunction
-
 function! s:check_os() abort
     call health#report_start('OS')
     if has('unix')
@@ -105,7 +85,6 @@ endfunction
 function! s:check_rpc() abort
     call health#report_start('RPC')
     try
-        call s:install_lib()
         let $RNVIMR_CHECKHEALTH = 1
         let opts = {
                     \'pty': 1,
@@ -113,7 +92,7 @@ function! s:check_rpc() abort
                     \'on_stdout': function('s:system_handler'),
                     \}
 
-        let confdir = shellescape(s:rnvimr_path . '/_ranger')
+        let confdir = shellescape(s:rnvimr_path . '/ranger')
         let cmd = s:ranger_cmd . ' --confdir=' . confdir
         let jobid = jobstart(cmd, opts)
 
@@ -141,7 +120,6 @@ function! s:check_rpc() abort
         call health#report_error(v:exception)       
     finally
         silent! unlet $RNVIMR_CHECKHEALTH
-        call s:clean_lib()
     endtry
 endfunction
 

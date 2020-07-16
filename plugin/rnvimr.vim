@@ -6,8 +6,6 @@ let g:loaded_rnvimr = 1
 
 command! -nargs=0 RnvimrToggle call rnvimr#toggle()
 command! -nargs=* RnvimrResize call rnvimr#resize(<args>)
-command! -nargs=0 RnvimrSync call rnvimr#make(1)
-command! -nargs=0 RnvimrInstall call rnvimr#make(0)
 
 " TODO rnvimr_ex_enable was desperated.
 let g:rnvimr_enable_ex = get(g:, 'rnvimr_enable_ex', 0) || get(g:, 'rnvimr_ex_enable', 0)

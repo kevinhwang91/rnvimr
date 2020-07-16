@@ -4,6 +4,9 @@ util
 """
 
 import os
+import sys
+import importlib.util as util
+
 
 def find_git_root(path):
     """
@@ -22,6 +25,7 @@ def find_git_root(path):
         if path == path_o:
             return None
 
+
 def is_subpath(spath, lpath):
     """
     check the short path is a subpath of long path
@@ -34,3 +38,20 @@ def is_subpath(spath, lpath):
         slen, llen = len(spath), len(lpath)
         return True if slen == llen else lpath[slen] == '/'
     return False
+
+
+def dynamic_import(name, path):
+    """
+    import single moudle dynamically
+
+    :param name str: module name
+    :param path str: module path
+    """
+    if name in sys.modules:
+        return None
+
+    spec = util.spec_from_file_location(name, path)
+    module = util.module_from_spec(spec)
+    sys.modules[name] = module
+    spec.loader.exec_module(module)
+    return module

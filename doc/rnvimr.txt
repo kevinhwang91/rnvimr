@@ -1,6 +1,6 @@
 *rnvimr.txt*
 
-Version: 0.2.0
+Version: 0.3.0
 Author : kevinhwang <https://github.com/kevinhwang91>
 License: BSD3
 
@@ -41,14 +41,13 @@ REQUIREMENTS                                            *rnvimr-requirements*
 
 FEATURES                                                *rnvimr-features*
 
-- Replace builtin Netrw to be a file explorer
-- Calibrate preview images for Ueberzug
-- Attach file automatically when toggling Ranger.
-- Adjust floating window after resizing window of NeoVim
+- Replaces the built-in Netrw as a default file explorer
+- Calibrated preview images for ueberzug
+- Attach file automatically when toggling Ranger
+- Automatically adjusts floating window size after resizing NeoVim
 - Fully customizable layouts for floating window
 - Better experience for Pager view in Ranger
-- Automatically wipe out the buffers corresponding to the files deleted by
-  Ranger
+- Automatically wipe out the buffers corresponding to the files deleted by Ranger
 - Synchronize the current working directory of Neovim and Ranger
 - Hide the files included in gitignore
 - Save Buffer information when the src files are moved from Ranger
@@ -68,7 +67,7 @@ Run |:checkhealth| |rnvimr|, If everything is OK, it will output like these:
       - OK: Version: ranger-master
 
     ## Python
-      - OK: Version: 3.8.2 (default, Apr  8 2020, 14:31:25) [GCC 9.3.0]
+      - OK: Version: 3.8.3 (default, May 17 2020, 18:15:42) [GCC 10.1.0]
 
     ## Pynvim
       - OK: Version: 0.4.1
@@ -77,9 +76,7 @@ Run |:checkhealth| |rnvimr|, If everything is OK, it will output like these:
       - OK: Ueberzug is ready
 
     ## RPC
-      - OK: Install lib for checkhealth successfully
       - OK: RPC echo: Neovim send "Give me five!" and receive "Give me five!"
-      - OK: Clean lib checkhealth successfully
 <
 ================================================================================
 
@@ -90,20 +87,16 @@ Use |:RnvimrToggle| to create a Ranger process, and if one exists,
 
 Use |:RnvimrResize| to cycle the preset layouts.
 
-|:RnvimrSync| will synchronize your personal Ranger configuration and plugins
-with Rnvimr this time.
+`Enter` to open a file in Ranger.
 
-|:RnvimrInstall| Only install the library of this plugin, default (vanilla)
-Ranger configuration.
+Rnvimr also supports `CTRL-T`/`CTRL-X`/`CTRL-V` key bindings that allow you to
+open up a file in a new tab, a new horizontal split, or in a new vertical split.
 
-`Enter` to open a file in Ranger. Rnvimr also supports `CTRL-T/CTRL-X/CTRL-V`
-key bindings to open in a new tab, a new split, or in a new vertical split.
+Pressing `q` in Ranger simply hides the floating window.
+Ranger will attach the file of the current buffer in the next toggle event.
 
-Pressing `q` in Ranger just hides the floating window. Ranger will attach the
-file of the current buffer in the next toggle event.
-
-Pressing `yw` in Ranger will emit Ranger's cwd to Neovim's, `gw` will Jump
-to Neovim's cwd.
+Pressing `yw` in Ranger will emit Ranger's cwd to Neovim's,
+`gw` will jump to Neovim's cwd.
 
 ================================================================================
 
@@ -222,8 +215,14 @@ g:rnvimr_ranger_cmd
     Use this command to run a process inside the floating window.
     It can mix some command of Ranger, such as 'ranger --cmd="xxx"'.
 
-                                                        *g:rnvimr_sync_path*
-g:rnvimr_sync_path
+                                                        *g:rnvimr_vanilla*
+g:rnvimr_vanilla
+    Default: 0
+
+    Disable Rnvimr to import user configuration.
+
+                                                        *g:rnvimr_urc_path*
+g:rnvimr_urc_path
     Default: Default path of Ranger's configuration, depend on *$HOME* and
     *$XDG_CONFIG_HOME* environment.
 
@@ -264,22 +263,15 @@ COMMANDS                                                *rnvimr-commands*
     or multiple indexes separate by {,} such as {4,2,1,3}, it will circularly
     iterate special elements of |g:rnvimr_presets| in order via index.
 
-                                                        *:RnvimrSync*
-:RnvimrSync
-    Synchronize all configuration and plugins of Ranger with Rnvimr.
-
-                                                        *:RnvimrInstall*
-:RnvimrInstall
-    Only install library of this plugin, default (vanilla) Ranger configuration.
-
 ================================================================================
 
 EXAMPLES                                                *rnvimr-config-examples*
 
 Minimal configuration:
 >
-    Plug 'kevinhwang91/rnvimr', {'do': 'make install'}
+    Plug 'kevinhwang91/rnvimr'
 
+    let g:rnvimr_vanilla = 1
     tnoremap <silent> <M-i> <C-\><C-n>:RnvimrResize<CR>
     nnoremap <silent> <M-o> :RnvimrToggle<CR>
     tnoremap <silent> <M-o> <C-\><C-n>:RnvimrToggle<CR>
@@ -287,8 +279,7 @@ Minimal configuration:
 
 Advanced configuration:
 >
-    " Synchronize all Ranger's configuration and plugins with Rnvimr
-    Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
+    Plug 'kevinhwang91/rnvimr'
 
     " Make Ranger replace netrw to be a file explorer
     let g:rnvimr_enable_ex = 1

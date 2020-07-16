@@ -14,6 +14,7 @@ from . import directory
 from . import ccommands
 from . import shutil_generatorized
 from .client import Client
+from .urc import load_user_settings
 
 
 class Hacks():
@@ -42,6 +43,7 @@ class Hacks():
         self.show_attached_file()
         self.draw_border()
         self.calibrate_ueberzug()
+        self.load_user_settings()
         self.enhance_move_file()
         self.enhance_scroll_pager()
         self.enhance_quit()
@@ -155,6 +157,27 @@ class Hacks():
 
         """
         ueberzug.wrap_draw(self.fm.client)
+
+    def load_user_settings(self):
+        """
+        Load user settings.
+
+        """
+
+        client = self.fm.client
+        try:
+            vanilla = client.nvim.vars['rnvimr_vanilla']
+        except KeyError:
+            vanilla = None
+        if vanilla:
+            return
+
+        try:
+            user_rc_path = client.nvim.vars['rnvimr_urc_path']
+        except KeyError:
+            user_rc_path = None
+
+        load_user_settings(self.fm, user_rc_path)
 
     def enhance_move_file(self):
         """

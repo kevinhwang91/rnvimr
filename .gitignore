@@ -1,5 +1,4 @@
-_ranger
-ranger
 doc/tags
+__pycache__
 *.pyc
 /.vim

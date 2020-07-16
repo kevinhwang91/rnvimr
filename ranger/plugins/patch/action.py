@@ -2,6 +2,7 @@
 Patch ranger.core.actions.Actions
 
 """
+
 import os
 from ranger.core.actions import Actions
 

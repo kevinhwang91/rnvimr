@@ -2,6 +2,7 @@
 Patch ranger.config.commands
 
 """
+
 import os
 import tempfile
 import shlex
