@@ -70,8 +70,10 @@ def _load_rc(fm):  # pylint: disable=invalid-name
 
 
 def _reload_rifle(fm):  # pylint: disable=invalid-name
-    fm.rifle.config_file = fm.confpath('rifle.conf')
-    fm.rifle.reload_config()
+
+    if os.access(fm.confpath('rifle.conf'), os.R_OK):
+        fm.rifle.config_file = fm.confpath('rifle.conf')
+        fm.rifle.reload_config()
 
 
 def load_user_settings(fm, confdir=None):  # pylint: disable=invalid-name
