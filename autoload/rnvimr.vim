@@ -18,6 +18,7 @@ let g:rnvimr_enable_picker = get(g:, 'rnvimr_enable_picker', 0)
 let g:rnvimr_enable_bw = get(g:, 'rnvimr_enable_bw', 0)
             \ || get(g:, 'rnvimr_bw_enable', 0)
 
+let g:rnvimr_urc_path = get(g:, 'rnvimr_urc_path', '')
 let g:rnvimr_vanilla = get(g:, 'rnvimr_vanilla', 0)
 
 highlight default link RnvimrNormal NormalFloat
