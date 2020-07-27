@@ -37,6 +37,7 @@ def _load_plugins(fm):  # pylint: disable=invalid-name
             if plugin.startswith('_'):
                 continue
 
+            module_base = None
             module_path = os.path.join(plug_dir, plugin)
             if plugin.endswith('.py'):
                 module_base = plugin[:-3]
