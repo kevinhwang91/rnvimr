@@ -177,7 +177,9 @@ class Hacks():
         except KeyError:
             user_rc_path = None
 
+        ranger.api.hook_init = self.old_hook_init
         load_user_settings(self.fm, user_rc_path)
+        self.old_hook_init = ranger.api.hook_init
 
     def enhance_move_file(self):
         """
