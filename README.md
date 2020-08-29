@@ -43,7 +43,7 @@ Example for [yay](https://github.com/Jguer/yay) in ArchLinux and
 
 ```sh
 # ArchLinux install all requirements is extremely convenient
-yay -S ranger-git python-pynvim python-ueberzug-git
+yay -S ranger python-pynvim ueberzug
 
 # pip
 
@@ -217,6 +217,9 @@ let g:rnvimr_presets = [
             \ {'width': 0.500, 'height': 1.000, 'col': 0.5, 'row': 0},
             \ {'width': 1.000, 'height': 0.500, 'col': 0, 'row': 0},
             \ {'width': 1.000, 'height': 0.500, 'col': 0, 'row': 0.5}]
+
+" Only use initial preset layout
+" let g:rnvimr_presets = [{}]
 ```
 
 For more information, please refer to [:help rnvimr](./doc/rnvimr.txt),

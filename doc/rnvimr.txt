@@ -271,7 +271,6 @@ Minimal configuration:
 >
     Plug 'kevinhwang91/rnvimr'
 
-    let g:rnvimr_vanilla = 1
     tnoremap <silent> <M-i> <C-\><C-n>:RnvimrResize<CR>
     nnoremap <silent> <M-o> :RnvimrToggle<CR>
     tnoremap <silent> <M-o> <C-\><C-n>:RnvimrToggle<CR>
@@ -350,6 +349,9 @@ Advanced configuration:
                 \ {'width': 0.500, 'height': 1.000, 'col': 0.5, 'row': 0},
                 \ {'width': 1.000, 'height': 0.500, 'col': 0, 'row': 0},
                 \ {'width': 1.000, 'height': 0.500, 'col': 0, 'row': 0.5}]
+
+    " Only use initial preset layout
+    " let g:rnvimr_presets = [{}]
 <
 ================================================================================
 vim:tw=80:ft=help
