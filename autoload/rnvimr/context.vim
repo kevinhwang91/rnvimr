@@ -25,16 +25,14 @@ function! rnvimr#context#check_point() abort
     let s:buf_cp_dict = {}
     for buf in filter(getbufinfo({'buflisted': 1}),
                 \'v:val.changed == 0 && !empty(glob(v:val.name))')
-        let s:buf_cp_dict[buf.name] = buf.bufnr
+        let s:buf_cp_dict[buf.bufnr] = buf.name
     endfor
 endfunction
 
 function! rnvimr#context#buf_wipe() abort
     let bw_list = []
-    for [name, nr] in items(filter(s:buf_cp_dict, 'empty(glob(v:key))'))
-        if bufexists(nr) && name == fnamemodify(bufname(nr), ':p')
-            call add(bw_list, nr)
-        endif
+    for bufnr in keys(filter(s:buf_cp_dict, 'empty(glob(v:val))'))
+        call add(bw_list, bufnr)
     endfor
     if len(bw_list) > 0
         " execute bwipeout last buffer before leaving floating window, it may cause this issue:
