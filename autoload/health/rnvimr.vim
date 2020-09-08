@@ -39,16 +39,23 @@ function! s:check_python_ranger() abort
         return
     else
         let [rr_ver, py_ver] = matchlist(ver_info,
-                    \'ranger version: \([^\n]\+\)\nPython version: \([^\n]\+\)\n')[1:2]
-        call health#report_ok('Version: ' . rr_ver)
+                    \ 'ranger version: \([^\n]\+\)\nPython version: \([^\n]\+\)\n')[1:2]
+        let rr_ver_release = matchstr(rr_ver, '\d\+\.\d\+\.\d\+')
+        if !empty(rr_ver_release) && rr_ver_release < '1.9.3'
+            call health#report_error('Version: ' . rr_ver_release,
+                        \ ['Ranger version must be greater than or equal to 1.9.3',
+                        \ 'Please install Ranger properly'])
+        else
+            call health#report_ok('Version: ' . rr_ver)
+        endif
     endif
     call health#report_start('Python')
     if py_ver[0] >= 3
         call health#report_ok('Version: ' . py_ver)
     else
         call health#report_error('Version: ' . py_ver,
-                    \['Python version inside Ranger must be greater than 3',
-                    \'Please install Ranger properly'])
+                    \ ['Python version inside Ranger must be greater than 3',
+                    \ 'Please install Ranger properly'])
     endif
 endfunction
 
@@ -67,13 +74,13 @@ function! s:check_ueberzug() abort
     call health#report_start('Ueberzug (optional)')
     if s:os == 'Linux'
         let uz_out = system('python3 -c "from ueberzug import xutil; ' .
-                    \'print(xutil.get_parent_pids.__doc__, end=\"\")"')
+                    \ 'print(xutil.get_parent_pids.__doc__, end=\"\")"')
         let uz_err = v:shell_error
         if uz_err
             call health#report_warn('Ueberzug is not found in Python Lib')
         elseif uz_out == 'None'
             call health#report_warn('Ueberzug can not calibrate properly outside Tmux.',
-                        \'If use Rnvimr without Tmux, please upgrade the latest version of Ueberzug')
+                        \ 'If use Rnvimr without Tmux, please upgrade the latest version of Ueberzug')
         else
             call health#report_ok('Ueberzug is ready')
         endif
@@ -87,10 +94,10 @@ function! s:check_rpc() abort
     try
         let $RNVIMR_CHECKHEALTH = 1
         let opts = {
-                    \'pty': 1,
-                    \'ranger_host_id': -1,
-                    \'on_stdout': function('s:system_handler'),
-                    \}
+                    \ 'pty': 1,
+                    \ 'ranger_host_id': -1,
+                    \ 'on_stdout': function('s:system_handler'),
+                    \ }
 
         let confdir = shellescape(s:rnvimr_path . '/ranger')
         let cmd = s:ranger_cmd . ' --confdir=' . confdir
@@ -117,7 +124,7 @@ function! s:check_rpc() abort
         endif
         call jobstop(jobid)
     catch /.*/
-        call health#report_error(v:exception)       
+        call health#report_error(v:exception)
     finally
         silent! unlet $RNVIMR_CHECKHEALTH
     endtry
