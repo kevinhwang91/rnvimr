@@ -31,8 +31,11 @@ endfunction
 
 function! rnvimr#context#buf_wipe() abort
     let bw_list = []
-    for bufnr in keys(filter(s:buf_cp_dict, 'empty(glob(v:val))'))
-        call add(bw_list, bufnr)
+    for bufnr_str in keys(filter(s:buf_cp_dict, 'empty(glob(v:val))'))
+        let bufnr = str2nr(bufnr_str)
+        if bufexists(bufnr) && empty(glob(fnamemodify(bufname(bufnr), ':p')))
+            call add(bw_list, bufnr)
+        endif
     endfor
     if len(bw_list) > 0
         " execute bwipeout last buffer before leaving floating window, it may cause this issue:
