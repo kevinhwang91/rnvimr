@@ -1,15 +1,15 @@
 let s:preset_index = 0
 let s:default_layout = {
             \ 'relative': 'editor',
-            \ 'width': float2nr(round(0.6 * &columns)),
-            \ 'height': float2nr(round(0.6 * &lines)),
-            \ 'col': float2nr(round(0.2 * &columns)),
-            \ 'row': float2nr(round(0.2 * &lines)),
+            \ 'width': float2nr(round(0.7 * &columns)),
+            \ 'height': float2nr(round(0.7 * &lines)),
+            \ 'col': float2nr(round(0.15 * &columns)),
+            \ 'row': float2nr(round(0.15 * &lines)),
             \ 'style': 'minimal'
             \}
 let s:default_presets = [
+            \ {'width': 0.600, 'height': 0.600},
             \ {},
-            \ {'width': 0.700, 'height': 0.700},
             \ {'width': 0.800, 'height': 0.800},
             \ {'width': 0.950, 'height': 0.950}
             \ ]
