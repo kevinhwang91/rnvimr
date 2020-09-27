@@ -41,9 +41,10 @@ class Hacks():
         self.fake_editor()
         self.hide_git_files()
         self.show_attached_file()
-        self.draw_border()
-        self.calibrate_ueberzug()
         self.load_user_settings()
+        self.draw_border()
+        self.change_view_adapt_size()
+        self.calibrate_ueberzug()
         self.enhance_move_file()
         self.enhance_scroll_pager()
         self.enhance_quit()
@@ -113,6 +114,29 @@ class Hacks():
         old_accept_file = ranger.container.directory.accept_file
         ranger.container.directory.accept_file = accept_file
 
+    def load_user_settings(self):
+        """
+        Load user settings.
+
+        """
+
+        client = self.fm.client
+        try:
+            vanilla = client.nvim.vars['rnvimr_vanilla']
+        except KeyError:
+            vanilla = None
+        if vanilla:
+            return
+
+        try:
+            user_rc_path = client.nvim.vars['rnvimr_urc_path']
+        except KeyError:
+            user_rc_path = None
+
+        ranger.api.hook_init = self.old_hook_init
+        load_user_settings(self.fm, user_rc_path)
+        self.old_hook_init = ranger.api.hook_init
+
     def draw_border(self):
         """
         Using curses draw a border of floating window.
@@ -151,35 +175,43 @@ class Hacks():
         ui.enhance_draw_border(attr, client)
         viewmiller.enhance_draw_border(attr)
 
+    def change_view_adapt_size(self):
+        """
+        Ranger change view to adapt size of the floating window.
+
+        """
+        client = self.fm.client
+        try:
+            views = client.nvim.vars['rnvimr_ranger_views']
+        except KeyError:
+            return
+        if not views:
+            return
+
+        column_ratios = self.fm.settings['column_ratios']
+        for view in views:
+            if not isinstance(view, dict):
+                return
+            min_width = view.setdefault('minwidth', 0)
+            max_width = view.setdefault('maxwidth', 1023)
+            ratio = view['ratio']
+            if not ratio:
+                ratio = view['ratio'] = column_ratios
+            if min_width > max_width or not isinstance(ratio, list):
+                return
+            column_size = len(ratio)
+            if column_size == 1:
+                view['viewmode'] = 'multipane'
+            elif column_size > 1:
+                view['viewmode'] = 'miller'
+        ui.wrap_update_size(views)
+
     def calibrate_ueberzug(self):
         """
         Ueberzug can't capture the calibration of floating window of neovim, fix it.
 
         """
         ueberzug.wrap_draw(self.fm.client)
-
-    def load_user_settings(self):
-        """
-        Load user settings.
-
-        """
-
-        client = self.fm.client
-        try:
-            vanilla = client.nvim.vars['rnvimr_vanilla']
-        except KeyError:
-            vanilla = None
-        if vanilla:
-            return
-
-        try:
-            user_rc_path = client.nvim.vars['rnvimr_urc_path']
-        except KeyError:
-            user_rc_path = None
-
-        ranger.api.hook_init = self.old_hook_init
-        load_user_settings(self.fm, user_rc_path)
-        self.old_hook_init = ranger.api.hook_init
 
     def enhance_move_file(self):
         """

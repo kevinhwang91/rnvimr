@@ -26,10 +26,12 @@ It uses [RPC](https://neovim.io/doc/user/api.html#RPC) to communicate with Range
 - Replaces the built-in Netrw as a default file explorer
 - Calibrated preview images for ueberzug
 - Attach file automatically when toggling Ranger
-- Automatically adjusts floating window size after resizing NeoVim
+- Adjust floating window size automatically after resizing NeoVim
+- Adjust views automatically to adapt the size of floating window
 - Fully customizable layouts for floating window
 - Better experience for Pager view in Ranger
-- Automatically wipe out the buffers corresponding to the files deleted by Ranger
+- Wipe out the buffers corresponding to the files deleted by Ranger automatically
+- Enhance border in Ranger
 - Synchronize the current working directory of Neovim and Ranger
 - Hide the files included in gitignore
 - Save Buffer information when the src files are moved from Ranger
@@ -94,12 +96,12 @@ health#rnvimr#check
 
 ## Usage
 
-Use `:RnvimrToggle` to create a Ranger process, and if one exists,
+Using `:RnvimrToggle` to create a Ranger process, and if one exists,
 `:RnvimrToggle` simply shows or hides the floating window.
 
-Use `:RnvimrResize` to cycle the preset layouts.
+Using `:RnvimrResize` to cycle the preset layouts.
 
-`Enter` to open a file in Ranger.
+Pressing `Enter` to open a file in Ranger.
 
 Rnvimr also supports `CTRL-T`/`CTRL-X`/`CTRL-V` key bindingsthat allow you to
 open up a file in a new tab, a new horizontal split, or in a new vertical split.
@@ -166,9 +168,8 @@ let g:rnvimr_border_attr = {'fg': 14, 'bg': -1}
 " Make Neovim wipe the buffers corresponding to the files deleted by Ranger
 let g:rnvimr_enable_bw = 1
 
-" Set up only two columns in miller mode and draw border with both
-let g:rnvimr_ranger_cmd = 'ranger --cmd="set column_ratios 1,1"
-            \ --cmd="set draw_borders both"'
+" Draw border with both
+let g:rnvimr_ranger_cmd = 'ranger --cmd="set draw_borders both"'
 
 " Link CursorLine into RnvimrNormal highlight in the Floating window
 highlight link RnvimrNormal CursorLine
@@ -194,13 +195,22 @@ let g:rnvimr_action = {
             \ 'yw': 'EmitRangerCwd'
             \ }
 
+" Add views for Ranger to adapt the size of floating window
+let g:rnvimr_ranger_views = [
+            \ {'minwidth': 90, 'ratio': []},
+            \ {'minwidth': 50, 'maxwidth': 89, 'ratio': [1,1]},
+            \ {'maxwidth': 49, 'ratio': [1]}
+            \ ]
+
 " Customize the initial layout
-let g:rnvimr_layout = { 'relative': 'editor',
-            \ 'width': float2nr(round(0.6 * &columns)),
-            \ 'height': float2nr(round(0.6 * &lines)),
-            \ 'col': float2nr(round(0.2 * &columns)),
-            \ 'row': float2nr(round(0.2 * &lines)),
-            \ 'style': 'minimal' }
+let g:rnvimr_layout = {
+            \ 'relative': 'editor',
+            \ 'width': float2nr(round(0.7 * &columns)),
+            \ 'height': float2nr(round(0.7 * &lines)),
+            \ 'col': float2nr(round(0.15 * &columns)),
+            \ 'row': float2nr(round(0.15 * &lines)),
+            \ 'style': 'minimal'
+            \ }
 
 " Customize multiple preset layouts
 " '{}' represents the initial layout

@@ -6,12 +6,13 @@ Patch ranger.gui.ui.UI
 import curses
 from ranger.gui.ui import UI
 
+
 def enhance_draw_border(attr, client):
     """
     Call by draw_border, fix UI to draw a border.
 
-    :param attr int: attribute of curses
-    :param client object: Object of attached neovim session
+    :param attr int: Attribute of curses.
+    :param client object: Object of attached neovim session.
     """
 
     UI.update_size = _update_size
@@ -19,6 +20,44 @@ def enhance_draw_border(attr, client):
     _wrap_draw(attr)
     _wrap_initialize(client)
     _wrap_suspend(client)
+
+
+def wrap_update_size(views):
+    """
+    Wrap update_size method.
+
+    :param views list: Views for ranger to change viewmode and column_ratios.
+    """
+
+    def update_size(self):
+
+        raw_update_size(self)
+        _change_view(views, self.fm)
+
+    raw_update_size = UI.update_size
+    UI.update_size = update_size
+
+
+def _change_view(views, fm):  # pylint: disable=invalid-name
+    win_info = fm.client.get_window_info()
+    if win_info.get('relative', None):
+        win_width = win_info['width']
+        cur_col_ratio = fm.settings['column_ratios']
+        cur_viewmode = fm.settings['viewmode']
+        for view in views:
+            if view['minwidth'] <= win_width <= view['maxwidth']:
+                ratio = view['ratio']
+                viewmode = view['viewmode']
+                if viewmode != cur_viewmode:
+                    fm.execute_console('set viewmode!')
+                if viewmode == 'miller' and cur_col_ratio != ratio:
+                    #  TODO displayable.resize will complain subwindow size out of bonds,
+                    # it seems that this issue is caused by neovim terminal.
+                    # Make ui.status silent as a temporary solution.
+                    fm.ui.is_on = False
+                    fm.execute_console('set column_ratios {}'.format(','.join(map(str, ratio))))
+                    fm.ui.is_on = True
+
 
 def _update_size(self):
     self.win.erase()
