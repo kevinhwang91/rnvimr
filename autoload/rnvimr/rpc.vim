@@ -118,6 +118,14 @@ function! rnvimr#rpc#edit(edit, start_line, files) abort
     cd .
 endfunction
 
+function! rnvimr#rpc#get_window_info() abort
+    try
+        return nvim_win_get_config(rnvimr#context#get_win_handle())
+    catch /^Vim\%((\a\+)\)\=:E5555/
+        return {}
+    endtry
+endfunction
+
 function! rnvimr#rpc#set_winhl(winhl) abort
     return setwinvar(rnvimr#context#get_win_handle(), '&winhighlight',
                 \ getbufvar(rnvimr#context#get_buf_handle(), a:winhl))

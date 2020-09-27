@@ -31,7 +31,7 @@ class Client():
         Get the floating window info.
 
         """
-        return self.nvim.request('nvim_win_get_config', 0)
+        return self.nvim.call('rnvimr#rpc#get_window_info')
 
     def hide_window(self):
         """
