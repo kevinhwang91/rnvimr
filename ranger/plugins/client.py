@@ -16,6 +16,14 @@ class Client():
     def __init__(self):
         self.nvim = None
 
+    def echom(self, msg):
+        """
+        Echo message.
+
+        :param msg str: message be sent.
+        """
+        self.nvim.command('echom "{}"'.format(msg))
+
     def attach_nvim(self):
         """
         Attach neovim session by socket path.

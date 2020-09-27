@@ -45,7 +45,14 @@ function! rnvimr#rpc#destory() abort
     return rpcrequest(s:host_chan_id, 'destory')
 endfunction
 
+function! rnvimr#rpc#ranger_cmd(...) abort
+    if !empty(a:000)
+        call rpcnotify(s:host_chan_id, 'eval_cmd', a:000)
+    endif
+endfunction
+
 " ranger to neovim
+" =================================================================================================
 function! rnvimr#rpc#list_buf_name_nr() abort
     let buf_dict = {}
     for buf in filter(getbufinfo({'buflisted': 1}), 'v:val.changed == 0')

@@ -50,6 +50,23 @@ class Service(FileManagerAware):
             self.fm.execute_console('AttachFile {} {}'.format(line, path))
 
     @Register
+    def eval_cmd(self, args):
+        """
+        Eval ranger command
+
+        :param args list: list of commands
+        """
+        cmd = args[0]
+
+        if not cmd:
+            self.fm.client.echom('eval empty command')
+
+        try:
+            self.fm.execute_console(' '.join(cmd))
+        except Exception as ex:  # pylint: disable=broad-except
+            self.fm.client.echom(ex)
+
+    @Register
     def destory(self, args):  # pylint: disable=unused-argument
         """
         Destroy everything execpt heavy UI
