@@ -23,15 +23,15 @@ It uses [RPC](https://neovim.io/doc/user/api.html#RPC) to communicate with Range
 
 ## Features
 
-- Replaces the built-in Netrw as a default file explorer
+- Replace the built-in Netrw as a default file explorer
 - Calibrated preview images for ueberzug
 - Attach file automatically when toggling Ranger
 - Adjust floating window size automatically after resizing NeoVim
-- Adjust views automatically to adapt the size of floating window
+- Adjust view automatically to adapt the size of floating window
 - Fully customizable layouts for floating window
 - Better experience for Pager view in Ranger
 - Wipe out the buffers corresponding to the files deleted by Ranger automatically
-- Enhance border in Ranger
+- Enhanced border in Ranger
 - Synchronize the current working directory of Neovim and Ranger
 - Hide the files included in gitignore
 - Save Buffer information when the src files are moved from Ranger
@@ -269,6 +269,11 @@ A: Press `H` in Ranger, mean go back to the last history directory.
 Q: How can I use Ranger defualt configuration (vanilla)?
 
 A: Write `let g:rnvimr_vanilla = 1` to your vim configuration.
+
+Q: `let g:rnvimr_enable_ex = 1` can't work as expected.
+
+A: Turn off the option of other plugins (like `let g:NERDTreeHijackNetrw = 0` which is used in
+NERDTree) or uninstall the conflicting plugins.
 
 ## License
 
