@@ -8,7 +8,7 @@ It uses [RPC](https://neovim.io/doc/user/api.html#RPC) to communicate with Range
 **Since Rnvimr requires RPC, this plugin does not support Vim for now.**
 
 <p align="center">
-    <img width="1080px" src="https://user-images.githubusercontent.com/17562139/74416173-b0aa8600-4e7f-11ea-83b5-31c07c384af1.gif">
+    <img width="960px" src="https://user-images.githubusercontent.com/17562139/94383438-a3be7680-0172-11eb-9f57-f3cd88aff0c0.gif">
 </p>
 
 > [vimade](https://github.com/TaDaa/vimade) was used to fade interactive windows.

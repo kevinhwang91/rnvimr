@@ -68,7 +68,7 @@ def enhance_bulkrename(commands, client):
                 else:
                     client.move_buf(os.path.abspath(src), os.path.abspath(dst))
 
-    def execute(self):
+    def execute(self):  # pylint: disable=too-many-locals
         from ranger.container.file import File  # pylint: disable=import-outside-toplevel
         # pylint: disable=import-outside-toplevel
         from ranger.ext.shell_escape import shell_escape as esc

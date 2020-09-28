@@ -53,10 +53,11 @@ def _change_view(views, fm):  # pylint: disable=invalid-name
                 if viewmode == 'miller' and cur_col_ratio != ratio:
                     #  TODO displayable.resize will complain subwindow size out of bonds,
                     # it seems that this issue is caused by neovim terminal.
-                    # Make ui.status silent as a temporary solution.
-                    fm.ui.is_on = False
+                    raw_notify = fm.notify
+                    fm.notify = lambda obj, **kw: None
                     fm.execute_console('set column_ratios {}'.format(','.join(map(str, ratio))))
-                    fm.ui.is_on = True
+                    fm.notify = raw_notify
+                break
 
 
 def _update_size(self):

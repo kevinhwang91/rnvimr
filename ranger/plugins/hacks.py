@@ -70,7 +70,7 @@ class Hacks():
         try:
             action_dict = self.fm.client.nvim.vars['rnvimr_action']
         except KeyError:
-            return
+            action_dict = None
         if not action_dict or not isinstance(action_dict, dict):
             return
         for key, val in action_dict.items():
@@ -94,7 +94,7 @@ class Hacks():
         try:
             hide_git = client.nvim.vars['rnvimr_hide_gitignore']
         except KeyError:
-            return
+            hide_git = None
         if not hide_git:
             return
 
@@ -147,7 +147,7 @@ class Hacks():
         try:
             draw_border = client.nvim.vars['rnvimr_draw_border']
         except KeyError:
-            return
+            draw_border = None
         if not draw_border:
             return
 
@@ -184,8 +184,8 @@ class Hacks():
         try:
             views = client.nvim.vars['rnvimr_ranger_views']
         except KeyError:
-            return
-        if not views:
+            views = None
+        if not views or not isinstance(views, list):
             return
 
         column_ratios = self.fm.settings['column_ratios']
