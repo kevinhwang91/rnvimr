@@ -243,9 +243,11 @@ def refilter(self):
         hidden_filter_search = hidden_filter.search
 
         def hidden_filter_func(fobj):
-            for comp in fobj.relative_path.split(os.path.sep):
-                if hidden_filter_search(comp):
-                    return False
+            # always show attached file.
+            if fobj.path != self.fm.attached_file:
+                for comp in fobj.relative_path.split(os.path.sep):
+                    if hidden_filter_search(comp):
+                        return False
             return True
         filters.append(hidden_filter_func)
 

@@ -40,7 +40,6 @@ class Hacks():
         self.map_action()
         self.fake_editor()
         self.hide_git_files()
-        self.show_attached_file()
         self.load_user_settings()
         self.draw_border()
         self.change_view_adapt_size()
@@ -99,20 +98,6 @@ class Hacks():
             return
 
         directory.wrap_dir_for_git()
-
-    def show_attached_file(self):
-        """
-        Always show attached file.
-
-        """
-
-        def accept_file(fobj, filters):
-            if fobj.path == self.fm.attached_file:
-                return True
-            return old_accept_file(fobj, filters)
-
-        old_accept_file = ranger.container.directory.accept_file
-        ranger.container.directory.accept_file = accept_file
 
     def load_user_settings(self):
         """
