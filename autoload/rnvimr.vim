@@ -9,8 +9,6 @@ let s:default_action = {
             \ 'yw': 'EmitRangerCwd',
             \ }
 
-let g:rnvimr_action = get(g:, 'rnvimr_action', s:default_action)
-let g:rnvimr_draw_border = get(g:, 'rnvimr_draw_border', 1)
 
 " TODO rnvimr_picker_enable and rnvimr_bw_enable were deprecated.
 let g:rnvimr_enable_picker = get(g:, 'rnvimr_enable_picker', 0)
@@ -18,8 +16,17 @@ let g:rnvimr_enable_picker = get(g:, 'rnvimr_enable_picker', 0)
 let g:rnvimr_enable_bw = get(g:, 'rnvimr_enable_bw', 0)
             \ || get(g:, 'rnvimr_bw_enable', 0)
 
-let g:rnvimr_urc_path = get(g:, 'rnvimr_urc_path', '')
-let g:rnvimr_vanilla = get(g:, 'rnvimr_vanilla', 0)
+let g:rnvimr_draw_border = get(g:, 'rnvimr_draw_border', 1)
+
+let g:rnvimr_ranger_init = {
+            \ 'action': get(g:, 'rnvimr_action', s:default_action),
+            \ 'hide_gitignore': get(g:, 'rnvimr_hide_gitignore', 0),
+            \ 'urc_path': get(g:, 'rnvimr_urc_path', v:null),
+            \ 'draw_border': g:rnvimr_draw_border,
+            \ 'border_attr': get(g:, 'rnvimr_border_attr', {}),
+            \ 'views': get(g:, 'rnvimr_ranger_views', []),
+            \ 'vanilla': get(g:, 'rnvimr_vanilla', 0)
+            \ }
 
 highlight default link RnvimrNormal NormalFloat
 highlight default link RnvimrCurses Normal

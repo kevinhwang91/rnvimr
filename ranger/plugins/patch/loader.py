@@ -18,7 +18,6 @@ class GitignoreLoader(Loadable, FileManagerAware):
     def __init__(self, proc, path):
         self.proc = proc
         self.path = path
-        self.seconds_of_work_time = 0.01
         Loadable.__init__(self, self.generate(), 'Asynchronous callback from gitignore process.')
 
     def generate(self):

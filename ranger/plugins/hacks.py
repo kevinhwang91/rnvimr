@@ -33,16 +33,21 @@ class Hacks():
     def hook_init(self):
         """
         Initialize via ranger hook_init.
+        Get Neovim global vars at once to improve performance.
 
         """
 
         self.client_attach()
-        self.map_action()
+        try:
+            init_dict = self.fm.client.nvim.vars['rnvimr_ranger_init']
+        except KeyError:
+            init_dict = {}
+        self.map_action(init_dict.get('action'))
         self.fake_editor()
-        self.hide_git_files()
-        self.load_user_settings()
-        self.draw_border()
-        self.change_view_adapt_size()
+        self.hide_git_files(bool(init_dict.get('hide_gitignore')))
+        self.load_user_settings(bool(init_dict.get('vanilla')), init_dict.get('urc_path'))
+        self.draw_border(bool(init_dict.get('draw_border')), init_dict.get('border_attr'))
+        self.change_view_adapt_size(init_dict.get('views'))
         self.calibrate_ueberzug()
         self.enhance_move_file()
         self.enhance_scroll_pager()
@@ -60,16 +65,13 @@ class Hacks():
         self.fm.client = Client()
         self.fm.client.attach_nvim()
 
-    def map_action(self):
+    def map_action(self, action_dict):
         """
-        Bind key for action.
+        Bind key for action in Ranger.
 
+        :param action_dict dict: actions in dict, value is a Ranger command
         """
 
-        try:
-            action_dict = self.fm.client.nvim.vars['rnvimr_action']
-        except KeyError:
-            action_dict = None
         if not action_dict or not isinstance(action_dict, dict):
             return
         for key, val in action_dict.items():
@@ -83,68 +85,48 @@ class Hacks():
 
         rifle.build_fake_editor(self.fm.client)
 
-    def hide_git_files(self):
+    def hide_git_files(self, hide_gitignore):
         """
         Hide the files included in gitignore.
 
+        :param hide_gitignore bool: hide git ignore if True
         """
 
-        client = self.fm.client
-        try:
-            hide_git = client.nvim.vars['rnvimr_hide_gitignore']
-        except KeyError:
-            hide_git = None
-        if not hide_git:
+        if not hide_gitignore:
             return
 
         directory.wrap_dir_for_git()
 
-    def load_user_settings(self):
+    def load_user_settings(self, vanilla, urc_path):
         """
         Load user settings.
 
+
+        :param vanilla bool: use default settings if True
+        :param urc_path str: user rc path for settings
         """
 
-        client = self.fm.client
-        try:
-            vanilla = client.nvim.vars['rnvimr_vanilla']
-        except KeyError:
-            vanilla = None
         if vanilla:
             return
 
-        try:
-            user_rc_path = client.nvim.vars['rnvimr_urc_path']
-        except KeyError:
-            user_rc_path = None
-
         ranger.api.hook_init = self.old_hook_init
-        load_user_settings(self.fm, user_rc_path)
+        load_user_settings(self.fm, urc_path)
         self.old_hook_init = ranger.api.hook_init
 
-    def draw_border(self):
+    def draw_border(self, draw_border, border_attr):
         """
         Using curses draw a border of floating window.
 
+        :param draw_border bool: draw border if True
+        :param border_attr dict: key contain 'fg' and 'bg', value's range is [-1-255]
         """
-
-        client = self.fm.client
-        try:
-            draw_border = client.nvim.vars['rnvimr_draw_border']
-        except KeyError:
-            draw_border = None
         if not draw_border:
             return
 
         from ranger.gui import color  # pylint: disable=import-outside-toplevel
 
         try:
-            attr_dict = client.nvim.vars['rnvimr_border_attr']
-        except KeyError:
-            attr_dict = {}
-
-        try:
-            attr_fg, attr_bg = attr_dict.get('fg', -1), attr_dict.get('bg', -1)
+            attr_fg, attr_bg = border_attr.get('fg', -1), border_attr.get('bg', -1)
             attr_fg, attr_bg = int(attr_fg), int(attr_bg)
             if not -1 <= attr_fg < 256:
                 attr_fg = -1
@@ -157,19 +139,15 @@ class Hacks():
 
         attr = curses.color_pair(color.get_color(attr_fg, attr_bg))
 
-        ui.enhance_draw_border(attr, client)
+        ui.enhance_draw_border(attr, self.fm.client)
         viewmiller.enhance_draw_border(attr)
 
-    def change_view_adapt_size(self):
+    def change_view_adapt_size(self, views):
         """
         Ranger change view to adapt size of the floating window.
 
+        :param views list: type of elements are dict
         """
-        client = self.fm.client
-        try:
-            views = client.nvim.vars['rnvimr_ranger_views']
-        except KeyError:
-            views = None
         if not views or not isinstance(views, list):
             return
 

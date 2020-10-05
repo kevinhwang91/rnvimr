@@ -35,9 +35,11 @@ class Host():
     def hook_ready(self):
         """
         Initialize host via ranger hook_ready.
+        Manually redrawing UI can make users feel faster.
 
         """
 
+        self.fm.ui.redraw()
         socket_path = os.getenv('NVIM_LISTEN_ADDRESS')
 
         if socket_path:

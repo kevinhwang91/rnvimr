@@ -3,9 +3,8 @@ Patch ranger.gui.widgets.view_miller.ViewMiller
 
 """
 
-import inspect
-import textwrap
 import curses
+from ranger.gui.widgets.view_miller import ViewBase
 from ranger.gui.widgets.view_miller import ViewMiller
 
 
@@ -16,21 +15,69 @@ def enhance_draw_border(attr):
     :param attr int: attribute of curses
     """
 
-    _wrap_resize()
+    _replace_resize()
     _wrap_draw_border(attr)
 
 
-def _wrap_resize():
-    code = textwrap.dedent(inspect.getsource(ViewMiller.resize))
-    code = code.replace('def resize', 'def view_miller_resize')
-    code = code.replace('left = pad', 'left = 0')
-    code = code.replace('wid = int(self.wid - left + 1 - pad)',
-                        'wid = int(self.wid - left + 1)')
+def _replace_resize():
+    """
+    can replace resize by below code, but it's slow for startup.
+    #  code = textwrap.dedent(inspect.getsource(ViewMiller.resize))
+    #  code = code.replace('def resize', 'def view_miller_resize')
+    #  code = code.replace('left = pad', 'left = 0')
+    #  code = code.replace('wid = int(self.wid - left + 1 - pad)',
+    #                      'wid = int(self.wid - left + 1)')
 
-    wrapped_module = inspect.getmodule(ViewMiller)
-    exec(code, wrapped_module.__dict__)  # pylint: disable=exec-used
+    #  wrapped_module = inspect.getmodule(ViewMiller)
+    #  exec(code, wrapped_module.__dict__)  # pylint: disable=exec-used
+    #  ViewMiller.resize = wrapped_module.view_miller_resize
+    """
 
-    ViewMiller.resize = wrapped_module.view_miller_resize
+    def resize(self, y, x, hei=None, wid=None):
+        """Resize all the columns according to the given ratio"""
+        ViewBase.resize(self, y, x, hei, wid)
+
+        border_type = self.settings.draw_borders.lower()
+        if border_type in ['outline', 'both', 'true']:
+            pad = 1
+        else:
+            pad = 0
+        left = 0
+        self.is_collapsed = self._collapse()
+        if self.is_collapsed:
+            generator = enumerate(self.stretch_ratios)
+        else:
+            generator = enumerate(self.ratios)
+
+        last_i = len(self.ratios) - 1
+
+        for i, ratio in generator:
+            wid = int(ratio * self.wid)
+
+            cut_off = self.is_collapsed and not self.settings.padding_right
+            if i == last_i:
+                if not cut_off:
+                    wid = int(self.wid - left + 1)
+                else:
+                    self.columns[i].resize(pad, max(0, left - 1), hei - pad * 2, 1)
+                    self.columns[i].visible = False
+                    continue
+
+            if i == last_i - 1:
+                self.pager.resize(pad, left, hei - pad * 2, max(1, self.wid - left - pad))
+
+                if cut_off:
+                    self.columns[i].resize(pad, left, hei - pad * 2, max(1, self.wid - left - pad))
+                    continue
+
+            try:
+                self.columns[i].resize(pad, left, hei - pad * 2, max(1, wid - 1))
+            except KeyError:
+                pass
+
+            left += wid
+
+    ViewMiller.resize = resize
 
 
 def _wrap_draw_border(attr):
