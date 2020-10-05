@@ -67,7 +67,7 @@ class Service(FileManagerAware):
             self.fm.client.echom(ex)
 
     @Register
-    def destory(self, args):  # pylint: disable=unused-argument
+    def destroy(self, args):  # pylint: disable=unused-argument
         """
         Destroy everything execpt heavy UI
 

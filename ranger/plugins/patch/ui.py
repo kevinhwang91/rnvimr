@@ -96,7 +96,7 @@ def _wrap_initialize(client):
 
 def _wrap_suspend(client):
     def suspend(self):
-        def check_destory():
+        def check_destroy():
             for displayable in self.container:
                 if displayable.win:
                     if hasattr(displayable, 'container'):
@@ -108,8 +108,8 @@ def _wrap_suspend(client):
             return True
 
         raw_suspend(self)
-        #  destory don't restore the NormalFloat highlight
-        if not check_destory():
+        #  destroy don't restore the NormalFloat highlight
+        if not check_destroy():
             client.set_winhl('normal_winhl')
 
     raw_suspend = UI.suspend

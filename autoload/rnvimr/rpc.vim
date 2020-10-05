@@ -41,11 +41,17 @@ function! rnvimr#rpc#attach_file_once(file) abort
     endif
 endfunction
 
-function! rnvimr#rpc#destory() abort
-    return rpcrequest(s:host_chan_id, 'destory')
+function! rnvimr#rpc#destroy() abort
+    if s:host_chan_id == -1
+        return
+    endif
+    return rpcrequest(s:host_chan_id, 'destroy')
 endfunction
 
 function! rnvimr#rpc#ranger_cmd(...) abort
+    if s:valid_setup()
+        return
+    endif
     if !empty(a:000)
         call rpcnotify(s:host_chan_id, 'eval_cmd', a:000)
     endif
