@@ -33,7 +33,7 @@ highlight default link RnvimrCurses Normal
 
 function! s:redraw_win() abort
     let layout = rnvimr#layout#get_current_layout()
-    call nvim_win_set_config(rnvimr#context#get_win_handle(), layout)
+    call nvim_win_set_config(rnvimr#context#winid(), layout)
     " TODO
     " clear screen is not working inside VimResized event
     " add a timer to implement redraw is a dirty way, please fix
@@ -42,8 +42,7 @@ endfunction
 
 function! s:reopen_win() abort
     let layout = rnvimr#layout#get_current_layout()
-    call rnvimr#context#set_win_handle(
-                \ nvim_open_win(rnvimr#context#get_buf_handle(), v:true, layout))
+    call rnvimr#context#winid(nvim_open_win(rnvimr#context#bufnr(), v:true, layout))
     startinsert
 endfunction
 
@@ -51,12 +50,12 @@ function! s:on_exit(job_id, data, event) abort
     if a:data == 0
         bdelete!
     endif
-    call rnvimr#context#set_buf_handle(-1)
+    call rnvimr#context#bufnr(-1)
     call rnvimr#rpc#reset()
 endfunction
 
 function! s:setup_winhl() abort
-    let buf_hd = rnvimr#context#get_buf_handle()
+    let buf_hd = rnvimr#context#bufnr()
     call setbufvar(buf_hd, 'normal_winhl', 'Normal:RnvimrNormal')
     call setbufvar(buf_hd, 'curses_winhl', 'Normal:RnvimrCurses')
     if g:rnvimr_draw_border
@@ -64,14 +63,14 @@ function! s:setup_winhl() abort
     else
         let default_winhl = getbufvar(buf_hd, 'normal_winhl')
     endif
-    call setwinvar(rnvimr#context#get_win_handle(), '&winhighlight', default_winhl)
+    call setwinvar(rnvimr#context#winid(), '&winhighlight', default_winhl)
 endfunction
 
 function! s:create_ranger(cmd) abort
     let init_layout = rnvimr#layout#get_init_layout()
-    call rnvimr#context#set_buf_handle(nvim_create_buf(v:false, v:true))
-    call rnvimr#context#set_win_handle(
-                \ nvim_open_win(rnvimr#context#get_buf_handle(), v:true, init_layout))
+    call rnvimr#context#bufnr(nvim_create_buf(v:false, v:true))
+    call rnvimr#context#winid(
+                \ nvim_open_win(rnvimr#context#bufnr(), v:true, init_layout))
     call termopen(a:cmd, {'on_exit': function('s:on_exit')})
     setfiletype rnvimr
     call s:setup_winhl()
@@ -79,7 +78,7 @@ function! s:create_ranger(cmd) abort
 endfunction
 
 function! rnvimr#resize(...) abort
-    let win_hd = rnvimr#context#get_win_handle()
+    let win_hd = rnvimr#context#winid()
     if !nvim_win_is_valid(win_hd) ||
                 \ nvim_get_current_win() != win_hd
         return
@@ -90,8 +89,8 @@ function! rnvimr#resize(...) abort
 endfunction
 
 function! rnvimr#toggle() abort
-    let win_hd = rnvimr#context#get_win_handle()
-    if rnvimr#context#get_buf_handle() != -1
+    let win_hd = rnvimr#context#winid()
+    if rnvimr#context#bufnr() != -1
         if win_hd != -1 && nvim_win_is_valid(win_hd)
             if nvim_get_current_win() == win_hd
                 call nvim_win_close(win_hd, 0)
@@ -109,7 +108,7 @@ function! rnvimr#toggle() abort
 endfunction
 
 function! rnvimr#open(path) abort
-    if rnvimr#context#get_buf_handle() != -1
+    if rnvimr#context#bufnr() != -1
         if filereadable(a:path) || isdirectory(a:path)
             call rnvimr#rpc#attach_file(a:path)
             call rnvimr#rpc#disable_attach_file()

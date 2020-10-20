@@ -1,23 +1,19 @@
-let s:buf_handle = -1
-let s:win_handle = -1
+let s:bufnr = -1
+let s:winid = -1
 
-function rnvimr#context#get_buf_handle() abort
-    return s:buf_handle
-endfunction
-
-function rnvimr#context#set_buf_handle(handle) abort
-    let old = s:buf_handle
-    let s:buf_handle = a:handle
+function rnvimr#context#bufnr(...) abort
+    let old = s:bufnr
+    if a:0 == 1
+        let s:bufnr = a:1
+    endif
     return old
 endfunction
 
-function rnvimr#context#get_win_handle() abort
-    return s:win_handle
-endfunction
-
-function rnvimr#context#set_win_handle(handle) abort
-    let old = s:win_handle
-    let s:win_handle = a:handle
+function rnvimr#context#winid(...) abort
+    let old = s:winid
+    if a:0 == 1
+        let s:winid = a:1
+    endif
     return old
 endfunction
 

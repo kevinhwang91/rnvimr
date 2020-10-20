@@ -86,7 +86,7 @@ function! rnvimr#rpc#do_saveas(bufnr, target_name) abort
         endif
         execute 'noautocmd badd ' . a:target_name
     endif
-    noautocmd call nvim_set_current_win(rnvimr#context#get_win_handle())
+    noautocmd call nvim_set_current_win(rnvimr#context#winid())
     noautocmd startinsert
 endfunction
 
@@ -133,13 +133,13 @@ endfunction
 
 function! rnvimr#rpc#get_window_info() abort
     try
-        return nvim_win_get_config(rnvimr#context#get_win_handle())
+        return nvim_win_get_config(rnvimr#context#winid())
     catch /^Vim\%((\a\+)\)\=:E5555/
         return {}
     endtry
 endfunction
 
 function! rnvimr#rpc#set_winhl(winhl) abort
-    return setwinvar(rnvimr#context#get_win_handle(), '&winhighlight',
-                \ getbufvar(rnvimr#context#get_buf_handle(), a:winhl))
+    return setwinvar(rnvimr#context#winid(), '&winhighlight',
+                \ getbufvar(rnvimr#context#bufnr(), a:winhl))
 endfunction
