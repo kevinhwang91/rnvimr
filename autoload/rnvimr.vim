@@ -130,8 +130,6 @@ function! rnvimr#init(...) abort
         autocmd!
         autocmd VimResized <buffer> call s:redraw_win()
         autocmd VimLeavePre * call rnvimr#rpc#destroy()
-        " TODO no idea why matchparen will enable after entering ranger
-        autocmd TermEnter <buffer> call clearmatches()
         if get(g:, 'rnvimr_enable_bw', 0)
             autocmd TermEnter,WinEnter <buffer> call rnvimr#context#check_point()
             autocmd WinLeave <buffer> call rnvimr#context#buf_wipe()
