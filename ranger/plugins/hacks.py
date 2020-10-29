@@ -54,6 +54,7 @@ class Hacks():
         self.enhance_quit()
         self.fix_column_ratio()
         self.fix_vcs()
+        self.kill_redundant_redraw()
         return self.old_hook_init(self.fm)
 
     def client_attach(self):
@@ -234,6 +235,13 @@ class Hacks():
             descr = "Restore user's setting of vcs_aware"
             loadable = Loadable(enable_vcs_aware(), descr)
             self.fm.loader.add(loadable)
+
+    def kill_redundant_redraw(self):
+        """
+        I hate redundant redraw, eyes killer.
+
+        """
+        ui.skip_redraw()
 
 
 OLD_HOOK_INIT = ranger.api.hook_init
