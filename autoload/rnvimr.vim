@@ -8,7 +8,7 @@ let s:default_action = {
             \ 'gw': 'JumpNvimCwd',
             \ 'yw': 'EmitRangerCwd',
             \ }
-
+let s:shadow_winblend = get(g:, 'rnvimr_shadow_winblend', 100)
 
 " TODO rnvimr_picker_enable and rnvimr_bw_enable were deprecated.
 let g:rnvimr_enable_picker = get(g:, 'rnvimr_enable_picker', 0)
@@ -133,6 +133,11 @@ function! rnvimr#init(...) abort
         if get(g:, 'rnvimr_enable_bw', 0)
             autocmd TermEnter,WinEnter <buffer> call rnvimr#context#check_point()
             autocmd WinLeave <buffer> call rnvimr#context#buf_wipe()
+        endif
+        if s:shadow_winblend < 100 && s:shadow_winblend >= 0
+            autocmd TermEnter,WinEnter <buffer> call rnvimr#shadowwin#create(s:shadow_winblend)
+            autocmd WinLeave <buffer> call rnvimr#shadowwin#destroy()
+            autocmd VimResized <buffer> call rnvimr#shadowwin#reszie()
         endif
     augroup END
 endfunction

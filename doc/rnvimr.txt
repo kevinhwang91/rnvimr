@@ -184,6 +184,13 @@ g:rnvimr_enable_bw
     Make Neovim automatically execute |bwipeout| to wipe out the buffers deleted
     by Ranger.
 
+                                                        *g:rnvimr_shadow_winblend*
+g:rnvimr_shadow_winblend
+    Default: 100
+
+    When value is inside [0, 100) will pass its value to |winblend| as an
+    window option for a new floating window as shadow.
+
                                                         *g:rnvimr_hide_gitignore*
 g:rnvimr_hide_gitignore
     Default: 0
@@ -323,6 +330,9 @@ Advanced configuration:
     " Make Neovim wipe the buffers corresponding to the files deleted by Ranger
     let g:rnvimr_enable_bw = 1
 
+    " Add a shadow window, value is equal to 100 will disable shadow
+    let g:rnvimr_shadow_winblend = 70
+
     " Draw border with both
     let g:rnvimr_ranger_cmd = 'ranger --cmd="set draw_borders both"'
 
@@ -384,6 +394,16 @@ Advanced configuration:
                 \ {'width': 1.000, 'height': 0.500, 'col': 0, 'row': 0.5}
                 \ ]
 
+    " Fullscreen for initial layout
+    " let g:rnvimr_layout = {
+    "            \ 'relative': 'editor',
+    "            \ 'width': float2nr(1.0 * &columns),
+    "            \ 'height': float2nr(1.0 * &lines) - 2,
+    "            \ 'col': 0,
+    "            \ 'row': 0,
+    "            \ 'style': 'minimal'
+    "            \ }
+    "
     " Only use initial preset layout
     " let g:rnvimr_presets = [{}]
 <

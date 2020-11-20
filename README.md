@@ -5,13 +5,11 @@ Rnvimr is a NeoVim plugin that allows you to use Ranger in a floating window.
 Different than other Ranger vim-plugins, Rnvimr gives you full control over Ranger.
 It uses [RPC](https://neovim.io/doc/user/api.html#RPC) to communicate with Ranger.
 
-**Since Rnvimr requires RPC, this plugin does not support Vim for now.**
+**This plugin does not support Vim.**
 
 <p align="center">
     <img width="960px" src="https://user-images.githubusercontent.com/17562139/94383438-a3be7680-0172-11eb-9f57-f3cd88aff0c0.gif">
 </p>
-
-> [vimade](https://github.com/TaDaa/vimade) was used to fade interactive windows.
 
 ## Requirements
 
@@ -168,6 +166,9 @@ let g:rnvimr_border_attr = {'fg': 14, 'bg': -1}
 " Make Neovim wipe the buffers corresponding to the files deleted by Ranger
 let g:rnvimr_enable_bw = 1
 
+" Add a shadow window, value is equal to 100 will disable shadow
+let g:rnvimr_shadow_winblend = 70
+
 " Draw border with both
 let g:rnvimr_ranger_cmd = 'ranger --cmd="set draw_borders both"'
 
@@ -229,8 +230,19 @@ let g:rnvimr_presets = [
             \ {'width': 1.000, 'height': 0.500, 'col': 0, 'row': 0.5}
             \ ]
 
+" Fullscreen for initial layout
+" let g:rnvimr_layout = {
+"            \ 'relative': 'editor',
+"            \ 'width': float2nr(1.0 * &columns),
+"            \ 'height': float2nr(1.0 * &lines) - 2,
+"            \ 'col': 0,
+"            \ 'row': 0,
+"            \ 'style': 'minimal'
+"            \ }
+"
 " Only use initial preset layout
 " let g:rnvimr_presets = [{}]
+
 ```
 
 For more information, please refer to [:help rnvimr](./doc/rnvimr.txt),
