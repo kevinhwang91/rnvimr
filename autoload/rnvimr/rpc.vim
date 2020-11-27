@@ -70,19 +70,27 @@ endfunction
 function! rnvimr#rpc#do_saveas(bufnr, target_name) abort
     let bw_enabled = get(g:, 'rnvimr_enable_bw', 0)
     noautocmd wincmd p
+    let cur_bufnr = bufnr('%')
+    let alt_bufnr = bufnr('#')
     if bufloaded(a:bufnr)
-        let cur_bufnr = bufnr('%')
-        execute 'noautocmd silent! buffer ' . a:bufnr
+        execute 'noautocmd silent buffer ' . a:bufnr
         execute 'noautocmd saveas! ' . a:target_name
         if bw_enabled
             noautocmd bwipeout #
+            if alt_bufnr > 0
+                execute 'noautocmd silent buffer ' . alt_bufnr
+            endif
         endif
-        execute 'noautocmd silent! buffer ' . cur_bufnr
+        execute 'noautocmd silent buffer ' . cur_bufnr
     else
         let bufname = fnamemodify(bufname(a:bufnr), ':p')
         call rnvimr#util#sync_undo(bufname, a:target_name, v:true)
         if bw_enabled
             execute 'noautocmd bwipeout ' . a:bufnr
+            if alt_bufnr > 0
+                execute 'noautocmd silent buffer ' . alt_bufnr
+                execute 'noautocmd silent buffer ' . cur_bufnr
+            endif
         endif
         execute 'noautocmd badd ' . a:target_name
     endif
