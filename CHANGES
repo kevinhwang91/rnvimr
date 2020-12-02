@@ -1,3 +1,9 @@
+CHANGES FROM 0.3.0 TO 0.4.0
+
+* add views to adapt size of floating window
+
+* add shadow window
+
 CHANGES FROM 0.2.0 TO 0.3.0
 
 * dynamic import user configuration by default, remove everything about synchronizing configuration
