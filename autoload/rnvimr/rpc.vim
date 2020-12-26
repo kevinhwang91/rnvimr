@@ -41,6 +41,13 @@ function! rnvimr#rpc#attach_file_once(file) abort
     endif
 endfunction
 
+function! rnvimr#rpc#clear_image() abort
+    if s:host_chan_id == -1
+        return
+    endif
+    return rpcnotify(s:host_chan_id, 'clear_image')
+endfunction
+
 function! rnvimr#rpc#destroy() abort
     if s:host_chan_id == -1
         return

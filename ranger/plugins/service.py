@@ -67,6 +67,15 @@ class Service(FileManagerAware):
             self.fm.client.echom(ex)
 
     @Register
+    def clear_image(self, args):  # pylint: disable=unused-argument
+        """
+        Clear Image
+
+        :param args args list: No use
+        """
+        self.fm.execute_console('ClearImage')
+
+    @Register
     def destroy(self, args):  # pylint: disable=unused-argument
         """
         Destroy everything execpt heavy UI

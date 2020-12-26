@@ -69,6 +69,15 @@ class EditFile(Command):
     def tab(self, tabnum):
         return self._tab_directory_content()
 
+class ClearImage(Command):
+
+    """A command of ranger to clear image"""
+
+    def execute(self):
+        columns = self.fm.ui.browser.columns
+        if len(columns) > 1:
+            columns[-1].clear_image(force=True)
+
 
 class AttachFile(Command):
     """

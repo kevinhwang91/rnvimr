@@ -94,6 +94,7 @@ function! rnvimr#toggle() abort
         if win_hd != -1 && nvim_win_is_valid(win_hd)
             if nvim_get_current_win() == win_hd
                 call nvim_win_close(win_hd, 0)
+                call rnvimr#rpc#clear_image()
             else
                 call nvim_set_current_win(win_hd)
                 startinsert
