@@ -4,9 +4,9 @@ Make ranger as a host for neovim
 """
 import os
 import threading
-import pynvim
 import ranger
 from .service import Service, ServiceRunner, ServiceLoader
+from .rutil import attach_nvim
 
 
 class Host():
@@ -40,12 +40,10 @@ class Host():
         """
 
         self.fm.ui.redraw()
-        socket_path = os.getenv('NVIM_LISTEN_ADDRESS')
-
-        if socket_path:
-            self.nvim = pynvim.attach('socket', path=socket_path)
+        server_name = os.getenv('NVIM_LISTEN_ADDRESS')
+        self.nvim = attach_nvim(server_name)
+        if self.nvim:
             self.fm.service = Service()
-
             # call neovim only once as a host in order to get channel id.
             self.fm.host_id = self.nvim.request('nvim_get_api_info')[0]
 

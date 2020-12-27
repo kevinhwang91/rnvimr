@@ -271,8 +271,8 @@ Q: CheckHealth says RPC timeout.
 
 A: Install [Dependence](#Dependence) first,
 run ex command`:echo $NVIM_LISTEN_ADDRESS` to
-confirm that the message output is in a format like this `/tmp/nvimIYj484/0`,
-Rnvimr needs this environment variable as the socket path.
+confirm that the message output is in a format like this `/tmp/nvimIYj484/0` or a tcp format
+`address:port`, Rnvimr needs this environment variable.
 
 Q: How can I go back to the previous directory in Ranger after attaching a new file?
 

@@ -3,7 +3,6 @@ Make ranger as a client to neovim
 
 """
 import os
-import pynvim
 from . import rutil
 
 
@@ -29,10 +28,8 @@ class Client():
         Attach neovim session by socket path.
 
         """
-        socket_path = os.getenv('NVIM_LISTEN_ADDRESS')
-
-        if socket_path:
-            self.nvim = pynvim.attach('socket', path=socket_path)
+        server_name = os.getenv('NVIM_LISTEN_ADDRESS')
+        self.nvim = rutil.attach_nvim(server_name)
 
     def get_window_info(self):
         """

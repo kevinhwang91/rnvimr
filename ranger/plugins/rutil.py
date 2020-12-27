@@ -5,7 +5,28 @@ util
 
 import os
 import sys
+import pynvim
 import importlib.util as util
+
+
+def attach_nvim(server_name):
+    """
+    A wrapper of Pynvim attach
+
+    :param server_name str: server_name, maybe socket or tcp
+    """
+
+    nvim = None
+    if server_name:
+        try:
+            nvim = pynvim.attach('socket', path=server_name)
+        except FileNotFoundError:
+            try:
+                addr, port = server_name.split(':')
+                nvim = pynvim.attach('tcp', address=addr, port=port)
+            except ValueError:
+                pass
+    return nvim
 
 
 def find_git_root(path):
