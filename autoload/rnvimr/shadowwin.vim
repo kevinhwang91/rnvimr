@@ -39,6 +39,9 @@ function! rnvimr#shadowwin#create(winblend) abort
 endfunction
 
 function rnvimr#shadowwin#destroy() abort
+    if s:destroy_timer > 0
+        return
+    endif
     let s:destroy_timer = timer_start(50, function('s:destroy'))
 endfunction
 
