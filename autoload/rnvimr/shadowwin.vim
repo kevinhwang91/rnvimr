@@ -1,8 +1,22 @@
+let s:shadow_winid = -1
+let s:destroy_timer = -1
+
 function s:shadow_existed() abort
-    return exists('s:shadow_winid') && nvim_win_is_valid(s:shadow_winid)
+    return s:shadow_winid > 0 && nvim_win_is_valid(s:shadow_winid)
+endfunction
+
+function s:destroy(timer) abort
+    if !s:shadow_existed()
+        return
+    endif
+    call nvim_win_close(s:shadow_winid, 0)
 endfunction
 
 function! rnvimr#shadowwin#create(winblend) abort
+    if s:destroy_timer > 0
+        call timer_stop(s:destroy_timer)
+        let s:destroy_timer = -1
+    endif
     if s:shadow_existed()
         return
     endif
@@ -25,10 +39,7 @@ function! rnvimr#shadowwin#create(winblend) abort
 endfunction
 
 function rnvimr#shadowwin#destroy() abort
-    if !s:shadow_existed()
-        return
-    endif
-    call nvim_win_close(s:shadow_winid, 0)
+    let s:destroy_timer = timer_start(50, function('s:destroy'))
 endfunction
 
 function! rnvimr#shadowwin#reszie() abort
