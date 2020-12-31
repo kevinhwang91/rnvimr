@@ -99,6 +99,7 @@ function! s:check_rpc() abort
                     \ 'on_stdout': function('s:system_handler'),
                     \ }
 
+        let $NVIM_LISTEN_ADDRESS = v:servername
         let confdir = shellescape(s:rnvimr_path . '/ranger')
         let cmd = s:ranger_cmd . ' --confdir=' . confdir
         let jobid = jobstart(cmd, opts)

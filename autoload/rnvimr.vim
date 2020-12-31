@@ -121,6 +121,7 @@ function! rnvimr#open(path) abort
 endfunction
 
 function! rnvimr#init(...) abort
+    let $NVIM_LISTEN_ADDRESS = v:servername
     let select_file = empty(a:000) ? expand('%:p') : a:1
     let confdir = shellescape(s:confdir)
     let attach_cmd = shellescape('AttachFile ' . line('w0') . ' ' . select_file)
