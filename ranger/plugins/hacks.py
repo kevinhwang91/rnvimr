@@ -42,10 +42,10 @@ class Hacks():
             init_dict = self.fm.client.nvim.vars['rnvimr_ranger_init']
         except KeyError:
             init_dict = {}
-        self.map_action(init_dict.get('action'))
         self.fake_editor()
         self.hide_git_files(bool(init_dict.get('hide_gitignore')))
         self.load_user_settings(bool(init_dict.get('vanilla')), init_dict.get('urc_path'))
+        self.map_action(init_dict.get('action'))
         self.draw_border(bool(init_dict.get('draw_border')), init_dict.get('border_attr'))
         self.change_view_adapt_size(init_dict.get('views'))
         self.calibrate_ueberzug()
