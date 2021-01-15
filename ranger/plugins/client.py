@@ -71,7 +71,7 @@ class Client():
         """
         if not os.path.exists(target_name):
             return
-        self.nvim.call('rnvimr#rpc#do_saveas', bufnr, target_name, async_=True)
+        self.nvim.call('rnvimr#rpc#do_saveas', bufnr, target_name, async_=False)
 
     def move_buf(self, src, dst):
         """
