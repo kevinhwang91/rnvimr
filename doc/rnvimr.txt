@@ -397,8 +397,8 @@ Advanced configuration:
     " Fullscreen for initial layout
     " let g:rnvimr_layout = {
     "            \ 'relative': 'editor',
-    "            \ 'width': float2nr(1.0 * &columns),
-    "            \ 'height': float2nr(1.0 * &lines) - 2,
+    "            \ 'width': &columns,
+    "            \ 'height': &lines - 2,
     "            \ 'col': 0,
     "            \ 'row': 0,
     "            \ 'style': 'minimal'

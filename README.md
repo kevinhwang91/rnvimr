@@ -7,6 +7,22 @@ It uses [RPC](https://neovim.io/doc/user/api.html#RPC) to communicate with Range
 
 **This plugin does not support Vim.**
 
+## Table of contents
+
+* [Requirements](#requirements)
+* [Features](#features)
+* [Installation](#installation)
+  * [Dependence](#dependence)
+  * [Plugin](#plugin)
+  * [CheckHealth (optional)](#checkhealth-(optional))
+* [Usage](#usage)
+  * [Demonstration](#demonstration)
+  * [Example configuration](#example-configuration)
+    * [Minimal configuration](#minimal-configuration)
+    * [Advanced configuration](#advanced-configuration)
+* [FAQ](#faq)
+* [License](#license)
+
 <p align="center">
     <img width="960px" src="https://user-images.githubusercontent.com/17562139/94383438-a3be7680-0172-11eb-9f57-f3cd88aff0c0.gif">
 </p>
@@ -101,7 +117,7 @@ Using `:RnvimrResize` to cycle the preset layouts.
 
 Pressing `Enter` to open a file in Ranger.
 
-Rnvimr also supports `CTRL-T`/`CTRL-X`/`CTRL-V` key bindingsthat allow you to
+Rnvimr also supports `ctrl-t`/`ctrl-x`/`ctrl-v` key bindings that allow you to
 open up a file in a new tab, a new horizontal split, or in a new vertical split.
 
 Pressing `q` in Ranger simply hides the floating window.
@@ -233,8 +249,8 @@ let g:rnvimr_presets = [
 " Fullscreen for initial layout
 " let g:rnvimr_layout = {
 "            \ 'relative': 'editor',
-"            \ 'width': float2nr(1.0 * &columns),
-"            \ 'height': float2nr(1.0 * &lines) - 2,
+"            \ 'width': &columns,
+"            \ 'height': &lines - 2,
 "            \ 'col': 0,
 "            \ 'row': 0,
 "            \ 'style': 'minimal'
