@@ -26,10 +26,6 @@ function! rnvimr#rpc#attach_file(file) abort
     endif
 endfunction
 
-function! rnvimr#rpc#set_host_chan_id(id) abort
-    let s:host_chan_id = a:id
-endfunction
-
 function! rnvimr#rpc#reset() abort
     let s:host_chan_id = -1
 endfunction
@@ -66,6 +62,15 @@ endfunction
 
 " ranger to neovim
 " =================================================================================================
+function! rnvimr#rpc#host_ready(id) abort
+    let s:host_chan_id = a:id
+    if get(g:, 'rnvimr_draw_border', 1) && (has('mac') || has('macunix'))
+        let layout = nvim_win_get_config(rnvimr#context#winid())
+        let layout.width += 1
+        call nvim_win_set_config(rnvimr#context#winid(), layout)
+    endif
+endfunction
+
 function! rnvimr#rpc#list_buf_name_nr() abort
     let buf_dict = {}
     for buf in filter(getbufinfo({'buflisted': 1}), 'v:val.changed == 0')
