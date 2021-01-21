@@ -68,6 +68,9 @@ endfunction
 
 function! s:create_ranger(cmd) abort
     let init_layout = rnvimr#layout#get_init_layout()
+    if get(g:, 'rnvimr_draw_border', 1) && (has('mac') || has('macunix'))
+        let init_layout.width -= 1
+    endif
     call rnvimr#context#bufnr(nvim_create_buf(v:false, v:true))
     call rnvimr#context#winid(
                 \ nvim_open_win(rnvimr#context#bufnr(), v:true, init_layout))
