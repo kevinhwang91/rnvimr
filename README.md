@@ -5,6 +5,10 @@ Rnvimr is a NeoVim plugin that allows you to use Ranger in a floating window.
 Different than other Ranger vim-plugins, Rnvimr gives you full control over Ranger.
 It uses [RPC](https://neovim.io/doc/user/api.html#RPC) to communicate with Ranger.
 
+<p align="center">
+    <img width="960px" src="https://user-images.githubusercontent.com/17562139/94383438-a3be7680-0172-11eb-9f57-f3cd88aff0c0.gif">
+</p>
+
 **This plugin does not support Vim.**
 
 ## Table of contents
@@ -22,10 +26,6 @@ It uses [RPC](https://neovim.io/doc/user/api.html#RPC) to communicate with Range
     * [Advanced configuration](#advanced-configuration)
 * [FAQ](#faq)
 * [License](#license)
-
-<p align="center">
-    <img width="960px" src="https://user-images.githubusercontent.com/17562139/94383438-a3be7680-0172-11eb-9f57-f3cd88aff0c0.gif">
-</p>
 
 ## Requirements
 
