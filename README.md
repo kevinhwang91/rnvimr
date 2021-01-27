@@ -303,6 +303,11 @@ Q: `let g:rnvimr_enable_ex = 1` can't work as expected.
 A: Turn off the option of other plugins (like `let g:NERDTreeHijackNetrw = 0` which is used in
 NERDTree) or uninstall the conflicting plugins.
 
+Q: In MacOS, I must press `<ctrl-v>` twice to split window vertically.
+
+A: Please refer to [#71](https://github.com/kevinhwang91/rnvimr/issues/71) and use `rnvimr_action`
+variable to remap `<ctrl-v>` as a workaround for the issue.
+
 ## License
 
 The project is licensed under a BSD-3-clause license. See [LICENSE](./LICENSE) file for details.
