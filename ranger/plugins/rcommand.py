@@ -15,10 +15,15 @@ class NvimEdit(Command):
     """
 
     def execute(self):
-        action = ' '.join(self.args[1:])
+        action = self.args[1]
+        try:
+            picker_enabled = self.args[2].lower() == 'true'
+        except IndexError:
+            picker_enabled = None
+
         if not self.fm.thisfile.is_file or not action:
             return
-        self.fm.client.rpc_edit([self.fm.thisfile], edit=action)
+        self.fm.client.rpc_edit([self.fm.thisfile], edit=action, picker=picker_enabled)
 
 
 class JumpNvimCwd(Command):
@@ -33,6 +38,7 @@ class JumpNvimCwd(Command):
             path = self.fm.client.get_cwd()
         self.fm.cd(path)
 
+
 class EmitRangerCwd(Command):
     """
     A command of ranger to emit cwd of ranger to neovim.
@@ -42,6 +48,7 @@ class EmitRangerCwd(Command):
     def execute(self):
         if self.fm.client:
             self.fm.client.set_cwd(self.fm.thisdir.path)
+
 
 class EditFile(Command):
     """
@@ -68,6 +75,7 @@ class EditFile(Command):
 
     def tab(self, tabnum):
         return self._tab_directory_content()
+
 
 class ClearImage(Command):
 

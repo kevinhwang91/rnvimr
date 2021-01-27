@@ -110,9 +110,9 @@ function! rnvimr#rpc#do_saveas(bufnr, target_name) abort
     noautocmd startinsert
 endfunction
 
-function! rnvimr#rpc#edit(edit, start_line, files) abort
+function! rnvimr#rpc#edit(edit, start_line, files, ...) abort
     let files = map(copy(a:files), 'fnameescape(v:val)')
-    let picker_enabled = get(g:, 'rnvimr_enable_picker', 0)
+    let picker_enabled = empty(a:000) ? get(g:, 'rnvimr_enable_picker', 0) : a:1
     if picker_enabled
         close
     else
