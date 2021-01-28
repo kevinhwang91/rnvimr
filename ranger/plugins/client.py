@@ -118,7 +118,10 @@ class Client():
         :param path str: absolute path
         :param noautocmd bool: whether use noautocmd command
         """
+        self.nvim.command('noautocmd wincmd p')
         self.nvim.command('{} cd {}'.format('noautocmd' if noautocmd else '', path))
+        self.nvim.command('noautocmd wincmd p')
+        self.nvim.command('startinsert')
 
     def rpc_edit(self, files, edit=None, start_line=0, picker=None):
         """
