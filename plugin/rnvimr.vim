@@ -14,9 +14,10 @@ if get(g:, 'rnvimr_enable_ex', 0)
     augroup RnvimrFileExplorer
         autocmd!
         autocmd VimEnter * ++once silent! autocmd! FileExplorer
-        autocmd VimEnter * ++once if isdirectory(expand('<amatch>'))|
-                    \ bwipeout! | call rnvimr#open(expand('<amatch>')) | endif
-        autocmd BufEnter * if isdirectory(expand('<amatch>')) && v:vim_did_enter |
-                    \ bwipeout! | call rnvimr#open(expand('<amatch>')) | endif
+        autocmd VimEnter * ++once if isdirectory(expand('<amatch>')) |
+                    \ bwipeout! | call rnvimr#open(expand('<amatch>')) |
+                    \ endif |
+                    \ execute(printf("autocmd RnvimrFileExplorer BufEnter * %s",
+                    \ "call rnvimr#enter_dir(expand('<amatch>'))"))
     augroup END
 endif
