@@ -2,7 +2,12 @@ let s:shadow_winid = -1
 let s:destroy_timer = -1
 
 function s:shadow_existed() abort
-    return s:shadow_winid > 0 && nvim_win_is_valid(s:shadow_winid)
+    let ret = s:shadow_winid > 0 && nvim_win_is_valid(s:shadow_winid)
+    if ret && index(nvim_tabpage_list_wins(0), s:shadow_winid) == -1
+        call nvim_win_close(s:shadow_winid, 0)
+        let ret = 0
+    endif
+    return ret
 endfunction
 
 function s:destroy(timer) abort
