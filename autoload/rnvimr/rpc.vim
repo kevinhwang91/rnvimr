@@ -121,10 +121,11 @@ function! rnvimr#rpc#edit(edit, start_line, files, ...) abort
         wincmd p
     endif
     if !empty(a:edit)
-        if bufname('%') != ''
-            execute 'noautocmd ' . a:edit
+        if bufname('%') == ''
+            execute 'silent! edit ' . files[0]
+        else
+            execute 'silent! ' . a:edit . files[0]
         endif
-        execute 'silent! edit ' . files[0]
     else
         if a:start_line == 0
             execute 'silent! edit ' . files[0]
