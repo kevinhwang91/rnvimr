@@ -154,14 +154,16 @@ g:rnvimr_action
                 '<C-t>': 'NvimEdit tabedit',
                 '<C-x>': 'NvimEdit split',
                 '<C-v>': 'NvimEdit vsplit',
+                '<C-o>': 'NvimEdit drop',
                 'gw': 'JumpNvimCwd',
                 'yw': 'EmitRangerCwd'
             }
 <
     |NvimEdit| : Use Neovim's command to edit the selected file in Ranger.
-    'edit', 'split', 'vsplit' and 'tabedit' is actions of Neovim.
+    'edit', 'split', 'vsplit', 'drop' and 'tabedit' is actions of Neovim.
     `NvimEdit split True/False`: will override |g:rnvimr_enable_picker| variable
-    to split the file, 'edit', 'vsplit' and 'tabedit' is similar to 'split'.
+    to split the file, 'edit', 'vsplit', 'drop' and 'tabedit' is similar to
+    'split'.
 
     |JumpNvimCwd| : Change Ranger's cwd to Neovim's.
     |EmitRangerCwd| : Change Neovim's cwd to Ranger's.

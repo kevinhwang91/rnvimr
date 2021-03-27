@@ -5,6 +5,7 @@ let s:default_action = {
             \ '<C-t>': 'NvimEdit tabedit',
             \ '<C-x>': 'NvimEdit split',
             \ '<C-v>': 'NvimEdit vsplit',
+            \ '<C-o>': 'NvimEdit drop',
             \ 'gw': 'JumpNvimCwd',
             \ 'yw': 'EmitRangerCwd',
             \ }
