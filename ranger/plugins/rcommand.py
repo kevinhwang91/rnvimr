@@ -15,11 +15,12 @@ class NvimEdit(Command):
     """
 
     def execute(self):
-        action = self.args[1]
-        try:
-            picker_enabled = self.args[2].lower() == 'true'
-        except IndexError:
+        last_arg = self.args[-1]
+        if last_arg.lower() in ('true', 'false'):
+            picker_enabled = self.args.pop().lower() == 'true'
+        else:
             picker_enabled = None
+        action = ' '.join(self.args[1:])
 
         if not self.fm.thisfile.is_file or not action:
             return
