@@ -145,6 +145,14 @@ function! rnvimr#init(...) abort
     let $NVIM_LISTEN_ADDRESS = v:servername
     let select_file = empty(a:000) ? expand('%:p') : a:1
     let confdir = shellescape(s:confdir)
+    " https://github.com/kevinhwang91/rnvimr/issues/80
+    if filewritable(confdir) == 0
+        let tmp_dir = fnamemodify(tempname(), ':h') . '/rnvimr'
+        if empty(glob(tmp_dir))
+            call system('cp -r ' . confdir . ' ' . shellescape(tmp_dir . '/'))
+        endif
+        let confdir = shellescape(tmp_dir)
+    endif
     let attach_cmd = shellescape('AttachFile ' . line('w0') . ' ' . select_file)
     let ranger_cmd = get(g:, 'rnvimr_ranger_cmd', s:default_ranger_cmd)
     let cmd = ranger_cmd . ' --confdir=' . confdir . ' --cmd=' . attach_cmd
