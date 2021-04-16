@@ -146,10 +146,11 @@ function! rnvimr#init(...) abort
     let select_file = empty(a:000) ? expand('%:p') : a:1
     let confdir = shellescape(s:confdir)
     " https://github.com/kevinhwang91/rnvimr/issues/80
-    if filewritable(confdir) == 0
+    if filewritable(s:confdir) == 0
         let tmp_dir = fnamemodify(tempname(), ':h') . '/rnvimr'
         if empty(glob(tmp_dir))
-            call system('cp -r ' . confdir . ' ' . shellescape(tmp_dir . '/'))
+            let sh_conf = shellescape(tmp_dir . '/')
+            call system('cp -r ' . confdir . ' ' . sh_conf . ' && chmod +w -R ' . sh_conf)
         endif
         let confdir = shellescape(tmp_dir)
     endif
