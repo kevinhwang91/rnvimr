@@ -77,6 +77,40 @@ def _reload_rifle(fm):  # pylint: disable=invalid-name
         fm.rifle.reload_config()
 
 
+def _correct_confdir(fm, confdir):  # pylint: disable=invalid-name
+    ranger.args.confdir = confdir
+    if not ranger.args.clean:
+        #  bookmarks
+        fm.bookmarks.path = fm.datapath('bookmarks')
+
+        #  tags
+        new_tags_filename = fm.datapath('tagged')
+        if fm.tags._filename != new_tags_filename:  # pylint: disable=protected-access
+            fm.tags._filename = new_tags_filename   # pylint: disable=protected-access
+            fm.tags.sync()
+
+        # history
+        console = fm.ui.console
+        new_historypath = fm.datapath('history')
+        if console.historypath != new_historypath:
+            console.historypath = new_historypath
+            history_kclass = ranger.container.history.History
+            console.history = history_kclass(fm.settings.max_console_history_size)
+            try:
+                fobj = open(console.historypath, 'r')
+            except OSError as ex:
+                fm.notify('Failed to read history file', bad=True, exception=ex)
+            else:
+                try:
+                    for line in fobj:
+                        console.history.add(line[:-1])
+                except UnicodeDecodeError as ex:
+                    fm.notify('Failed to parse corrupt history file',
+                              bad=True, exception=ex)
+                fobj.close()
+            console.history_backup = history_kclass(console.history)
+
+
 def load_user_settings(fm, confdir=None):  # pylint: disable=invalid-name
     """
     Load user setting because rnvimr occupy confdir when ranger startup
@@ -92,7 +126,7 @@ def load_user_settings(fm, confdir=None):  # pylint: disable=invalid-name
         if not confdir:
             confdir = os.path.expanduser('~/.config/ranger')
 
-    ranger.args.confdir = confdir
+    _correct_confdir(fm, confdir)
 
     _load_commands(fm)
     _load_plugins(fm)
