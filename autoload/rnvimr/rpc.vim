@@ -121,7 +121,7 @@ function! rnvimr#rpc#edit(edit, start_line, files, ...) abort
         wincmd p
     endif
     if !empty(a:edit)
-        if bufname('%') == ''
+        if bufname('%') == '' && nvim_buf_get_offset(0, 1) <= 0
             execute 'silent! edit ' . files[0]
         else
             execute 'silent! ' . a:edit . files[0]
