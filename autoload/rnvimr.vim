@@ -83,8 +83,8 @@ function! s:create_ranger(cmd) abort
     startinsert
 endfunction
 
-function! s:defer_check_dir(path) abort
-    if isdirectory(a:path) && !&diff
+function! s:defer_check_dir(path, bufnr) abort
+    if isdirectory(a:path) && !&diff && a:bufnr == nvim_get_current_buf()
         bwipeout!
         call rnvimr#open(a:path)
     end
@@ -94,7 +94,7 @@ function! rnvimr#enter_dir(path) abort
     if isdirectory(a:path) && !&diff
         " git submodule opened by `:Git difftool -y` for vim-fugitive is treated as directory,
         " but vim-fugitive couldn't set &diff before BufEnter event, let us check it later:)
-        call timer_start(0, {-> call('s:defer_check_dir', [a:path])})
+        call timer_start(0, {-> call('s:defer_check_dir', [a:path, nvim_get_current_buf()])})
     endif
 endfunction
 
