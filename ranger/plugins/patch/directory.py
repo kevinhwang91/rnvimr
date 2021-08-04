@@ -283,7 +283,7 @@ def refilter(self):
         if hasattr(self, 'ignored'):
             filters.append(
                 lambda fobj: all([not rutil.is_subpath(ipath, fobj.path)
-                                  for ipath in self.ignored]))
+                                  for ipath in self.ignored]) or fobj.path == self.fm.attached_file)
 
     self.files = [f for f in self.files_all if ranger.container.directory.accept_file(f, filters)]
 
