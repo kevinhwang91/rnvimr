@@ -44,8 +44,8 @@ endfunction
 function! s:reopen_win() abort
     let layout = rnvimr#layout#get_current_layout()
     call rnvimr#context#winid(nvim_open_win(rnvimr#context#bufnr(), v:true, layout))
+    call s:setup_winhl()
     startinsert
-    " reopen_win's caller is rpc which can't fire event
     doautocmd RnvimrTerm TermEnter
 endfunction
 
