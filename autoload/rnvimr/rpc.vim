@@ -86,14 +86,18 @@ function! rnvimr#rpc#do_saveas(bufnr, target_name) abort
     let alt_bufnr = bufnr('#')
     if bufloaded(a:bufnr)
         execute 'noautocmd silent! buffer ' . a:bufnr
-        execute 'noautocmd saveas! ' . a:target_name
-        if bw_enabled
-            noautocmd bwipeout #
-            if alt_bufnr > 0
-                execute 'noautocmd silent buffer ' . alt_bufnr
+        try
+            execute 'noautocmd saveas! ' . a:target_name
+            if bw_enabled
+                noautocmd bwipeout #
+                if alt_bufnr > 0
+                    execute 'noautocmd silent buffer ' . alt_bufnr
+                endif
             endif
-        endif
-        execute 'noautocmd silent buffer ' . cur_bufnr
+            execute 'noautocmd silent buffer ' . cur_bufnr
+        catch /^Vim\%((\a\+)\)\=:E139/
+            echohl WarningMsg | echo v:exception | echohl None
+        endtry
     else
         let bufname = fnamemodify(bufname(a:bufnr), ':p')
         call rnvimr#util#sync_undo(bufname, a:target_name, v:true)

@@ -89,7 +89,11 @@ class Client():
             if isdir:
                 if rutil.is_subpath(src, name):
                     real_dst = os.path.join(dst, os.path.relpath(name, src))
-                    self.do_saveas(num, real_dst)
+                    try:
+                        self.do_saveas(num, real_dst)
+                    except Exception:
+                        #  Vim(buffer):E211: File "" no longer available
+                        pass
             elif name == src:
                 self.do_saveas(num, dst)
                 break
