@@ -88,9 +88,10 @@ function! rnvimr#rpc#do_saveas(bufnr, target_name) abort
         execute 'noautocmd silent! buffer ' . a:bufnr
         try
             execute 'noautocmd saveas! ' . a:target_name
+            execute 'edit ' . a:target_name
             if bw_enabled
                 noautocmd bwipeout #
-                if alt_bufnr > 0
+                if bufloaded(alt_bufnr)
                     execute 'noautocmd silent buffer ' . alt_bufnr
                 endif
             endif
@@ -103,7 +104,7 @@ function! rnvimr#rpc#do_saveas(bufnr, target_name) abort
         call rnvimr#util#sync_undo(bufname, a:target_name, v:true)
         if bw_enabled
             execute 'noautocmd bwipeout ' . a:bufnr
-            if alt_bufnr > 0
+            if bufloaded(alt_bufnr)
                 execute 'noautocmd silent buffer ' . alt_bufnr
                 execute 'noautocmd silent buffer ' . cur_bufnr
             endif
