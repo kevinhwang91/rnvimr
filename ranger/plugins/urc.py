@@ -10,125 +10,91 @@ import ranger
 LOG = getLogger(__name__)
 
 
-def _load_commands(fm):  # pylint: disable=invalid-name
-    commands_path = fm.confpath('commands.py')
-    if os.path.exists(commands_path):
-        from .rutil import dynamic_import  # pylint: disable=import-outside-toplevel
-        try:
-            module = dynamic_import('commands', commands_path)
-        except ImportError as ex:
-            LOG.debug("Failed to import custom commands from '%s'", commands_path)
-            LOG.exception(ex)
-        else:
-            fm.commands.load_commands_from_module(module)
-            LOG.debug("Loaded custom commands from '%s'", commands_path)
+class Urc():
+    """
+    User rc settings
+    """
 
+    def __init__(self, fm, path):  # pylint: disable=invalid-name
+        self.fm = fm  # pylint: disable=invalid-name
+        self.path = path
 
-def _load_plugins(fm):  # pylint: disable=invalid-name
-    plug_dir = fm.confpath('plugins')
-    if plug_dir not in sys.path:
-        sys.path.insert(0, plug_dir)
-    try:
-        plugin_files = sorted(os.listdir(plug_dir))
-    except OSError:
-        LOG.debug('Unable to access plugin directory: %s', plug_dir)
-    else:
-        for plugin in plugin_files:
-            if plugin.startswith('_'):
-                continue
-
-            module_base = None
-            module_path = os.path.join(plug_dir, plugin)
-            if plugin.endswith('.py'):
-                module_base = plugin[:-3]
-            elif os.path.isdir(module_path):
-                module_base = plugin
-
-            if module_base:
-                from importlib import import_module  # pylint: disable=import-outside-toplevel
-                try:
-                    module = import_module(module_base)
-                except Exception as ex:  # pylint: disable=broad-except
-                    ex_msg = "Error while loading plugin '{0}'".format(module_base)
-                    LOG.error(ex_msg)
-                    LOG.exception(ex)
-                else:
-                    fm.commands.load_commands_from_module(module)
-                    LOG.debug("Loaded plugin '%s'", module_base)
-
-    if sys.path[0] == plug_dir:
-        del sys.path[0]
-
-
-def _load_rc(fm):  # pylint: disable=invalid-name
-    #  set use_preview_script may cause a bad notify when ui is on
-    o_ui_status = fm.ui.is_on
-    fm.ui.is_on = False
-    custom_conf = fm.confpath('rc.conf')
-    if os.access(custom_conf, os.R_OK):
-        fm.source(custom_conf)
-    fm.ui.is_on = o_ui_status
-
-
-def _reload_rifle(fm):  # pylint: disable=invalid-name
-
-    if os.access(fm.confpath('rifle.conf'), os.R_OK):
-        fm.rifle.config_file = fm.confpath('rifle.conf')
-        fm.rifle.reload_config()
-
-
-def _correct_confdir(fm, confdir):  # pylint: disable=invalid-name
-    ranger.args.confdir = confdir
-    if not ranger.args.clean:
-        #  bookmarks
-        fm.bookmarks.path = fm.datapath('bookmarks')
-
-        #  tags
-        new_tags_filename = fm.datapath('tagged')
-        if fm.tags._filename != new_tags_filename:  # pylint: disable=protected-access
-            fm.tags._filename = new_tags_filename   # pylint: disable=protected-access
-            fm.tags.sync()
-
-        # history
-        console = fm.ui.console
-        new_historypath = fm.datapath('history')
-        if console.historypath != new_historypath:
-            console.historypath = new_historypath
-            history_kclass = ranger.container.history.History
-            console.history = history_kclass(fm.settings.max_console_history_size)
+    def load_commands(self):
+        """
+        load users' commands, like `load_settings(fm, clean)` in main.py
+        """
+        commands_path = self.fm.confpath('commands.py')
+        if os.path.exists(commands_path):
+            from .rutil import dynamic_import  # pylint: disable=import-outside-toplevel
             try:
-                fobj = open(console.historypath, 'r')
-            except OSError as ex:
-                fm.notify('Failed to read history file', bad=True, exception=ex)
+                module = dynamic_import('commands', commands_path)
+            except ImportError as ex:
+                LOG.debug("Failed to import custom commands from '%s'", commands_path)
+                LOG.exception(ex)
             else:
-                try:
-                    for line in fobj:
-                        console.history.add(line[:-1])
-                except UnicodeDecodeError as ex:
-                    fm.notify('Failed to parse corrupt history file',
-                              bad=True, exception=ex)
-                fobj.close()
-            console.history_backup = history_kclass(console.history)
+                self.fm.commands.load_commands_from_module(module)
+                LOG.debug("Loaded custom commands from '%s'", commands_path)
 
+    def load_plugins(self):  # pylint: disable=invalid-name
+        """
+        load users' plugins, like `load_settings(fm, clean)` in main.py
+        """
+        plug_dir = self.fm.confpath('plugins')
+        if plug_dir not in sys.path:
+            sys.path.insert(0, plug_dir)
+        try:
+            plugin_files = sorted(os.listdir(plug_dir))
+        except OSError:
+            LOG.debug('Unable to access plugin directory: %s', plug_dir)
+        else:
+            for plugin in plugin_files:
+                if plugin.startswith('_'):
+                    continue
 
-def load_user_settings(fm, confdir=None):  # pylint: disable=invalid-name
-    """
-    Load user setting because rnvimr occupy confdir when ranger startup
+                module_base = None
+                module_path = os.path.join(plug_dir, plugin)
+                if plugin.endswith('.py'):
+                    module_base = plugin[:-3]
+                elif os.path.isdir(module_path):
+                    module_base = plugin
 
-    :param fm Object: ranger context
-    :param confdir str: config directory
-    """
+                if module_base:
+                    from importlib import import_module  # pylint: disable=import-outside-toplevel
+                    try:
+                        module = import_module(module_base)
+                    except Exception as ex:  # pylint: disable=broad-except
+                        ex_msg = f"Error while loading plugin '{module_base}'"
+                        LOG.error(ex_msg)
+                        LOG.exception(ex)
+                    else:
+                        self.fm.commands.load_commands_from_module(module)
+                        LOG.debug("Loaded plugin '%s'", module_base)
 
-    if not confdir:
-        xdg_path = os.environ.get('XDG_CONFIG_HOME')
-        if xdg_path and os.path.isabs(xdg_path):
-            confdir = os.path.join(xdg_path, 'ranger')
+        if sys.path[0] == plug_dir:
+            del sys.path[0]
+
+    def redirect_and_load(self):
+        """
+        Load user setting because rnvimr occupy confdir when ranger startup
+
+        """
+        if os.getenv('RNVIMR_VANILLA'):
+            if os.environ.get('RANGER_LOAD_DEFAULT_RC', 'TRUE').upper() == 'FALSE':
+                default_conf = self.fm.relpath('config', 'rc.conf')
+                self.fm.source(default_conf)
+            return
+
+        urc_path = os.getenv('RNVIMR_URC_PATH')
+        confdir = urc_path if os.path.expanduser(urc_path) else self.path
         if not confdir:
-            confdir = os.path.expanduser('~/.config/ranger')
+            xdg_path = os.environ.get('XDG_CONFIG_HOME')
+            if xdg_path and os.path.isabs(xdg_path):
+                confdir = os.path.join(xdg_path, 'ranger')
+            if not confdir:
+                confdir = os.path.expanduser('~/.config/ranger')
 
-    _correct_confdir(fm, confdir)
-
-    _load_commands(fm)
-    _load_plugins(fm)
-    _load_rc(fm)
-    _reload_rifle(fm)
+        ranger.args.confdir = confdir
+        custom_conf = self.fm.confpath('rc.conf')
+        self.fm.source(custom_conf)
+        self.load_commands()
+        self.load_plugins()

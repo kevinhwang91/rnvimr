@@ -22,11 +22,9 @@ let g:rnvimr_draw_border = get(g:, 'rnvimr_draw_border', 1)
 let g:rnvimr_ranger_init = {
             \ 'action': get(g:, 'rnvimr_action', s:default_action),
             \ 'hide_gitignore': get(g:, 'rnvimr_hide_gitignore', 0),
-            \ 'urc_path': get(g:, 'rnvimr_urc_path', v:null),
             \ 'draw_border': g:rnvimr_draw_border,
             \ 'border_attr': get(g:, 'rnvimr_border_attr', {}),
             \ 'views': get(g:, 'rnvimr_ranger_views', []),
-            \ 'vanilla': get(g:, 'rnvimr_vanilla', 0)
             \ }
 
 highlight default link RnvimrNormal NormalFloat
@@ -69,7 +67,7 @@ function! s:setup_winhl() abort
     call setwinvar(rnvimr#context#winid(), '&winhighlight', default_winhl)
 endfunction
 
-function! s:create_ranger(cmd) abort
+function! s:create_ranger(cmd, env) abort
     let init_layout = rnvimr#layout#get_init_layout()
     if get(g:, 'rnvimr_draw_border', 1) && (has('mac') || has('macunix'))
         let init_layout.width -= 1
@@ -77,7 +75,11 @@ function! s:create_ranger(cmd) abort
     call rnvimr#context#bufnr(nvim_create_buf(v:false, v:true))
     call rnvimr#context#winid(
                 \ nvim_open_win(rnvimr#context#bufnr(), v:true, init_layout))
-    call termopen(a:cmd, {'on_exit': function('s:on_exit')})
+    let cmd = a:cmd
+    if type(a:env) == v:t_list && !empty(a:env)
+        let cmd = join(a:env) . ' ' . cmd
+    endif
+    call termopen(cmd, {'on_exit': function('s:on_exit')})
     setfiletype rnvimr
     call s:setup_winhl()
     startinsert
@@ -156,8 +158,17 @@ function! rnvimr#init(...) abort
     endif
     let attach_cmd = shellescape('AttachFile ' . line('w0') . ' ' . select_file)
     let ranger_cmd = get(g:, 'rnvimr_ranger_cmd', s:default_ranger_cmd)
+    let env = []
+    if get(g:, 'rnvimr_vanilla', 0)
+        call add(env, 'RNVIMR_VANILLA=1')
+    endif
+    let urc_path = get(g:, 'rnvimr_urc_path', v:null)
+    if !empty(urc_path)
+        call add(env, 'RNVIMR_URC_PATH=' . urc_path)
+    endif
+
     let cmd = ranger_cmd . ' --confdir=' . confdir . ' --cmd=' . attach_cmd
-    call s:create_ranger(cmd)
+    call s:create_ranger(cmd, env)
     augroup RnvimrTerm
         autocmd!
         autocmd VimResized <buffer> call s:redraw_win()

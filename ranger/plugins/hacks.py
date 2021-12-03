@@ -14,7 +14,7 @@ from . import directory
 from . import ccommands
 from . import shutil_generatorized
 from .client import Client
-from .urc import load_user_settings
+from .urc import Urc
 
 
 class Hacks():
@@ -44,7 +44,6 @@ class Hacks():
             init_dict = {}
         self.fake_editor()
         self.hide_git_files(bool(init_dict.get('hide_gitignore')))
-        self.load_user_settings(bool(init_dict.get('vanilla')), init_dict.get('urc_path'))
         self.map_action(init_dict.get('action'))
         self.draw_border(bool(init_dict.get('draw_border')), init_dict.get('border_attr'))
         self.change_view_adapt_size(init_dict.get('views'))
@@ -109,10 +108,6 @@ class Hacks():
 
         if vanilla:
             return
-
-        ranger.api.hook_init = self.old_hook_init
-        load_user_settings(self.fm, urc_path)
-        self.old_hook_init = ranger.api.hook_init
 
     def draw_border(self, draw_border, border_attr):
         """
@@ -245,4 +240,5 @@ class Hacks():
 
 
 OLD_HOOK_INIT = ranger.api.hook_init
+ranger.fm.urc = Urc(ranger.fm, None)
 ranger.api.hook_init = lambda fm: Hacks(fm, OLD_HOOK_INIT).hook_init()
