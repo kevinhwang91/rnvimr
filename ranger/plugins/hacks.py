@@ -240,5 +240,5 @@ class Hacks():
 
 
 OLD_HOOK_INIT = ranger.api.hook_init
-ranger.fm.urc = Urc(ranger.fm, None)
+ranger.fm.urc = Urc(ranger.fm)
 ranger.api.hook_init = lambda fm: Hacks(fm, OLD_HOOK_INIT).hook_init()

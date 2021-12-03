@@ -15,9 +15,8 @@ class Urc():
     User rc settings
     """
 
-    def __init__(self, fm, path):  # pylint: disable=invalid-name
+    def __init__(self, fm):  # pylint: disable=invalid-name
         self.fm = fm  # pylint: disable=invalid-name
-        self.path = path
 
     def load_commands(self):
         """
@@ -84,9 +83,11 @@ class Urc():
                 self.fm.source(default_conf)
             return
 
+        confdir = None
         urc_path = os.getenv('RNVIMR_URC_PATH')
-        confdir = urc_path if os.path.expanduser(urc_path) else self.path
-        if not confdir:
+        if urc_path:
+            confdir = os.path.expanduser(urc_path)
+        else:
             xdg_path = os.environ.get('XDG_CONFIG_HOME')
             if xdg_path and os.path.isabs(xdg_path):
                 confdir = os.path.join(xdg_path, 'ranger')
