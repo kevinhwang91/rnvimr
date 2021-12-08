@@ -43,7 +43,7 @@ class Client():
         Hide the floating window.
 
         """
-        self.nvim.call('rnvimr#rpc#enable_attach_file', async_=True)
+        self.nvim.exec_lua('require("rnvimr.rpc").enable_attach_file()', async_=True)
         self.nvim.request('nvim_win_close', 0, 1, async_=True)
 
     def set_winhl(self, winhl):
