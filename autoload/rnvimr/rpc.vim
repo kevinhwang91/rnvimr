@@ -118,13 +118,9 @@ endfunction
 function! rnvimr#rpc#edit(edit, start_line, files, ...) abort
     let files = map(copy(a:files), 'fnameescape(v:val)')
     let picker_enabled = empty(a:000) ? get(g:, 'rnvimr_enable_picker', 0) : a:1
-    if picker_enabled
-        close
-    else
-        let cur_tab = nvim_get_current_tabpage()
-        let cur_win = nvim_get_current_win()
-        wincmd p
-    endif
+    let cur_tab = nvim_get_current_tabpage()
+    let cur_win = nvim_get_current_win()
+    wincmd p
     if !empty(a:edit)
         if bufname('%') == '' && nvim_buf_get_offset(0, 1) <= 0
             execute 'silent! edit ' . files[0]
@@ -145,6 +141,7 @@ function! rnvimr#rpc#edit(edit, start_line, files, ...) abort
     endif
     if picker_enabled
         call rnvimr#rpc#enable_attach_file()
+        call nvim_win_close(cur_win, 0)
     else
         call rnvimr#context#check_point()
         if cur_tab != nvim_get_current_tabpage()
