@@ -59,12 +59,12 @@ class Service(FileManagerAware):
         cmd = args[0]
 
         if not cmd:
-            self.fm.client.echom('eval empty command')
+            self.fm.client.notify('eval empty command', 4)
 
         try:
             self.fm.execute_console(' '.join(cmd))
         except Exception as ex:  # pylint: disable=broad-except
-            self.fm.client.echom(ex)
+            self.fm.client.notify(ex, 4)
 
     @Register
     def clear_image(self, args):  # pylint: disable=unused-argument

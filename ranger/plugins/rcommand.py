@@ -49,6 +49,7 @@ class EmitRangerCwd(Command):
     def execute(self):
         if self.fm.client:
             self.fm.client.set_cwd(self.fm.thisdir.path)
+            self.fm.client.notify("CWD has been changed to " + self.fm.thisdir.path)
 
 
 class EditFile(Command):

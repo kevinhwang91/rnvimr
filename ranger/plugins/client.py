@@ -15,13 +15,15 @@ class Client():
     def __init__(self):
         self.nvim = None
 
-    def echom(self, msg):
+    def notify(self, msg, level=2):
         """
-        Echo message.
+        Notify message.
 
         :param msg str: message be sent.
+        :param level int: level for message.
         """
-        self.nvim.command('echom "{}"'.format(msg))
+
+        self.nvim.call('rnvimr#rpc#notify', msg, level, async_=True)
 
     def attach_nvim(self):
         """
@@ -123,7 +125,7 @@ class Client():
         :param noautocmd bool: whether use noautocmd command
         """
         self.nvim.command('noautocmd wincmd p')
-        self.nvim.command('{} cd {}'.format('noautocmd' if noautocmd else '', path))
+        self.nvim.command('sil {} cd {}'.format('noautocmd' if noautocmd else '', path))
         self.nvim.command('noautocmd wincmd p')
         self.nvim.command('startinsert')
 

@@ -166,3 +166,11 @@ function! rnvimr#rpc#set_winhl(winhl) abort
     return setwinvar(rnvimr#context#winid(), '&winhighlight',
                 \ getbufvar(rnvimr#context#bufnr(), a:winhl))
 endfunction
+
+function! rnvimr#rpc#notify(str, level) abort
+    if has('nvim-0.5')
+        call v:lua.vim.notify(a:str, a:level)
+    else
+        echom a:str
+    endif
+endfunction
