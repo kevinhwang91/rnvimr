@@ -85,25 +85,25 @@ function! rnvimr#rpc#do_saveas(bufnr, target_name) abort
     let cur_bufnr = bufnr('%')
     let alt_bufnr = bufnr('#')
     if bufloaded(a:bufnr)
+        let wv = winsaveview()
         execute 'noautocmd silent! buffer ' . a:bufnr
         try
             execute 'noautocmd saveas! ' . a:target_name
-            execute 'edit ' . a:target_name
             if bw_enabled
                 noautocmd bwipeout #
                 if bufloaded(alt_bufnr)
                     execute 'noautocmd silent buffer ' . alt_bufnr
                 endif
             endif
-            execute 'noautocmd silent buffer ' . cur_bufnr
-        catch /^Vim\%((\a\+)\)\=:E139/
-            echohl WarningMsg | echo v:exception | echohl None
+        catch /.*/
         endtry
+        execute 'noautocmd silent! buffer ' . cur_bufnr
+        call winrestview(wv)
     else
         let bufname = fnamemodify(bufname(a:bufnr), ':p')
         call rnvimr#util#sync_undo(bufname, a:target_name, v:true)
         if bw_enabled
-            execute 'noautocmd bwipeout ' . a:bufnr
+            execute 'noautocmd silent! bwipeout ' . a:bufnr
             if bufloaded(alt_bufnr)
                 execute 'noautocmd silent buffer ' . alt_bufnr
                 execute 'noautocmd silent buffer ' . cur_bufnr
