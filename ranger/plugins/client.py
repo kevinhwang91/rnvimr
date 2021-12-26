@@ -75,7 +75,7 @@ class Client():
             return
         try:
             self.nvim.call('rnvimr#rpc#do_saveas', bufnr, target_name, async_=False)
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             pass
 
     def move_buf(self, src, dst):
@@ -124,7 +124,8 @@ class Client():
         :param noautocmd bool: whether use noautocmd command
         """
         self.nvim.command('noautocmd wincmd p')
-        self.nvim.command('sil {} cd {}'.format('noautocmd' if noautocmd else '', path))
+        noa = 'noautocmd' if noautocmd else ''
+        self.nvim.command(f'sil {noa} cd {path}')
         self.nvim.command('noautocmd wincmd p')
         self.nvim.command('startinsert')
 

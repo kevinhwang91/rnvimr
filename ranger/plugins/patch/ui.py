@@ -21,6 +21,7 @@ def enhance_draw_border(attr, client):
     _wrap_initialize_border(client)
     _wrap_suspend_border(client)
 
+
 def skip_redraw():
     """
     Neovim close the floating window contained Ranger terminal buffer will prepare for executing
@@ -30,16 +31,18 @@ def skip_redraw():
     Curses will resize again in next TermEnter event.
 
     """
+
     def draw(self):
         #  TODO
         #  For now, the dummy window's height is hardcode with 5,
         #  maybe I should detect it elegantly latter.
-        y, _ = self.win.getmaxyx()
+        y, _ = self.win.getmaxyx()  # pylint: disable=invalid-name
         if y != 5:
             raw_draw(self)
 
     raw_draw = UI.draw
     UI.draw = draw
+
 
 def wrap_update_size(views):
     """
@@ -74,7 +77,8 @@ def _change_view(views, fm):  # pylint: disable=invalid-name
                     # it seems that this issue is caused by neovim terminal.
                     raw_notify = fm.notify
                     fm.notify = lambda obj, **kw: None
-                    fm.execute_console('set column_ratios {}'.format(','.join(map(str, ratio))))
+                    ratios = ','.join(map(str, ratio))
+                    fm.execute_console(f'set column_ratios {ratios}')
                     fm.notify = raw_notify
                 break
 

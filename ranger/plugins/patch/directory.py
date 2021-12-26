@@ -63,10 +63,10 @@ def _build_git_ignore_process(fobj):
                             os.path.dirname(ignored) == fobj.path]
         else:
             git_ignore_cmd = ['git', 'status', '--ignored', '-z', '--porcelain', '.']
-            fobj.ignore_proc = subprocess.Popen(git_ignore_cmd, cwd=fobj.path,
-                                                stdout=subprocess.PIPE,
-                                                stderr=subprocess.PIPE)
-            fobj.fm.loader.add(GitignoreLoader(fobj.ignore_proc, fobj.path), append=True)
+            proc = subprocess.Popen(git_ignore_cmd, cwd=fobj.path,
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE)
+            fobj.fm.loader.add(GitignoreLoader(proc, fobj.path), append=True)
 
 
 def load_bit_by_bit(self):
@@ -78,7 +78,6 @@ def load_bit_by_bit(self):
     in each iteration.
     """
 
-    self.ignore_proc = None
     self.loading = True
     self.percent = 0
     self.load_if_outdated()
@@ -122,15 +121,16 @@ def load_bit_by_bit(self):
                     if self.fm.settings.autoupdate_cumulative_size:
                         self.look_up_cumulative_size()
                     else:
-                        self.infostring = ' %s' % human_readable(
-                            self.size, separator='? ')
+                        size = human_readable(self.size, separator='? ')
+                        self.infostring = f' {size}'
                 else:
-                    self.infostring = ' %s' % human_readable(self.size)
+                    size = human_readable(self.size)
+                    self.infostring = f' {size}'
             else:
                 self.size = len(filelist)
-                self.infostring = ' %d' % self.size
+                self.infostring = f' {self.size}'
             if self.is_link:
-                self.infostring = '->' + self.infostring
+                self.infostring = f'->{self.infostring}'
 
             yield
 
@@ -282,8 +282,8 @@ def refilter(self):
     if not self.settings.show_hidden:
         if hasattr(self, 'ignored'):
             filters.append(
-                lambda fobj: all([not rutil.is_subpath(ipath, fobj.path)
-                                  for ipath in self.ignored]) or fobj.path == self.fm.attached_file)
+                lambda fobj: all(not rutil.is_subpath(ipath, fobj.path)
+                                 for ipath in self.ignored) or fobj.path == self.fm.attached_file)
 
     self.files = [f for f in self.files_all if ranger.container.directory.accept_file(f, filters)]
 

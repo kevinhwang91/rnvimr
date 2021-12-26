@@ -33,8 +33,8 @@ class GitignoreLoader(Loadable, FileManagerAware):
                 yield
 
         if err:
-            self.fm.notify('GitignoreLoader callback error: {}'
-                           .format(err.decode('utf-8')), bad=True)
+            msg = err.decode('utf-8')
+            self.fm.notify(f'GitignoreLoader callback error: {msg}', bad=True)
             return
 
         fobj = self.fm.get_directory(self.path)
@@ -46,8 +46,9 @@ class GitignoreLoader(Loadable, FileManagerAware):
         if not fobj.settings.show_hidden:
             yield
 
-            def gitignore_filter(f): return all([not rutil.is_subpath(ipath, f.path)
-                                                 for ipath in fobj.ignored])
+            def gitignore_filter(f):  # pylint: disable=invalid-name
+                return all(not rutil.is_subpath(ipath, f.path)
+                           for ipath in fobj.ignored)
             fobj.files = [f for f in fobj.files if gitignore_filter(f) or
                           f.path == self.fm.attached_file]
             if fobj.files and not fobj.pointed_obj:

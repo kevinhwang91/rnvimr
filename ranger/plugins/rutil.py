@@ -5,8 +5,8 @@ util
 
 import os
 import sys
+from importlib import util
 import pynvim
-import importlib.util as util
 
 
 def attach_nvim(server_name):

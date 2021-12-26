@@ -15,7 +15,7 @@ class Host():
 
     """
 
-    def __init__(self, fm, hook_ready):
+    def __init__(self, fm, hook_ready):  # pylint: disable=invalid-name
         self.fm = fm  # pylint: disable=invalid-name
         self.nvim = None
         self.old_hook_ready = hook_ready
@@ -63,7 +63,7 @@ class Host():
         :param method str: method name of service
         :param args list: list of arguments
         """
-        ServiceLoader('notifying method: {}.'.format(method), method, args).load()
+        ServiceLoader(f'notifying method: {method}.', method, args).load()
 
     def request_event(self, method, args):  # pylint: disable=no-self-use
         """

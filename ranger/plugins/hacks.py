@@ -23,7 +23,7 @@ class Hacks():
 
     """
 
-    def __init__(self, fm, hook_init):
+    def __init__(self, fm, hook_init):  # pylint: disable=invalid-name
         self.fm = fm  # pylint: disable=invalid-name
         self.fm.client = None
         self.fm.service = None
@@ -75,7 +75,7 @@ class Hacks():
         if not action_dict or not isinstance(action_dict, dict):
             return
         for key, val in action_dict.items():
-            self.fm.execute_console('map {} {}'.format(key, val))
+            self.fm.execute_console(f'map {key} {val}')
 
     def fake_editor(self, edit_cmd):
         """
@@ -97,7 +97,7 @@ class Hacks():
 
         directory.wrap_dir_for_git()
 
-    def load_user_settings(self, vanilla, urc_path):
+    def load_user_settings(self, vanilla):
         """
         Load user settings.
 
@@ -240,5 +240,6 @@ class Hacks():
 
 
 OLD_HOOK_INIT = ranger.api.hook_init
-ranger.fm.urc = Urc(ranger.fm)
-ranger.api.hook_init = lambda fm: Hacks(fm, OLD_HOOK_INIT).hook_init()
+ranger.fm.urc = Urc(ranger.fm)  # pylint: disable=no-member
+ranger.api.hook_init = lambda fm: Hacks(
+    fm, OLD_HOOK_INIT).hook_init()  # pylint: disable=no-member

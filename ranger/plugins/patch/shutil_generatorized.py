@@ -7,6 +7,7 @@ from shutil import _basename
 from ranger.ext import shutil_generatorized
 from ranger.ext.safe_path import get_safe_path
 
+
 def wrap_move(client):
     """
     CopyLoader with do_cut parameter will invoke this method.

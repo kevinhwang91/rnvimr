@@ -33,7 +33,7 @@ def _replace_resize():
     #  ViewMiller.resize = wrapped_module.view_miller_resize
     """
 
-    def resize(self, y, x, hei=None, wid=None):
+    def resize(self, y, x, hei=None, wid=None):  # pylint: disable=invalid-name
         """Resize all the columns according to the given ratio"""
         ViewBase.resize(self, y, x, hei, wid)
 
@@ -43,7 +43,7 @@ def _replace_resize():
         else:
             pad = 0
         left = 0
-        self.is_collapsed = self._collapse()
+        self.is_collapsed = self._collapse()  # pylint: disable=protected-access
         if self.is_collapsed:
             generator = enumerate(self.stretch_ratios)
         else:

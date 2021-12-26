@@ -31,7 +31,7 @@ class Service(FileManagerAware):
         :param args list: list of arguments
         """
         if method not in Service.Register.table:
-            return '{} did not register in table'.format(method)
+            return f'{method} did not register in table'
         return Service.Register.table[method](self, args)
 
     @Register
@@ -47,7 +47,7 @@ class Service(FileManagerAware):
         except IndexError:
             return
         else:
-            self.fm.execute_console('AttachFile {} {}'.format(line, path))
+            self.fm.execute_console(f'AttachFile {line} {path}')
 
     @Register
     def eval_cmd(self, args):

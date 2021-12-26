@@ -83,7 +83,7 @@ def enhance_bulkrename(commands, client):
         with tempfile.NamedTemporaryFile(delete=False) as listfile:
             listpath = listfile.name
             listfile.write('\n'.join(filenames).encode(encoding='utf-8', errors='surrogateescape'))
-        self.fm.execute_file([File(listpath)], app='{}'.format(editor))
+        self.fm.execute_file([File(listpath)], app=editor)
         with open(listpath, 'r', encoding='utf-8', errors='surrogateescape') as listfile:
             new_filenames = listfile.read().split("\n")
         os.unlink(listpath)
@@ -101,9 +101,11 @@ def enhance_bulkrename(commands, client):
                 if old != new:
                     basepath, _ = os.path.split(new)
                     if (basepath and basepath not in new_dirs and not os.path.isdir(basepath)):
-                        script_lines.append('mkdir -vp -- {dir}'.format(dir=esc(basepath)))
+                        basepath = esc(basepath)
+                        script_lines.append(f'mkdir -vp -- {basepath}')
                         new_dirs.append(basepath)
-                    script_lines.append('mv -vi -- {old} {new}'.format(old=esc(old), new=esc(new)))
+                        old, new = esc(old), esc(new)
+                    script_lines.append(f'mv -vi -- {old} {new}')
             # Make sure not to forget the ending newline
             script_content = '\n'.join(script_lines) + '\n'
             cmdfile.write(script_content.encode(encoding='utf-8', errors='surrogateescape'))
@@ -111,7 +113,7 @@ def enhance_bulkrename(commands, client):
 
             # Open the script and let the user review it, then check if the
             # script was modified by the user
-            self.fm.execute_file([File(cmdfile.name)], app='{}'.format(editor))
+            self.fm.execute_file([File(cmdfile.name)], app=editor)
             cmdfile.seek(0)
             new_content = cmdfile.read()
             script_was_edited = (script_content != new_content)
