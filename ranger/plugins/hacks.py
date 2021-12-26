@@ -42,7 +42,7 @@ class Hacks():
             init_dict = self.fm.client.nvim.vars['rnvimr_ranger_init']
         except KeyError:
             init_dict = {}
-        self.fake_editor()
+        self.fake_editor(init_dict.get('edit_cmd'))
         self.hide_git_files(bool(init_dict.get('hide_gitignore')))
         self.map_action(init_dict.get('action'))
         self.draw_border(bool(init_dict.get('draw_border')), init_dict.get('border_attr'))
@@ -77,13 +77,13 @@ class Hacks():
         for key, val in action_dict.items():
             self.fm.execute_console('map {} {}'.format(key, val))
 
-    def fake_editor(self):
+    def fake_editor(self, edit_cmd):
         """
         Avoid to block and redraw ranger after opening editor, make rifle smarter.
         Use a 'true' built-in command to mock a dummy $EDITOR.
         """
 
-        rifle.build_fake_editor(self.fm.client)
+        rifle.build_fake_editor(self.fm.client, edit_cmd)
 
     def hide_git_files(self, hide_gitignore):
         """

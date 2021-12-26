@@ -21,6 +21,7 @@ let g:rnvimr_draw_border = get(g:, 'rnvimr_draw_border', 1)
 
 let g:rnvimr_ranger_init = {
             \ 'action': get(g:, 'rnvimr_action', s:default_action),
+            \ 'edit_cmd': get(g:, 'rnvimr_edit_cmd', 'edit'),
             \ 'hide_gitignore': get(g:, 'rnvimr_hide_gitignore', 0),
             \ 'draw_border': g:rnvimr_draw_border,
             \ 'border_attr': get(g:, 'rnvimr_border_attr', {}),

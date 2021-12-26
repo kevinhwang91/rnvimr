@@ -160,15 +160,23 @@ g:rnvimr_action
             }
 <
     |NvimEdit| : Use Neovim's command to edit the selected file in Ranger.
-    'edit', 'split', 'vsplit', 'drop' and 'tabedit' is actions of Neovim.
+    'edit', 'split', 'vsplit', 'drop' and 'tabedit' are commands of Neovim.
     `NvimEdit split true/false`: if the last argument of the action is 'true'
     or 'false' that will override |g:rnvimr_enable_picker| variable to split
-    the file, 'edit', 'vsplit', 'drop' and 'tabedit' is similar to 'split'.
+    the file, 'edit', 'vsplit', 'drop' and 'tabedit' are similar to 'split'.
 
     |JumpNvimCwd| : Change Ranger's cwd to Neovim's.
     |EmitRangerCwd| : Change Neovim's cwd to Ranger's.
 
     Disable it by using empty dict. The keymap should follow Ranger's format.
+
+                                                           *g:rnvimr_edit_cmd*
+g:rnvimr_edit_cmd
+    Default: 'edit'
+
+    Replace Ranger's default '$EDITOR' candidate with this command to open the
+    selected file in Ranger.
+    'edit', 'split', 'vsplit', 'drop' and 'tabedit' are commands of Neovim.
 
                                                         *g:rnvimr_enable_ex*
 g:rnvimr_enable_ex

@@ -5,16 +5,18 @@ Patch ranger.ext.rifle.Rifle
 
 from ranger.ext.rifle import Rifle
 
-def build_fake_editor(client):
+
+def build_fake_editor(client, edit_cmd):
     """
     Build a fake editor.
 
     :param client object: Object of attached neovim session
     """
+
     def build_command(self, files, action, flags):
         if '$EDITOR' in action:
-            client.rpc_edit(files)
-            self._app_flags = 'f' # pylint: disable=protected-access
+            client.rpc_edit(files, edit=edit_cmd)
+            self._app_flags = 'f'  # pylint: disable=protected-access
             return 'true'
         return raw_build_command(self, files, action, flags)
 
