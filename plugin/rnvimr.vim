@@ -18,6 +18,6 @@ if get(g:, 'rnvimr_enable_ex', 0)
                     \ bwipeout! | call rnvimr#open(expand('<amatch>')) |
                     \ endif |
                     \ execute(printf("autocmd RnvimrFileExplorer BufEnter * %s",
-                    \ "call rnvimr#enter_dir(expand('<amatch>'))"))
+                    \ "call rnvimr#enter_dir(expand('<amatch>'), expand('<abuf>'))"))
     augroup END
 endif

@@ -93,11 +93,11 @@ function! s:defer_check_dir(path, bufnr) abort
     end
 endfunction
 
-function! rnvimr#enter_dir(path) abort
-    if isdirectory(a:path) && !&diff
+function! rnvimr#enter_dir(path, bufnr) abort
+    if bufnr(a:path) == a:bufnr && isdirectory(a:path) && !&diff
         " git submodule opened by `:Git difftool -y` for vim-fugitive is treated as directory,
         " but vim-fugitive couldn't set &diff before BufEnter event, let us check it later:)
-        call timer_start(0, {-> call('s:defer_check_dir', [a:path, nvim_get_current_buf()])})
+        call timer_start(0, {-> call('s:defer_check_dir', [a:path, a:bufnr])})
     endif
 endfunction
 
