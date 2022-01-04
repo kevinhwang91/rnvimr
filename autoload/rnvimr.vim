@@ -157,7 +157,7 @@ function! rnvimr#init(...) abort
         endif
         let confdir = shellescape(tmp_dir)
     endif
-    let attach_cmd = shellescape('AttachFile ' . line('w0') . ' ' . select_file)
+    let attach_cmd = shellescape('AttachFile ' . select_file)
     let ranger_cmd = get(g:, 'rnvimr_ranger_cmd', s:default_ranger_cmd)
     let env = []
     if get(g:, 'rnvimr_vanilla', 0)

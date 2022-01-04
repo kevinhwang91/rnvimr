@@ -129,16 +129,15 @@ class Client():
         self.nvim.command('noautocmd wincmd p')
         self.nvim.command('startinsert')
 
-    def rpc_edit(self, files, edit=None, start_line=0, picker=None):
+    def rpc_edit(self, files, edit=None, picker=None):
         """
         Edit ranger target files in neovim though RPC.
 
         :param files list: list of file name
         :param edit str: neovim edit command
-        :param start_line int: start line number
         :param picker bool: whether to become a picker
         """
-        args = [edit, start_line]
+        args = [edit if edit else 'edit']
         if not files:
             return
 

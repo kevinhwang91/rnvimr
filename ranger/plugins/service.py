@@ -42,12 +42,11 @@ class Service(FileManagerAware):
         :param args list: The last element is target path
         """
         try:
-            line = args[0]
-            path = args[1]
+            path = args[0]
         except IndexError:
             return
         else:
-            self.fm.execute_console(f'AttachFile {line} {path}')
+            self.fm.execute_console(f'AttachFile {path}')
 
     @Register
     def eval_cmd(self, args):

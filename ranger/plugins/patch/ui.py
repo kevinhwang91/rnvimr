@@ -137,24 +137,3 @@ def _wrap_suspend_border(client):
 
     raw_suspend = UI.suspend
     UI.suspend = suspend
-
-
-def wrap_pager():
-    """
-    Wrap UI open_pager and close_pager method.
-
-    """
-
-    def open_pager(self):
-        pager = raw_open_pager(self)
-        pager.scroll_begin = self.browser.columns[-1].scroll_extra
-        return pager
-
-    def close_pager(self):
-        self.browser.columns[-1].scroll_extra = self.pager.scroll_begin
-        raw_close_pager(self)
-
-    raw_open_pager = UI.open_pager
-    raw_close_pager = UI.close_pager
-    UI.open_pager = open_pager
-    UI.close_pager = close_pager

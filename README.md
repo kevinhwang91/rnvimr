@@ -128,13 +128,6 @@ Pressing `yw` in Ranger will emit Ranger's cwd to Neovim's, `gw` will jump to Ne
 ### Demonstration
 
 <details>
-    <summary>Synchronize the scroll line of pager view with Neovim</summary>
-    <p align="center">
-        <img width="960px" src="https://user-images.githubusercontent.com/17562139/79363617-b5241580-7f7a-11ea-9332-bd865dd2cf1e.gif">
-    </p>
-</details>
-
-<details>
     <summary>Hide the files included in gitignore</summary>
     <p align="center">
         <img src="https://user-images.githubusercontent.com/17562139/86036499-8e04bc80-ba70-11ea-9f89-dac26795b7ec.png">

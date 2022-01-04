@@ -31,20 +31,6 @@ def enhance_quit(commands, client):
     quit_cls.execute = execute
 
 
-def alias_edit_file(commands):
-    """
-    Use EditFile alias for edit_file and edit command.
-
-    :param commands dict: command name as key, command class as val
-    """
-
-    if not commands.get_command('EditFile'):
-        return
-
-    commands.alias('edit_file', 'EditFile')
-    commands.alias('edit', 'EditFile')
-
-
 def enhance_bulkrename(commands, client):
     """
     Bulkrename need a block workflow, so restore the raw editor to edit file name.

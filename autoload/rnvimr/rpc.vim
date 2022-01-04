@@ -115,7 +115,7 @@ function! rnvimr#rpc#do_saveas(bufnr, target_name) abort
     noautocmd startinsert
 endfunction
 
-function! rnvimr#rpc#edit(edit, start_line, files, ...) abort
+function! rnvimr#rpc#edit(edit, files, ...) abort
     let files = map(copy(a:files), 'fnameescape(v:val)')
     let picker_enabled = empty(a:000) ? get(g:, 'rnvimr_enable_picker', 0) : a:1
     let cur_tab = nvim_get_current_tabpage()
@@ -123,7 +123,7 @@ function! rnvimr#rpc#edit(edit, start_line, files, ...) abort
     wincmd p
     let f = remove(files, 0)
     let action = bufname('%') == '' && nvim_buf_get_offset(0, 1) <= 0 || !a:edit ? 'edit' : a:edit
-    execute 'silent! ' . action . (a:start_line ? ' +normal\ ' . a:start_line . 'zt ' : '') . f
+    execute 'silent! ' . action . ' ' . f
     for f in files
         execute 'badd ' . f
     endfor

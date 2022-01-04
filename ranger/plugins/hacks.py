@@ -49,7 +49,6 @@ class Hacks():
         self.change_view_adapt_size(init_dict.get('views'))
         self.calibrate_ueberzug()
         self.enhance_move_file()
-        self.enhance_scroll_pager()
         self.enhance_quit()
         self.fix_column_ratio()
         self.fix_vcs()
@@ -181,14 +180,6 @@ class Hacks():
         action.enhance_rename(self.fm.client)
         shutil_generatorized.wrap_move(self.fm.client)
         ccommands.enhance_bulkrename(self.fm.commands, self.fm.client)
-
-    def enhance_scroll_pager(self):
-        """
-        Synchronize scroll line of pager in ranger with line number in neovim.
-
-        """
-        ccommands.alias_edit_file(self.fm.commands)
-        ui.wrap_pager()
 
     def enhance_quit(self):
         """
