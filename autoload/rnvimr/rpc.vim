@@ -121,24 +121,12 @@ function! rnvimr#rpc#edit(edit, start_line, files, ...) abort
     let cur_tab = nvim_get_current_tabpage()
     let cur_win = nvim_get_current_win()
     wincmd p
-    if !empty(a:edit)
-        if bufname('%') == '' && nvim_buf_get_offset(0, 1) <= 0
-            execute 'silent! edit ' . files[0]
-        else
-            execute 'silent! ' . a:edit . files[0]
-        endif
-    else
-        if a:start_line == 0
-            execute 'silent! edit ' . files[0]
-            if len(files) > 1
-                for f in files[1:]
-                    execute 'badd ' . f
-                endfor
-            endif
-        else
-            execute 'silent! edit +normal\ ' . a:start_line . 'zt ' . files[0]
-        endif
-    endif
+    let f = remove(files, 0)
+    let action = bufname('%') == '' && nvim_buf_get_offset(0, 1) <= 0 || !a:edit ? 'edit' : a:edit
+    execute 'silent! ' . action . (a:start_line ? ' +normal\ ' . a:start_line . 'zt ' : '') . f
+    for f in files
+        execute 'badd ' . f
+    endfor
     if picker_enabled
         call rnvimr#rpc#enable_attach_file()
         call nvim_win_close(cur_win, 0)
@@ -168,8 +156,8 @@ function! rnvimr#rpc#set_winhl(winhl) abort
 endfunction
 
 function! rnvimr#rpc#notify(str, level) abort
-    if has('nvim-0.5')
-        call v:lua.vim.notify(a:str, a:level)
+    if exists('*nvim_notify')
+        call nvim_notify(a:str, a:level, {})
     else
         echom a:str
     endif
