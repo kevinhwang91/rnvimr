@@ -22,7 +22,7 @@ function! rnvimr#rpc#attach_file(file) abort
         return
     endif
     if filereadable(a:file) || isdirectory(a:file)
-        call rpcnotify(s:host_chan_id, 'attach_file', line('w0'), a:file)
+        call rpcnotify(s:host_chan_id, 'attach_file', a:file)
     endif
 endfunction
 
