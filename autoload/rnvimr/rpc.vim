@@ -122,7 +122,7 @@ function! rnvimr#rpc#edit(edit, files, ...) abort
     let cur_win = nvim_get_current_win()
     wincmd p
     let f = remove(files, 0)
-    let action = bufname('%') == '' && nvim_buf_get_offset(0, 1) <= 0 || !a:edit ? 'edit' : a:edit
+    let action = bufname('%') == '' && nvim_buf_get_offset(0, 1) <= 0 || empty(a:edit) ? 'edit' : a:edit
     execute 'silent! ' . action . ' ' . f
     for f in files
         execute 'badd ' . f
