@@ -88,12 +88,13 @@ endfunction
 
 function! s:defer_check_dir(path, bufnr) abort
     if isdirectory(a:path) && !&diff && a:bufnr == nvim_get_current_buf()
-        try
+        let alter_bufnr = bufnr(0)
+        if alter_bufnr > 0 && alter_bufnr != a:bufnr
             buffer #
-            bwipeout #
-        catch /^Vim\%((\a\+)\)\=:E86/
-            bwipeout!
-        endtry
+        else
+            enew
+        endif
+        bwipeout #
         call rnvimr#open(a:path)
     end
 endfunction
