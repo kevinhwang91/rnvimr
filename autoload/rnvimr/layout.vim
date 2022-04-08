@@ -33,6 +33,7 @@ function! s:get_init_index()
 endfunction
 
 let s:init_index = s:get_init_index()
+let g:rnvimr_layout_ex_index = get(g:, 'rnvimr_layout_ex_index', s:init_index)
 
 function! s:process_layout_opts(opts) abort
     let opts = copy(a:opts)
@@ -86,6 +87,10 @@ endfunction
 
 function! rnvimr#layout#get_current_layout() abort
     return s:extend_layout(s:layout, s:presets[s:preset_index])
+endfunction
+
+function! rnvimr#layout#get_current_index() abort
+    return s:preset_index
 endfunction
 
 function! rnvimr#layout#get_next_layout(...) abort

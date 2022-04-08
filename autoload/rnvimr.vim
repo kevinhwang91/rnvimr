@@ -139,14 +139,18 @@ function! rnvimr#toggle() abort
 endfunction
 
 function! rnvimr#open(path) abort
+    let isdir = isdirectory(a:path)
     if rnvimr#context#bufnr() != -1
-        if filereadable(a:path) || isdirectory(a:path)
+        if filereadable(a:path) || isdir
             call rnvimr#rpc#attach_file(a:path)
             call rnvimr#rpc#disable_attach_file()
         endif
         call rnvimr#toggle()
     else
         call rnvimr#init(a:path)
+    endif
+    if isdir && rnvimr#layout#get_current_index() != get(g:, 'rnvimr_layout_ex_index', 0)
+        call rnvimr#resize(g:rnvimr_layout_ex_index)
     endif
 endfunction
 
