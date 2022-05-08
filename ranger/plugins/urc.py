@@ -96,6 +96,6 @@ class Urc():
 
         ranger.args.confdir = confdir
         custom_conf = self.fm.confpath('rc.conf')
-        self.fm.source(custom_conf)
         self.load_commands()
         self.load_plugins()
+        self.fm.source(custom_conf)
