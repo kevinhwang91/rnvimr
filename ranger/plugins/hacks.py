@@ -96,18 +96,6 @@ class Hacks():
 
         directory.wrap_dir_for_git()
 
-    def load_user_settings(self, vanilla):
-        """
-        Load user settings.
-
-
-        :param vanilla bool: use default settings if True
-        :param urc_path str: user rc path for settings
-        """
-
-        if vanilla:
-            return
-
     def draw_border(self, draw_border, border_attr):
         """
         Using curses draw a border of floating window.
