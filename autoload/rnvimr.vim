@@ -180,6 +180,9 @@ endfunction
 " a:1 select_file
 " a:2 is_background
 function! rnvimr#init(...) abort
+    if rnvimr#context#bufnr() != -1
+        return
+    endif
     let $NVIM_LISTEN_ADDRESS = v:servername
     let select_file = empty(get(a:000, 0, '')) ? expand('%:p') : a:1
     let is_background = get(a:000, 1, 0)
