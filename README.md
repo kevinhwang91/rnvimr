@@ -29,11 +29,11 @@ It uses [RPC](https://neovim.io/doc/user/api.html#RPC) to communicate with Range
 
 ## Requirements
 
-1. [Ranger](https://github.com/ranger/ranger) (v1.9.3 at least)
+1. [Ranger](https://github.com/ranger/ranger) (v1.9.3 or laster)
 2. [Pynvim](https://github.com/neovim/pynvim)
-3. [Neovim](https://github.com/neovim/neovim)
+3. [Neovim](https://github.com/neovim/neovim) 0.5 or later
 4. Python3.6
-5. [Ueberzug](https://github.com/seebye/ueberzug) (optional, v18.1.6 at least)
+5. [Ueberzug](https://github.com/seebye/ueberzug) (optional, v18.1.6 or laster)
 
 ## Features
 
