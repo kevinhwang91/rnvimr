@@ -68,14 +68,18 @@ function! s:setup_winhl() abort
     call setwinvar(rnvimr#context#winid(), '&winhighlight', default_winhl)
 endfunction
 
-function! s:create_ranger(cmd, env) abort
+function! s:create_ranger(cmd, env, is_background) abort
     let init_layout = rnvimr#layout#get_init_layout()
     if get(g:, 'rnvimr_draw_border', 1) && (has('mac') || has('macunix'))
         let init_layout.width -= 1
     endif
     call rnvimr#context#bufnr(nvim_create_buf(v:false, v:true))
-    call rnvimr#context#winid(
-                \ nvim_open_win(rnvimr#context#bufnr(), v:true, init_layout))
+    if a:is_background
+        noa let winid = nvim_open_win(rnvimr#context#bufnr(), v:true, init_layout)
+    else
+        let winid = nvim_open_win(rnvimr#context#bufnr(), v:true, init_layout)
+    endif
+    call rnvimr#context#winid(winid)
     let cmd = a:cmd
     if type(a:env) == v:t_list && !empty(a:env)
         let cmd = join(a:env) . ' ' . cmd
@@ -83,7 +87,26 @@ function! s:create_ranger(cmd, env) abort
     call termopen(cmd, {'on_exit': function('s:on_exit')})
     setfiletype rnvimr
     call s:setup_winhl()
-    startinsert
+    if !a:is_background
+        startinsert
+    endif
+    augroup RnvimrTerm
+        autocmd!
+        autocmd VimResized <buffer> call s:redraw_win()
+        autocmd VimLeavePre * call rnvimr#rpc#destroy()
+        if get(g:, 'rnvimr_enable_bw', 0)
+            autocmd TermEnter,WinEnter <buffer> call rnvimr#context#check_point()
+            autocmd WinLeave <buffer> call rnvimr#context#buf_wipe()
+        endif
+        if s:shadow_winblend < 100 && s:shadow_winblend >= 0
+            autocmd TermEnter,WinEnter <buffer> call rnvimr#shadowwin#create(s:shadow_winblend)
+            autocmd WinLeave <buffer> call rnvimr#shadowwin#destroy()
+            autocmd VimResized <buffer> call rnvimr#shadowwin#reszie()
+        endif
+    augroup END
+    if a:is_background
+        noa call nvim_win_close(winid, 0)
+    endif
 endfunction
 
 function! s:defer_check_dir(path, bufnr) abort
@@ -154,9 +177,12 @@ function! rnvimr#open(path) abort
     endif
 endfunction
 
+" a:1 select_file
+" a:2 is_background
 function! rnvimr#init(...) abort
     let $NVIM_LISTEN_ADDRESS = v:servername
-    let select_file = empty(a:000) ? expand('%:p') : a:1
+    let select_file = empty(get(a:000, 0, '')) ? expand('%:p') : a:1
+    let is_background = get(a:000, 1, 0)
     let confdir = shellescape(s:confdir)
     " https://github.com/kevinhwang91/rnvimr/issues/80
     if filewritable(s:confdir) == 0
@@ -179,19 +205,5 @@ function! rnvimr#init(...) abort
     endif
 
     let cmd = ranger_cmd . ' --confdir=' . confdir . ' --cmd=' . attach_cmd
-    call s:create_ranger(cmd, env)
-    augroup RnvimrTerm
-        autocmd!
-        autocmd VimResized <buffer> call s:redraw_win()
-        autocmd VimLeavePre * call rnvimr#rpc#destroy()
-        if get(g:, 'rnvimr_enable_bw', 0)
-            autocmd TermEnter,WinEnter <buffer> call rnvimr#context#check_point()
-            autocmd WinLeave <buffer> call rnvimr#context#buf_wipe()
-        endif
-        if s:shadow_winblend < 100 && s:shadow_winblend >= 0
-            autocmd TermEnter,WinEnter <buffer> call rnvimr#shadowwin#create(s:shadow_winblend)
-            autocmd WinLeave <buffer> call rnvimr#shadowwin#destroy()
-            autocmd VimResized <buffer> call rnvimr#shadowwin#reszie()
-        endif
-    augroup END
+    call s:create_ranger(cmd, env, is_background)
 endfunction
