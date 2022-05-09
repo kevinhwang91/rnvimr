@@ -309,7 +309,7 @@ COMMANDS                                                *rnvimr-commands*
     or multiple indexes separate by {,} such as {4,2,1,3}, it will circularly
     iterate special elements of |g:rnvimr_presets| in order via index.
 
-:RnvimrStartBackGround
+:RnvimrStartBackground
     Start Ranger in the background. The time of first toggling the Ranger
     floating window will be greatly improved after called this command.
 
