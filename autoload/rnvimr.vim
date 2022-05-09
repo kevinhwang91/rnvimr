@@ -80,11 +80,7 @@ function! s:create_ranger(cmd, env, is_background) abort
         let winid = nvim_open_win(rnvimr#context#bufnr(), v:true, init_layout)
     endif
     call rnvimr#context#winid(winid)
-    let cmd = a:cmd
-    if type(a:env) == v:t_list && !empty(a:env)
-        let cmd = join(a:env) . ' ' . cmd
-    endif
-    call termopen(cmd, {'on_exit': function('s:on_exit')})
+    call termopen(a:cmd, {'on_exit': function('s:on_exit'), 'env': a:env})
     setfiletype rnvimr
     call s:setup_winhl()
     if !a:is_background
@@ -186,27 +182,26 @@ function! rnvimr#init(...) abort
     let $NVIM_LISTEN_ADDRESS = v:servername
     let select_file = empty(get(a:000, 0, '')) ? expand('%:p') : a:1
     let is_background = get(a:000, 1, 0)
-    let confdir = shellescape(s:confdir)
+    let confdir = s:confdir
     " https://github.com/kevinhwang91/rnvimr/issues/80
     if filewritable(s:confdir) == 0
-        let tmp_dir = fnamemodify(tempname(), ':h') . '/rnvimr'
-        if empty(glob(tmp_dir))
-            let sh_conf = shellescape(tmp_dir . '/')
-            call system('cp -r ' . confdir . ' ' . sh_conf . ' && chmod +w -R ' . sh_conf)
+        let confdir = fnamemodify(tempname(), ':h') . '/rnvimr'
+        if empty(glob(confdir))
+            let sh_conf = shellescape(confdir . '/')
+            call system('cp -r ' . shellescape(s:confdir) . ' ' . sh_conf . ' && chmod +w -R ' . sh_conf)
         endif
-        let confdir = shellescape(tmp_dir)
     endif
-    let attach_cmd = shellescape('AttachFile ' . select_file)
+    let attach_cmd = 'AttachFile ' . select_file
     let ranger_cmd = get(g:, 'rnvimr_ranger_cmd', s:default_ranger_cmd)
-    let env = []
+    let env = {}
     if get(g:, 'rnvimr_vanilla', 0)
-        call add(env, 'RNVIMR_VANILLA=1')
+        let env.RNVIMR_VANILLA = 1
     endif
     let urc_path = get(g:, 'rnvimr_urc_path', v:null)
     if !empty(urc_path)
-        call add(env, 'RNVIMR_URC_PATH=' . urc_path)
+        let env.RNVIMR_URC_PATH = urc_path
     endif
 
-    let cmd = ranger_cmd . ' --confdir=' . confdir . ' --cmd=' . attach_cmd
+    let cmd = [ranger_cmd, '--confdir='. confdir, '--cmd='. attach_cmd]
     call s:create_ranger(cmd, env, is_background)
 endfunction
