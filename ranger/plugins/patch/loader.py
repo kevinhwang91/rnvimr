@@ -58,5 +58,4 @@ class GitignoreLoader(Loadable, FileManagerAware):
                 fobj.correct_pointer()
 
             fobj.move_to_obj(fobj.pointed_obj)
-            self.fm.ui.browser.request_clear()
-            self.fm.ui.status.request_redraw()
+            self.fm.execute_console('set show_hidden False')

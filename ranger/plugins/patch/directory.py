@@ -11,7 +11,7 @@ from os import stat as os_stat
 from time import time
 
 import ranger.container.directory
-from ranger.container.directory import Directory, InodeFilterConstants
+from ranger.container.directory import Directory, InodeFilterConstants, mtimelevel
 from ranger.container.file import File
 from ranger.ext.human_readable import human_readable
 from ranger.ext.mount_path import mount_path
@@ -20,14 +20,18 @@ from .loader import GitignoreLoader
 from .. import rutil
 
 
-def wrap_dir_for_git():
-    """
-    Wrap directory for hidden git ignored files.
+def add_filters(fm, hide_gitignore):  # pylint: disable=invalid-name
+    raw_accept_file = ranger.container.directory.accept_file
 
-    """
-    Directory.load_bit_by_bit = load_bit_by_bit
-    Directory.refilter = refilter
-    Directory.load_content_if_outdated = load_content_if_outdated
+    def accept_file(fobj, filters):
+        if isinstance(fm.attached_file, str) and rutil.is_subpath(fobj.path, fm.attached_file):
+            return True
+        return raw_accept_file(fobj, filters)
+
+    ranger.container.directory.accept_file = accept_file
+    if hide_gitignore:
+        Directory.refilter = refilter
+        Directory.load_bit_by_bit = load_bit_by_bit
 
 
 def _walklevel(some_dir, level):
@@ -36,21 +40,13 @@ def _walklevel(some_dir, level):
     assert os.path.isdir(some_dir)
     num_sep = some_dir.count(os.path.sep)
     for root, dirs, files in os.walk(some_dir, followlinks=followlinks):
+        #  remove git dir to speed up
         if '.git' in dirs:
             dirs.remove('.git')
         yield root, dirs, files
         num_sep_this = root.count(os.path.sep)
         if level != -1 and num_sep + level <= num_sep_this:
             del dirs[:]
-
-
-def _mtimelevel(path, level):
-    mtime = os.stat(path).st_mtime
-    for dirpath, dirnames, _ in _walklevel(path, level):
-        dirlist = [os.path.join("/", dirpath, d) for d in dirnames
-                   if level == -1 or dirpath.count(os.path.sep) - path.count(os.path.sep) <= level]
-        mtime = max(mtime, max([-1] + [os.stat(d).st_mtime for d in dirlist]))
-    return mtime
 
 
 def _build_git_ignore_process(fobj):
@@ -104,7 +100,7 @@ def load_bit_by_bit(self):
                     filelist += dirlist
                     filelist += [os.path.join("/", dirpath, f) for f in filenames]
                 filenames = filelist
-                self.load_content_mtime = _mtimelevel(mypath, self.flat)
+                self.load_content_mtime = mtimelevel(mypath, self.flat)
             else:
                 filelist = os.listdir(mypath)
                 filenames = [mypath + (mypath == '/' and fname or '/' + fname)
@@ -232,7 +228,7 @@ def refilter(self):
 
     """
     if self.files_all is None:
-        return  # propably not loaded yet
+        return  # probably not loaded yet
 
     self.last_update_time = time()
 
@@ -243,11 +239,9 @@ def refilter(self):
         hidden_filter_search = hidden_filter.search
 
         def hidden_filter_func(fobj):
-            # always show attached file.
-            if fobj.path != self.fm.attached_file:
-                for comp in fobj.relative_path.split(os.path.sep):
-                    if hidden_filter_search(comp):
-                        return False
+            for comp in fobj.relative_path.split(os.path.sep):
+                if hidden_filter_search(comp):
+                    return False
             return True
         filters.append(hidden_filter_func)
 
@@ -281,9 +275,8 @@ def refilter(self):
 
     if not self.settings.show_hidden:
         if hasattr(self, 'ignored'):
-            filters.append(
-                lambda fobj: all(not rutil.is_subpath(ipath, fobj.path)
-                                 for ipath in self.ignored) or fobj.path == self.fm.attached_file)
+            filters.append(lambda fobj: all(not rutil.is_subpath(ipath, fobj.path)
+                                            for ipath in self.ignored))
 
     self.files = [f for f in self.files_all if ranger.container.directory.accept_file(f, filters)]
 
@@ -296,32 +289,3 @@ def refilter(self):
         self.correct_pointer()
 
     self.move_to_obj(self.pointed_obj)
-
-
-def load_content_if_outdated(self, *a, **k):
-    """Load the contents of the directory if outdated"""
-
-    if self.load_content_once(*a, **k):
-        return True
-
-    if self.files_all is None or self.content_outdated:
-        self.load_content(*a, **k)
-        return True
-
-    try:
-        if self.flat:
-            real_mtime = _mtimelevel(self.path, self.flat)
-        else:
-            real_mtime = os.stat(self.path).st_mtime
-    except OSError:
-        real_mtime = None
-        return False
-    if self.stat:
-        cached_mtime = self.load_content_mtime
-    else:
-        cached_mtime = 0
-
-    if real_mtime != cached_mtime:
-        self.load_content(*a, **k)
-        return True
-    return False

@@ -43,7 +43,7 @@ class Hacks():
         except KeyError:
             init_dict = {}
         self.fake_editor(init_dict.get('edit_cmd'))
-        self.hide_git_files(bool(init_dict.get('hide_gitignore')))
+        self.hide_files(bool(init_dict.get('hide_gitignore')))
         self.map_action(init_dict.get('action'))
         self.draw_border(bool(init_dict.get('draw_border')), init_dict.get('border_attr'))
         self.change_view_adapt_size(init_dict.get('views'))
@@ -84,17 +84,14 @@ class Hacks():
 
         rifle.build_fake_editor(self.fm.client, edit_cmd)
 
-    def hide_git_files(self, hide_gitignore):
+    def hide_files(self, hide_gitignore):
         """
-        Hide the files included in gitignore.
+        Hide the files included in gitignore and always show attached_file.
 
         :param hide_gitignore bool: hide git ignore if True
         """
 
-        if not hide_gitignore:
-            return
-
-        directory.wrap_dir_for_git()
+        directory.add_filters(self.fm, hide_gitignore)
 
     def draw_border(self, draw_border, border_attr):
         """
