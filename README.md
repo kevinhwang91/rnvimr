@@ -290,7 +290,7 @@ Q: How can I go back to the previous directory in Ranger after attaching a new f
 
 A: Press `H` in Ranger, mean go back to the last history directory.
 
-Q: How can I use Ranger defualt configuration (vanilla)?
+Q: How can I use Ranger default configuration (vanilla)?
 
 A: Write `let g:rnvimr_vanilla = 1` to your vim configuration.
 
