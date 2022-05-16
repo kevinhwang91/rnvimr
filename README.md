@@ -182,7 +182,7 @@ let g:rnvimr_enable_bw = 1
 let g:rnvimr_shadow_winblend = 70
 
 " Draw border with both
-let g:rnvimr_ranger_cmd = 'ranger --cmd="set draw_borders both"'
+let g:rnvimr_ranger_cmd = ['ranger', '--cmd=set draw_borders both']
 
 " Link CursorLine into RnvimrNormal highlight in the Floating window
 highlight link RnvimrNormal CursorLine

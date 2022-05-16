@@ -1,6 +1,6 @@
 let s:rnvimr_path = expand('<sfile>:h:h')
 let s:confdir = s:rnvimr_path . '/ranger'
-let s:default_ranger_cmd = 'ranger'
+let s:default_ranger_cmd = ['ranger']
 let s:default_action = {
             \ '<C-t>': 'NvimEdit tabedit',
             \ '<C-x>': 'NvimEdit split',
@@ -202,6 +202,6 @@ function! rnvimr#init(...) abort
         let env.RNVIMR_URC_PATH = urc_path
     endif
 
-    let cmd = [ranger_cmd, '--confdir='. confdir, '--cmd='. attach_cmd]
+    let cmd = ranger_cmd + ['--confdir='. confdir, '--cmd='. attach_cmd]
     call s:create_ranger(cmd, env, is_background)
 endfunction

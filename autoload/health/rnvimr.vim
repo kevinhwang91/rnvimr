@@ -1,5 +1,5 @@
 let s:rnvimr_path = expand('<sfile>:h:h:h')
-let s:ranger_cmd = get(g:, 'rnvimr_ranger_cmd', 'ranger')
+let s:ranger_cmd = get(g:, 'rnvimr_ranger_cmd', ['ranger'])
 let s:os = ''
 
 function! s:system_handler(jobid, data, event) dict abort
@@ -33,7 +33,7 @@ endfunction
 
 function! s:check_python_ranger() abort
     call health#report_start('Ranger')
-    let ver_info = system(s:ranger_cmd . ' --version')
+    let ver_info = system(s:ranger_cmd + ['--version'])
     if v:shell_error
         call health#report_error('Ranger not Found')
         return
@@ -100,8 +100,8 @@ function! s:check_rpc() abort
                     \ }
 
         let $NVIM_LISTEN_ADDRESS = v:servername
-        let confdir = shellescape(s:rnvimr_path . '/ranger')
-        let cmd = s:ranger_cmd . ' --confdir=' . confdir
+        let confdir = s:rnvimr_path . '/ranger'
+        let cmd = s:ranger_cmd + ['--confdir=' . confdir]
         let jobid = jobstart(cmd, opts)
 
         " jobwait doesn't work with pty option

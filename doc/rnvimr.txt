@@ -233,10 +233,12 @@ g:rnvimr_border_attr
 
                                                         *g:rnvimr_ranger_cmd*
 g:rnvimr_ranger_cmd
-    Default: 'ranger'
-
+    Default: {list}
+>
+    ['ranger']
+<
     Use this command to run a process inside the floating window.
-    It can mix some command of Ranger, such as 'ranger --cmd="xxx"'.
+    It can mix some command of Ranger, such as ['ranger', '--cmd=xxx'].
 
                                                         *g:rnvimr_ranger_views*
 g:rnvimr_ranger_views
@@ -352,7 +354,7 @@ Advanced configuration:
     let g:rnvimr_shadow_winblend = 70
 
     " Draw border with both
-    let g:rnvimr_ranger_cmd = 'ranger --cmd="set draw_borders both"'
+    let g:rnvimr_ranger_cmd = ['ranger', '--cmd=set draw_borders both']
 
     " Link CursorLine into RnvimrNormal highlight in the Floating window
     highlight link RnvimrNormal CursorLine
