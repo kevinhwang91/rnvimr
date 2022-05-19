@@ -193,6 +193,9 @@ function! rnvimr#init(...) abort
     endif
     let attach_cmd = 'AttachFile ' . select_file
     let ranger_cmd = get(g:, 'rnvimr_ranger_cmd', s:default_ranger_cmd)
+    if type(ranger_cmd) != v:t_list
+        echoerr '`g:rnvimr_ranger_cmd` has changed, please use a list instead of string'
+    endif
     let env = {}
     if get(g:, 'rnvimr_vanilla', 0)
         let env.RNVIMR_VANILLA = 1
