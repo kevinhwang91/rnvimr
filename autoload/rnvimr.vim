@@ -28,6 +28,8 @@ let g:rnvimr_ranger_init = {
             \ 'views': get(g:, 'rnvimr_ranger_views', []),
             \ }
 
+let s:channel = -1
+
 highlight default link RnvimrNormal NormalFloat
 highlight default link RnvimrCurses Normal
 
@@ -46,6 +48,9 @@ function! s:reopen_win() abort
     call s:setup_winhl()
     startinsert
     doautocmd RnvimrTerm TermEnter
+    if has('nvim-0.8.0')
+        call chansend(s:channel, "\<Nul>")
+    endif
 endfunction
 
 function! s:on_exit(job_id, data, event) abort
@@ -80,7 +85,7 @@ function! s:create_ranger(cmd, env, is_background) abort
         let winid = nvim_open_win(rnvimr#context#bufnr(), v:true, init_layout)
     endif
     call rnvimr#context#winid(winid)
-    call termopen(a:cmd, {'on_exit': function('s:on_exit'), 'env': a:env})
+    let s:channel = termopen(a:cmd, {'on_exit': function('s:on_exit'), 'env': a:env})
     setfiletype rnvimr
     call s:setup_winhl()
     if !a:is_background
