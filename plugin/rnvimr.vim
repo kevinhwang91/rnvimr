@@ -5,6 +5,7 @@ endif
 let g:loaded_rnvimr = 1
 
 command! -nargs=0 RnvimrToggle call rnvimr#toggle()
+command! -nargs=0 RnvimrClose call rnvimr#close()
 command! -nargs=* RnvimrResize call rnvimr#resize(<args>)
 command! -nargs=0 RnvimrStartBackground call rnvimr#init('', 1)
 

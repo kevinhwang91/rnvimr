@@ -162,6 +162,16 @@ function! rnvimr#toggle() abort
     endif
 endfunction
 
+function! rnvimr#close() abort
+    let win_hd = rnvimr#context#winid()
+    if rnvimr#context#bufnr() != -1
+        \ && win_hd != -1 && nvim_win_is_valid(win_hd)
+        \ && nvim_get_current_win() == win_hd
+            call nvim_win_close(win_hd, 0)
+            call rnvimr#rpc#clear_image()
+    endif
+endfunction
+
 function! rnvimr#open(path) abort
     let isdir = isdirectory(a:path)
     if rnvimr#context#bufnr() != -1
