@@ -87,6 +87,9 @@ function! s:create_ranger(cmd, env, is_background) abort
     call rnvimr#context#winid(winid)
     let s:channel = termopen(a:cmd, {'on_exit': function('s:on_exit'), 'env': a:env})
     setfiletype rnvimr
+    " TODO
+    " double type <C-\> make ranger crash, this is ranger issue.
+    tnoremap <C-\><C-\> <Nop>
     call s:setup_winhl()
     if !a:is_background
         startinsert
