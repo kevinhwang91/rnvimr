@@ -12,13 +12,9 @@ command! -nargs=0 RnvimrStartBackground call rnvimr#init('', 1)
 let g:rnvimr_enable_ex = get(g:, 'rnvimr_enable_ex', 0) || get(g:, 'rnvimr_ex_enable', 0)
 
 if get(g:, 'rnvimr_enable_ex', 0)
+    silent! autocmd! FileExplorer
     augroup RnvimrFileExplorer
         autocmd!
-        autocmd VimEnter * ++once silent! autocmd! FileExplorer
-        autocmd VimEnter * ++once if isdirectory(expand('<amatch>')) |
-                    \ bwipeout! | call rnvimr#open(expand('<amatch>')) |
-                    \ endif |
-                    \ execute(printf("autocmd RnvimrFileExplorer BufEnter * %s",
-                    \ "call rnvimr#enter_dir(expand('<amatch>'), expand('<abuf>'))"))
+        autocmd RnvimrFileExplorer BufEnter * call rnvimr#enter_dir(expand('<amatch>'), expand('<abuf>'))
     augroup END
 endif
