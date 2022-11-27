@@ -89,7 +89,7 @@ function! s:create_ranger(cmd, env, is_background) abort
     setfiletype rnvimr
     " TODO
     " double type <C-\> make ranger crash, this is ranger issue.
-    tnoremap <C-\><C-\> <Nop>
+    tnoremap <buffer> <C-\><C-\> <Nop>
     call s:setup_winhl()
     if !a:is_background
         startinsert
