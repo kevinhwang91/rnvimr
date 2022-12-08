@@ -139,7 +139,7 @@ function! rnvimr#rpc#edit(edit, files, ...) abort
             call nvim_set_current_win(cur_win)
         endif
     endif
-    cd .
+    execute haslocaldir() ? 'lcd' : (haslocaldir(-1) ? 'tcd' : 'cd') . '.'
 endfunction
 
 function! rnvimr#rpc#get_window_info() abort
