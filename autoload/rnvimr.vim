@@ -109,6 +109,7 @@ function! s:create_ranger(cmd, env, is_background) abort
         endif
     augroup END
     if a:is_background
+        call rnvimr#rpc#enable_attach_file()
         noa call nvim_win_close(winid, 0)
     endif
 endfunction
