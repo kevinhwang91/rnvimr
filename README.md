@@ -33,7 +33,8 @@ It uses [RPC](https://neovim.io/doc/user/api.html#RPC) to communicate with Range
 2. [Pynvim](https://github.com/neovim/pynvim)
 3. [Neovim](https://github.com/neovim/neovim) 0.5 or later
 4. Python3.6
-5. [Ueberzug](https://github.com/seebye/ueberzug) (optional, v18.1.6 or laster)
+5. [Ueberzug](https://github.com/seebye/ueberzug) (optional, v18.1.6 or laster) /
+[Ueberzugpp](https://github.com/jstkdng/ueberzugpp) (optional, v2.3.0 or laster)
 
 ## Features
 
@@ -60,6 +61,7 @@ Example for [yay](https://github.com/Jguer/yay) in ArchLinux and
 ```sh
 # ArchLinux install all requirements is extremely convenient
 yay -S ranger python-pynvim ueberzug
+# ~ `ueberzug` can be replaced with `ueberzugpp` ~
 
 # pip
 
@@ -68,7 +70,7 @@ yay -S ranger python-pynvim ueberzug
 # Please refer to the issues of ranger for more details
 pip3 install ranger-fm pynvim
 
-# ueberzug is not supported in macOS because it depends on X11
+# Ueberzug/Ueberzugpp is not supported in macOS because it depends on X11
 pip3 install ueberzug
 ```
 
