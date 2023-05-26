@@ -197,11 +197,13 @@ function! rnvimr#enable_mouse_support() abort
             augroup END
         endif
 
-        if system('tmux display -p "#{mouse}"')[0]
-            augroup RnvimrMouse
-                autocmd TermEnter,WinEnter <buffer> call system('tmux set mouse off')
-                autocmd WinLeave <buffer> call system('tmux set mouse on')
-            augroup END
+        if exists('$TMUX')
+            if system('tmux display -p "#{mouse}"')[0]
+                augroup RnvimrMouse
+                    autocmd TermEnter,WinEnter <buffer> call system('tmux set mouse off')
+                    autocmd WinLeave <buffer> call system('tmux set mouse on')
+                augroup END
+            endif
         endif
     endfunction
 
@@ -241,7 +243,7 @@ function! rnvimr#init(...) abort
     if !empty(urc_path)
         let env.RNVIMR_URC_PATH = urc_path
     endif
-    rnvimr#enable_mouse_support()
+    call rnvimr#enable_mouse_support()
 
     let cmd = ranger_cmd + ['--confdir='. confdir, '--cmd='. attach_cmd]
     call s:create_ranger(cmd, env, is_background)
