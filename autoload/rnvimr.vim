@@ -184,31 +184,30 @@ endfunction
 
 function! rnvimr#enable_mouse_support() abort
     function s:set_mouse_with_rnvimr() abort
-    let n_mouse = &mouse
-    augroup RnvimrMouse
-        autocmd!
-        autocmd FileType rnvimr call <SID>set_mouse_with_rnvimr()
-    augroup end
-
-    if match(n_mouse, '[a|h|n]') >= 0
+        let n_mouse = &mouse
         augroup RnvimrMouse
-            autocmd TermEnter,WinEnter <buffer> call nvim_set_option('mouse', '')
-            execute printf("autocmd WinLeave <buffer> call nvim_set_option('mouse', '%s')", n_mouse)
-        augroup END
-    endif
+            autocmd!
+            autocmd FileType rnvimr call <SID>set_mouse_with_rnvimr()
+        augroup end
 
-  if system('tmux display -p "#{mouse}"')[0]
-  augroup RnvimrMouse
-      autocmd TermEnter,WinEnter <buffer> call system('tmux set mouse off')
-      autocmd WinLeave <buffer> call system('tmux set mouse on')
-  augroup END
-  endif
+        if match(n_mouse, '[a|h|n]') >= 0
+            augroup RnvimrMouse
+                autocmd TermEnter,WinEnter <buffer> call nvim_set_option('mouse', '')
+                execute printf("autocmd WinLeave <buffer> call nvim_set_option('mouse', '%s')", n_mouse)
+            augroup END
+        endif
 
-endfunction
+        if system('tmux display -p "#{mouse}"')[0]
+            augroup RnvimrMouse
+                autocmd TermEnter,WinEnter <buffer> call system('tmux set mouse off')
+                autocmd WinLeave <buffer> call system('tmux set mouse on')
+            augroup END
+        endif
+    endfunction
 
-augroup RnvimrMouse
-    autocmd FileType rnvimr call <SID>set_mouse_with_rnvimr()
-augroup END
+    augroup RnvimrMouse
+        autocmd FileType rnvimr call <SID>set_mouse_with_rnvimr()
+    augroup END
 endfunction
 
 " a:1 select_file
