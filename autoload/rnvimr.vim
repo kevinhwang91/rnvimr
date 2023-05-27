@@ -182,6 +182,36 @@ function! rnvimr#open(path) abort
     endif
 endfunction
 
+function! rnvimr#enable_mouse_support() abort
+    function s:set_mouse_with_rnvimr() abort
+        let n_mouse = &mouse
+        augroup RnvimrMouse
+            autocmd!
+            autocmd FileType rnvimr call <SID>set_mouse_with_rnvimr()
+        augroup end
+
+        if match(n_mouse, '[a|h|n]') >= 0
+            augroup RnvimrMouse
+                autocmd TermEnter,WinEnter <buffer> call nvim_set_option('mouse', '')
+                execute printf("autocmd WinLeave <buffer> call nvim_set_option('mouse', '%s')", n_mouse)
+            augroup END
+        endif
+
+        if exists('$TMUX')
+            if system('tmux display -p "#{mouse}"')[0]
+                augroup RnvimrMouse
+                    autocmd TermEnter,WinEnter <buffer> call system('tmux set mouse off')
+                    autocmd WinLeave <buffer> call system('tmux set mouse on')
+                augroup END
+            endif
+        endif
+    endfunction
+
+    augroup RnvimrMouse
+        autocmd FileType rnvimr call <SID>set_mouse_with_rnvimr()
+    augroup END
+endfunction
+
 " a:1 select_file
 " a:2 is_background
 function! rnvimr#init(...) abort
@@ -213,6 +243,7 @@ function! rnvimr#init(...) abort
     if !empty(urc_path)
         let env.RNVIMR_URC_PATH = urc_path
     endif
+    call rnvimr#enable_mouse_support()
 
     let cmd = ranger_cmd + ['--confdir='. confdir, '--cmd='. attach_cmd]
     call s:create_ranger(cmd, env, is_background)
