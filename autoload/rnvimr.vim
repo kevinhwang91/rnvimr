@@ -86,6 +86,10 @@ function! s:create_ranger(cmd, env, is_background) abort
     endif
     call rnvimr#context#winid(winid)
     let s:channel = termopen(a:cmd, {'on_exit': function('s:on_exit'), 'env': a:env})
+    let ch_info = nvim_get_chan_info(s:channel)
+    " enable mouse support for xterm terminal
+    call system('printf "\x1b[?1000h" > ' . ch_info.pty)
+
     setfiletype rnvimr
     " TODO
     " double type <C-\> make ranger crash, this is ranger issue.
@@ -94,7 +98,6 @@ function! s:create_ranger(cmd, env, is_background) abort
     if !a:is_background
         startinsert
     endif
-    call rnvimr#enable_mouse_support()
     augroup RnvimrTerm
         autocmd!
         autocmd VimResized <buffer> call s:redraw_win()
@@ -180,29 +183,6 @@ function! rnvimr#open(path) abort
     endif
     if isdir && rnvimr#layout#get_current_index() != get(g:, 'rnvimr_layout_ex_index', 0)
         call rnvimr#resize(g:rnvimr_layout_ex_index)
-    endif
-endfunction
-
-function! rnvimr#enable_mouse_support() abort
-    let n_mouse = &mouse
-    augroup RnvimrMouse
-        autocmd!
-    augroup end
-
-    if match(n_mouse, '[a|h|n]') >= 0
-        augroup RnvimrMouse
-            autocmd TermEnter,WinEnter <buffer> call nvim_set_option('mouse', '')
-            execute printf("autocmd WinLeave <buffer> call nvim_set_option('mouse', '%s')", n_mouse)
-        augroup END
-    endif
-
-    if exists('$TMUX')
-        if system('tmux display -p "#{mouse}"')[0]
-            augroup RnvimrMouse
-                autocmd TermEnter,WinEnter <buffer> call system('tmux set mouse off')
-                autocmd WinLeave <buffer> call system('tmux set mouse on')
-            augroup END
-        endif
     endif
 endfunction
 
