@@ -98,4 +98,7 @@ class Urc():
         custom_conf = self.fm.confpath('rc.conf')
         self.load_commands()
         self.load_plugins()
-        self.fm.source(custom_conf)
+        if os.path.exists(custom_conf):
+            self.fm.source(custom_conf)
+        else:
+            self.fm.source(self.fm.relpath('config', 'rc.conf'))
