@@ -102,3 +102,6 @@ class Urc():
             self.fm.source(custom_conf)
         else:
             self.fm.source(self.fm.relpath('config', 'rc.conf'))
+
+        # disable the XON/XOFF flow control
+        os.system('stty -ixon')
