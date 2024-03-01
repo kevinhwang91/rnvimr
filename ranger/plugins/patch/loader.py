@@ -9,7 +9,7 @@ from ranger.core.loader import Loadable
 from .. import rutil
 
 
-class GitignoreLoader(Loadable, FileManagerAware):
+class GitIgnoreLoader(Loadable, FileManagerAware):
     """
     Asynchronous callback from gitignore process.
 
@@ -38,7 +38,8 @@ class GitignoreLoader(Loadable, FileManagerAware):
             return
 
         fobj = self.fm.get_directory(self.path)
-        fobj.ignored = [os.path.normpath(os.path.join(rutil.find_git_root(self.path), line[3:]))
+        root = rutil.find_git_root(self.path)
+        fobj.ignored = [os.path.normpath(os.path.join(root, line[3:]))
                         for line in out.decode('utf-8').split('\0')[:-1]
                         if line.startswith('!! ')]
         fobj.ignore_proc = None

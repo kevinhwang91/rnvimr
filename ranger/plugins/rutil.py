@@ -63,7 +63,7 @@ def is_subpath(spath, lpath):
 
 def dynamic_import(name, path):
     """
-    import single moudle dynamically
+    import single module dynamically
 
     :param name str: module name
     :param path str: module path

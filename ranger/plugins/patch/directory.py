@@ -16,7 +16,7 @@ from ranger.container.file import File
 from ranger.ext.human_readable import human_readable
 from ranger.ext.mount_path import mount_path
 
-from .loader import GitignoreLoader
+from .loader import GitIgnoreLoader
 from .. import rutil
 
 
@@ -62,7 +62,7 @@ def _build_git_ignore_process(fobj):
             proc = subprocess.Popen(git_ignore_cmd, cwd=fobj.path,
                                     stdout=subprocess.PIPE,
                                     stderr=subprocess.PIPE)
-            fobj.fm.loader.add(GitignoreLoader(proc, fobj.path), append=True)
+            fobj.fm.loader.add(GitIgnoreLoader(proc, fobj.path), append=True)
 
 
 def load_bit_by_bit(self):
@@ -107,7 +107,8 @@ def load_bit_by_bit(self):
                              for fname in filelist]
                 self.load_content_mtime = os.stat(mypath).st_mtime
 
-            _build_git_ignore_process(self)
+            if self.settings.vcs_backend_git == 'enabled':
+                _build_git_ignore_process(self)
 
             if self.cumulative_size_calculated:
                 # If self.content_loaded is true, this is not the first
@@ -117,16 +118,15 @@ def load_bit_by_bit(self):
                     if self.fm.settings.autoupdate_cumulative_size:
                         self.look_up_cumulative_size()
                     else:
-                        size = human_readable(self.size, separator='? ')
-                        self.infostring = f' {size}'
+                        self.infostring = ' %s' % human_readable(
+                            self.size, separator='? ')
                 else:
-                    size = human_readable(self.size)
-                    self.infostring = f' {size}'
+                    self.infostring = ' %s' % human_readable(self.size)
             else:
                 self.size = len(filelist)
-                self.infostring = f' {self.size}'
+                self.infostring = ' %d' % self.size
             if self.is_link:
-                self.infostring = f'->{self.infostring}'
+                self.infostring = '->' + self.infostring
 
             yield
 
