@@ -164,6 +164,7 @@ function! rnvimr#toggle() abort
         else
             call rnvimr#rpc#attach_file_once(expand('%:p'))
             call s:reopen_win()
+            call rnvimr#rpc#clear_image()
         endif
     else
         call rnvimr#init()
