@@ -49,7 +49,7 @@ function! s:reopen_win() abort
     startinsert
     doautocmd RnvimrTerm TermEnter
     if has('nvim-0.8.0')
-        call chansend(s:channel, 0z00)
+        call chansend(s:channel, 0z01)
     endif
 endfunction
 
