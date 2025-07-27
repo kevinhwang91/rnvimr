@@ -192,7 +192,6 @@ function! rnvimr#init(...) abort
     if rnvimr#context#bufnr() != -1
         return
     endif
-    let $NVIM_LISTEN_ADDRESS = v:servername
     let select_file = empty(get(a:000, 0, '')) ? expand('%:p') : a:1
     let is_background = get(a:000, 1, 0)
     let confdir = s:confdir
@@ -217,6 +216,7 @@ function! rnvimr#init(...) abort
     if !empty(urc_path)
         let env.RNVIMR_URC_PATH = urc_path
     endif
+    let env.NVIM_LISTEN_ADDRESS = v:servername
 
     let cmd = ranger_cmd + ['--confdir='. confdir, '--cmd='. attach_cmd]
     call s:create_ranger(cmd, env, is_background)
